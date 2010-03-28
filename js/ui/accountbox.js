@@ -22,8 +22,16 @@ qwebirc.ui.AccBoxLoggedIn = function(user) {
   var textbox = new Element("div");
   textbox.set("class", "qwebirc-acctextbox");
   textbox.appendChild(document.createTextNode("You are logged in as "));
-  textbox.appendChild(new Element("b").set("text", "Namegduf"));
-  textbox.appendChild(document.createTextNode("."));
+  textbox.appendChild(new Element("b").set("text", user));
+  textbox.appendChild(document.createTextNode(". "));
+
+  var link = new Element("a");
+  link.set("class", "qwebirc-acclink");
+  link.setAttribute("href", "javascript:void(0);");
+  link.setAttribute("onclick", "qwebirc.ui.AccBoxLogout();");
+  link.appendChild(document.createTextNode("(Logout)"));
+  textbox.appendChild(link);
+
   box.appendChild(textbox);
 }
 
@@ -69,6 +77,22 @@ qwebirc.ui.AccBoxLogin = function(e) {
   new Event(e).stop();
 }
 
+qwebirc.ui.AccBoxLogout = function(e) {
+  var user = Cookie.read("tl-ircaccount");
+  var token = Cookie.read("tl-ircauthcookie");
+
+  qwebirc.irc.AthemeQuery.logout(function(success) {
+    if (success) {
+      Cookie.dispose("tl-ircaccount");
+      Cookie.dispose("tl-ircauthcookie");
+      qwebirc.ui.AccBoxLoggedOut();
+    }
+    else {
+      alert("Connection failed; unable to logout.");
+    }
+  }, user, token);
+}
+
 qwebirc.ui.AccBoxCheckToken = function () {
   var user = Cookie.read("tl-ircaccount");
   var token = Cookie.read("tl-ircauthcookie");
@@ -78,7 +102,7 @@ qwebirc.ui.AccBoxCheckToken = function () {
       if (valid == null)
         return;
       else if (valid)
-        qwebirc.ui.AccBoxLoggedIn();
+        qwebirc.ui.AccBoxLoggedIn(user);
       else
         qwebirc.ui.AccBoxLoggedOut();
     }, user, token);

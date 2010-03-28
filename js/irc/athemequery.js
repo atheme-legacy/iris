@@ -88,7 +88,36 @@ qwebirc.irc.AthemeQuery.checkLogin = function(callback, user, token) {
 		if (typeof json === 'boolean') {
 			callback(json);
 		} else {
-			alert(json);
+			callback(null);
+		}
+	}.bind(this));
+
+	var postdata = "u=" + encodeURIComponent(user);
+	postdata += "&t=" + encodeURIComponent(token);
+	r.send(postdata);
+}
+
+/**
+ * Logs out, invalidating an authentication token.
+ * Callback signature is callback(removed), where valid is true to indicate
+ * successful removal, or the token already being invalid, or null to
+ * indicate a connection failure removing it.
+ *
+ * \param callback Function to call to inform of results.
+ * \param user Username as string.
+ * \param token Token as string.
+ */
+qwebirc.irc.AthemeQuery.logout = function(callback, user, token) {
+
+	r = qwebirc.irc.AthemeQuery.newRequest("o");
+
+	r.addEvent("failure", function(xhr) {
+		callback(null);
+	});
+	r.addEvent("success", function(json, string) {
+		if (typeof json === 'boolean') {
+			callback(true);
+		} else {
 			callback(null);
 		}
 	}.bind(this));

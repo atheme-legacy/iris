@@ -96,12 +96,39 @@ class AthemeEngine(resource.Resource):
       self.do_xmlrpc(self.conn.atheme.command, (token[0], user[0], "0.0.0.0",
           "NickServ", "INFO", user[0]))
       response[0] = simplejson.dumps(True)
-    except xmlrpclib.Fault, e:
+    except xmlrpclib.Fault:
       response[0] = simplejson.dumps(False)
 
     request.write(response[0])
     request.finish()
     return True
+
+  def logout(self, request):
+    """Log out, invalidating the request's authentication token.
+
+    Replies with True for a successful logout, False for already being
+    logged out, and None for connection failure.
+
+    """
+    user = request.args.get("u")
+    if user is None:
+      raise AJAXException, "No username specified."
+    token = request.args.get("t")
+    if token is None:
+      raise AJAXException, "No token specified."
+
+    self.__total_hit()
+  
+    response = None 
+    try:
+      self.do_xmlrpc(self.conn.atheme.logout, (user[0], token[0]))
+      response = simplejson.dumps(True);
+    except xmlrpclib.Fault:
+      response = simplejson.dumps(False);
+
+    request.write(response) 
+    request.finish() 
+    return True 
   
   @property
   def adminEngine(self):
@@ -109,4 +136,4 @@ class AthemeEngine(resource.Resource):
       "Total hits": [(self.__total_hit,)],
     }
     
-  COMMANDS = dict(l=login, c=checkToken)
+  COMMANDS = dict(l=login, c=checkToken, o=logout)

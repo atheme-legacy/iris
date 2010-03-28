@@ -9,6 +9,10 @@
   padding-top: 0.5em;
 }
 
+.qwebirc-acclink {
+  text-decoration: none;
+}
+
 /**************** LOGIN BOX *******************/
 
 .qwebirc-centrebox {
