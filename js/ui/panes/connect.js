@@ -239,6 +239,14 @@ qwebirc.ui.LoginBox = function(parentElement, callback, initialNickname, initial
         data["serverPassword"] = passwordBox.value;
       }
     }
+
+    var authUser = Cookie.read("tl-ircaccount");
+    var authToken = Cookie.read("tl-ircauthcookie");
+    if (authUser && authToken) {
+      data["authUser"] = authUser;
+      data["authToken"] = authToken;
+    }
+
     parentElement.removeChild(outerbox);
     
     callback(data);

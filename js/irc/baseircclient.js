@@ -30,7 +30,9 @@ qwebirc.irc.BaseIRCClient = new Class({
     this.connection = new qwebirc.irc.IRCConnection({
       initialNickname: this.nickname,
       onRecv: this.dispatch.bind(this),
-      serverPassword: this.options.serverPassword
+      serverPassword: this.options.serverPassword,
+      authUser: this.options.authUser,
+      authToken: this.options.authToken
     });
   
     this.send = this.connection.send.bind(this.connection);

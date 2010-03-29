@@ -10,7 +10,9 @@ qwebirc.irc.IRCConnection = new Class({
     floodReset: 5000,
     errorAlert: true,
     maxRetries: 5,
-    serverPassword: null
+    serverPassword: null,
+    authUser: null,
+    authToken: null
   },
   initialize: function(options) {
     this.setOptions(options);
@@ -252,6 +254,10 @@ qwebirc.irc.IRCConnection = new Class({
     var postdata = "nick=" + encodeURIComponent(this.initialNickname);
     if($defined(this.options.serverPassword))
       postdata+="&password=" + encodeURIComponent(this.options.serverPassword);
+    if($defined(this.options.authUser) && $defined(this.options.authToken)) {
+      postdata+="&authUser=" + encodeURIComponent(this.options.authUser);
+      postdata+="&authToken=" + encodeURIComponent(this.options.authToken);
+    }
       
     r.send(postdata);
   },

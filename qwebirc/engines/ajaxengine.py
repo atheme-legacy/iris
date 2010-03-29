@@ -195,7 +195,14 @@ class AJAXEngine(resource.Resource):
     password = request.args.get("password")
     if password is not None:
       password = ircclient.irc_decode(password[0])
-      
+
+    authUser = request.args.get("authUser")
+    if authUser is not None:
+      authUser = ircclient.irc_decode(authUser[0])
+    authToken = request.args.get("authToken")
+    if authToken is not None:
+      authToken = ircclient.irc_decode(authToken[0])
+
     for i in xrange(10):
       id = get_session_id()
       if not Sessions.get(id):
@@ -225,6 +232,10 @@ class AJAXEngine(resource.Resource):
       kwargs = dict(nick=nick, ident=ident, ip=ip, realname=realname, perform=perform, hostname=hostname)
       if password is not None:
         kwargs["password"] = password
+      if ((authUser is not None) and (authToken is not None)):
+        kwargs["authUser"] = authUser
+        kwargs["authToken"] = authToken
+        
         
       client = ircclient.createIRC(session, **kwargs)
       session.client = client

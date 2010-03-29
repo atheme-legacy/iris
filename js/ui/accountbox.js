@@ -83,8 +83,8 @@ qwebirc.ui.AccBoxLogout = function(e) {
 
   qwebirc.irc.AthemeQuery.logout(function(success) {
     if (success) {
-      Cookie.dispose("tl-ircaccount");
-      Cookie.dispose("tl-ircauthcookie");
+      Cookie.dispose("tl-ircaccount", {domain: qwebirc.config.cookieDomain} );
+      Cookie.dispose("tl-ircauthcookie", {domain: qwebirc.config.cookieDomain});
       qwebirc.ui.AccBoxLoggedOut();
     }
     else {
@@ -103,8 +103,11 @@ qwebirc.ui.AccBoxCheckToken = function () {
         return;
       else if (valid)
         qwebirc.ui.AccBoxLoggedIn(user);
-      else
+      else {
+	Cookie.dispose("tl-ircaccount", {domain: qwebirc.config.cookieDomain});
+	Cookie.dispose("tl-ircauthcookie", {domain: qwebirc.config.cookieDomain});
         qwebirc.ui.AccBoxLoggedOut();
+      }
     }, user, token);
   }
   else

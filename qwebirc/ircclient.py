@@ -32,8 +32,8 @@ class QWebIRCClient(basic.LineReceiver):
     self.__nickname = "(unregistered)"
     self.registered = False
     self.saslauth = False
-    self.sasluser = None
-    self.sasltoken = None
+    self.authUser = None
+    self.authToken = None
     self.cap = []
     
   def dataReceived(self, data):
@@ -68,7 +68,7 @@ class QWebIRCClient(basic.LineReceiver):
           if ("multi-prefix" in self.cap):
             reqlist.append("multi-prefix")
           if ("sasl" in self.cap):
-            if (self.sasluser and self.sasltoken):
+            if (self.authUser and self.authToken):
               self.saslauth = True
               reqlist.append("sasl")
           if (reqlist):
@@ -84,8 +84,8 @@ class QWebIRCClient(basic.LineReceiver):
         for item in params[2].split(" "):
           self.cap.remove(item)
           if (item == "sasl"):
-            if (self.sasluser and self.sasltoken):
-              self.write("AUTHENTICATE PLAIN")
+            if (self.authUser and self.authToken):
+              self.write("AUTHENTICATE AUTHCOOKIE")
               self.saslauth = True
         if (not self.cap and not self.saslauth):
           self.write("CAP END")
@@ -106,7 +106,7 @@ class QWebIRCClient(basic.LineReceiver):
         return
 
       # We're performing SASL auth. Send them our authcookie.
-      authtext = base64.b64encode('\0'.join([self.sasluser, self.sasluser, self.sasltoken]))
+      authtext = base64.b64encode('\0'.join([self.authUser, self.authUser, self.authToken]))
       while (len(authtext) >= 400):
         self.write("AUTHENTICATE " + authtext[0:400])
         authtext = authtext[400:]
@@ -158,8 +158,8 @@ class QWebIRCClient(basic.LineReceiver):
     nick, ident, ip, realname, hostname, pass_ = f["nick"], f["ident"], f["ip"], f["realname"], f["hostname"], f.get("password")
     self.__nickname = nick
     self.__perform = f.get("perform")
-    self.sasltoken = f.get("ns_password")
-    self.sasluser = nick
+    self.authUser = f.get("authUser")
+    self.authToken = f.get("authToken")
 
     if not hasattr(config, "WEBIRC_MODE"):
       self.write("USER %s bleh bleh %s :%s" % (ident, ip, realname))
