@@ -55,6 +55,11 @@ qwebirc.ui.AccBoxLoggedOut = function(user) {
   input.setAttribute("id", "qwebirc-accpass");
   box.appendChild(input);
 
+  var input = new Element("input", {type: "checkbox"});
+  input.setAttribute("id", "qwebirc-accpersist");
+  box.appendChild(input);
+  box.appendChild(document.createTextNode("Remember Me"));
+
   box.appendChild(new Element("br"));
   box.appendChild(document.createTextNode("Login above, or create an account after connecting."));
 }
@@ -62,6 +67,9 @@ qwebirc.ui.AccBoxLoggedOut = function(user) {
 qwebirc.ui.AccBoxLogin = function(e) {
   var user = document.getElementById('qwebirc-accuser').value;
   var password = document.getElementById('qwebirc-accpass').value;
+  var duration = document.getElementById('qwebirc-accpersist').value;
+  if (duration)
+    duration = 3000;
 
   qwebirc.irc.AthemeQuery.login(function(t) {
     if (t == null)
@@ -69,8 +77,8 @@ qwebirc.ui.AccBoxLogin = function(e) {
     else if (t == " ")
       alert("Incorrect username or password.");
     else {
-      var cookie = Cookie.write("tl-ircaccount", user, {domain: qwebirc.config.cookieDomain });
-      var cookie = Cookie.write("tl-ircauthcookie", t, {domain: qwebirc.config.cookieDomain });
+      var cookie = Cookie.write("tl-ircaccount", user, {domain: qwebirc.config.cookieDomain, duration: duration });
+      var cookie = Cookie.write("tl-ircauthcookie", t, {domain: qwebirc.config.cookieDomain, duration: duration });
       qwebirc.ui.AccBoxLoggedIn(user);
     }
   }, user, password);

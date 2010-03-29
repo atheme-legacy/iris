@@ -93,7 +93,6 @@ qwebirc.ui.QUI = new Class({
     this.outerTabs.appendChild(dropdown);
     dropdownMenu.show = function(x) {
       new Event(x).stop();
-      this.hideHint();
       
       if(dropdownMenu.visible) {
         dropdownMenu.hide();
