@@ -3,6 +3,15 @@
 #qwebirc-accbox {
   height: 3.5em;
   padding-left: 0.5em;
+  font-size: 0.9em;
+}
+
+#qwebirc-accuser {
+  width: 8em;
+}
+#qwebirc-accpass {
+  width: 8em;
+  margin: 0 0.5em;
 }
 
 .qwebirc-acctextbox {

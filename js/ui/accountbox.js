@@ -42,26 +42,29 @@ qwebirc.ui.AccBoxLoggedOut = function(user) {
       box.removeChild(box.firstChild);
     }
   }
-  
-  var acclogin = new Element("input", {"type": "submit", "value": "Login"});
-  acclogin.addEvent("click", qwebirc.ui.AccBoxLogin);
-  box.appendChild(acclogin);
 
-  var input = new Element("input");
+  var form = new Element("form")
+
+  var input = new Element("input", { value: "Username"});
   input.setAttribute("id", "qwebirc-accuser");
-  box.appendChild(input);
+  form.appendChild(input);
 
   var input = new Element("input", {type: "password"});
   input.setAttribute("id", "qwebirc-accpass");
-  box.appendChild(input);
+  form.appendChild(input);
+
+  var acclogin = new Element("input", {"type": "submit", "value": "Login to NickServ"});
+  acclogin.addEvent("click", qwebirc.ui.AccBoxLogin);
+  form.appendChild(acclogin);
 
   var input = new Element("input", {type: "checkbox"});
   input.setAttribute("id", "qwebirc-accpersist");
-  box.appendChild(input);
-  box.appendChild(document.createTextNode("Remember Me"));
+  form.appendChild(input);
+  form.appendChild(document.createTextNode("Remember Me"));
 
-  box.appendChild(new Element("br"));
-  box.appendChild(document.createTextNode("Login above, or create an account after connecting."));
+  box.appendChild(form);
+  
+  box.appendChild(document.createTextNode("If you have a NickServ account, put your username and password in above to login."));
 }
 
 qwebirc.ui.AccBoxLogin = function(e) {
