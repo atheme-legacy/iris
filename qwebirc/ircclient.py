@@ -1,4 +1,5 @@
 import twisted, sys, codecs, traceback
+from threading import Timer
 from twisted.words.protocols import irc
 from twisted.internet import reactor, protocol
 from twisted.web import resource, server
@@ -35,6 +36,8 @@ class QWebIRCClient(basic.LineReceiver):
     self.authUser = None
     self.authToken = None
     self.cap = []
+    self.saslTimer = Timer(15.0, self.stopSasl)
+    self.saslTimer.start()
     
   def dataReceived(self, data):
     basic.LineReceiver.dataReceived(self, data.replace("\r", ""))
@@ -136,7 +139,13 @@ class QWebIRCClient(basic.LineReceiver):
       nick = prefix.split("!", 1)[0]
       if nick == self.__nickname:
         self.__nickname = params[0]
-        
+  
+  def stopSasl(self):
+    """Cancels SASL authentication. Useful if Services are absent."""
+    if (self.saslauth):
+      self.saslauth = False
+      self.write("CAP END")
+      
   def handleCommand(self, command, prefix, params):
     self("c", command, prefix, params)
     
