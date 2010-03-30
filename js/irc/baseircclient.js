@@ -23,6 +23,7 @@ qwebirc.irc.BaseIRCClient = new Class({
     this.lowerNickname = this.toIRCLower(this.nickname);    
 
     this.__signedOn = false;
+    this.caps = {};
     this.pmodes = {b: true, k: true, o: true, l: true, v: true};
     this.channels = {}
     this.nextctcp = 0;    
@@ -89,6 +90,24 @@ qwebirc.irc.BaseIRCClient = new Class({
       }
     }
     this.lowerNickname = this.toIRCLower(this.nickname);
+  },
+  irc_AUTHENTICATE: function(prefix, params) {
+    /* Silently ignore. */
+    return true;
+  },
+  irc_CAP: function(prefix, params) {
+    if(params[1] == "ACK") {
+      var capslist = [];
+      if (params[2] == "*")
+        capslist = params[3];
+      else
+        capslist = params[2];
+
+      var i;
+      for (i = 0; i < capslist.length; i++)
+        this.caps[capslist[i]] = true;
+    }
+    return true;
   },
   irc_RPL_WELCOME: function(prefix, params) {
     this.nickname = params[0];
