@@ -92,21 +92,22 @@ qwebirc.irc.BaseIRCClient = new Class({
     this.lowerNickname = this.toIRCLower(this.nickname);
   },
   irc_AUTHENTICATE: function(prefix, params) {
-    /* Silently ignore. */
+    /* Silently hide. */
     return true;
   },
   irc_CAP: function(prefix, params) {
     if(params[1] == "ACK") {
       var capslist = [];
       if (params[2] == "*")
-        capslist = params[3];
+        capslist = params[3].split(" ");
       else
-        capslist = params[2];
+        capslist = params[2].split(" ");
 
       var i;
       for (i = 0; i < capslist.length; i++)
         this.caps[capslist[i]] = true;
     }
+
     return true;
   },
   irc_RPL_WELCOME: function(prefix, params) {
