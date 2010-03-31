@@ -11,6 +11,13 @@ class PassthruException(Exception):
   pass
   
 class AthemeEngine(resource.Resource):
+  """Performs Atheme XMLRPC requests and sends result dicts back to the client.
+
+  The result dict is identical in all cases, containing a "success"
+  boolean value, and an "output" strings representing either the
+  command's results or its failure message.
+
+  """
   isLeaf = True
   
   def __init__(self, prefix):
@@ -19,6 +26,7 @@ class AthemeEngine(resource.Resource):
     self.get_xmlrpc_conn()
 
   def get_xmlrpc_conn(self):
+    """Get an XMLRPC connection to Atheme, replacing any previous connection."""
     self.conn = ServerProxy(config.XMLRPC_PATH)
   
   def do_xmlrpc(self, rpc, params):
@@ -39,7 +47,6 @@ class AthemeEngine(resource.Resource):
       except xmlrpclib.ProtocolError:
         get_xmlrpc_conn() 
     return None
-
   
   def render_POST(self, request):
     path = request.path[len(self.prefix):]
@@ -53,7 +60,8 @@ class AthemeEngine(resource.Resource):
   def login(self, request):
     """Login via XMLRPC, getting an authentication token.
 
-    Replies with either a valid token, or " " to indicate a login failure.
+    Replies with a result dict for success or failure, or None to
+    indicate connection failure.
 
     """
     user = request.args.get("u")
@@ -65,49 +73,29 @@ class AthemeEngine(resource.Resource):
 
     self.__total_hit()
    
-    token = None
+    response = None
     try:
-      token = self.do_xmlrpc(self.conn.atheme.login, (user[0], password[0]))
-    except xmlrpclib.Fault:
-      token = " "
-    response = simplejson.dumps(token)
+      result = { "success": True, "output": None }
+      result["output"] = self.do_xmlrpc(self.conn.atheme.login, (user[0],
+          password[0]))
+      if result["output"] is not None:
+        response = simplejson.dumps(result)
+      else:
+        response = simplejson.dumps(None)
+    except xmlrpclib.Fault, e:
+      result = { "success": False, "output": e.faultString }
+      response = simplejson.dumps(result)
 
     request.write(response) 
     request.finish() 
     return True 
  
-  def checkToken(self, request):
-    """Check if an authentication token is still valid.
-
-    Replies with True for yes, and False for no.
-
-    """
-    user = request.args.get("u")
-    if user is None:
-      raise AJAXException, "No username specified."
-    token = request.args.get("t")
-    if token is None:
-      raise AJAXException, "No token specified."
-
-    self.__total_hit()
-    
-    response = [False]
-    try:
-      self.do_xmlrpc(self.conn.atheme.command, (token[0], user[0], "0.0.0.0",
-          "NickServ", "INFO", user[0]))
-      response[0] = simplejson.dumps(True)
-    except xmlrpclib.Fault:
-      response[0] = simplejson.dumps(False)
-
-    request.write(response[0])
-    request.finish()
-    return True
-
   def logout(self, request):
     """Log out, invalidating the request's authentication token.
 
-    Replies with True for a successful logout, False for already being
-    logged out, and None for connection failure.
+    Replies with a result dict for success or failure, which normally
+    means these details are already invalid and thus "logged out", and
+    None for connection failure.
 
     """
     user = request.args.get("u")
@@ -119,16 +107,64 @@ class AthemeEngine(resource.Resource):
 
     self.__total_hit()
   
-    response = None 
+    response = None
     try:
-      self.do_xmlrpc(self.conn.atheme.logout, (user[0], token[0]))
-      response = simplejson.dumps(True);
-    except xmlrpclib.Fault:
-      response = simplejson.dumps(False);
+      result = { "success": True, "output": None }
+      result["output"] = self.do_xmlrpc(self.conn.atheme.logout, (user[0], token[0]))
+      if result["output"] is not None:
+        response = simplejson.dumps(result)
+      else:
+        response = simplejson.dumps(None)
+    except xmlrpclib.Fault, e:
+      result = { "success": False, "output": e.faultString }
+      response = simplejson.dumps(result)
 
     request.write(response) 
     request.finish() 
     return True 
+
+  def command(self, request):
+    """Run an arbitrary command, with an optional user and authentication token.
+
+    Replies with a result dict for success or failure, and None to
+    indicate connection failure.
+
+    """
+    user = request.args.get("u")
+    if user is None:
+      user = ""
+    token = request.args.get("t")
+    if token is None:
+      token = ""
+
+    service = request.args.get("s")
+    if service is None:
+      raise AJAXException, "No command specified."
+    command = request.args.get("c")
+    if command is None:
+      raise AJAXException, "No command specified."
+    params = request.args.get("p")
+    if params is None:
+      params = ""
+    
+    self.__total_hit()
+    
+    response = None
+    try:
+      result = { "success": True, "output": None }
+      result["output"] = self.do_xmlrpc(self.conn.atheme.command, (token[0], user[0],
+          "0.0.0.0", service[0], command[0], params[0]))
+      if result["output"] is not None:
+        response = simplejson.dumps(result)
+      else:
+        response = simplejson.dumps(None)
+    except xmlrpclib.Fault, e:
+      result = { "success": False, "output": e.faultString }
+      response = simplejson.dumps(result)
+
+    request.write(response)
+    request.finish()
+    return True
   
   @property
   def adminEngine(self):
@@ -136,4 +172,4 @@ class AthemeEngine(resource.Resource):
       "Total hits": [(self.__total_hit,)],
     }
     
-  COMMANDS = dict(l=login, c=checkToken, o=logout)
+  COMMANDS = dict(l=login, o=logout, c=command)
