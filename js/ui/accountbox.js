@@ -93,9 +93,7 @@ qwebirc.ui.AccBoxLogout = function(e) {
 
 	qwebirc.irc.AthemeQuery.logout(function(success) {
 		if (success) {
-			Cookie.dispose("tl-ircaccount", {domain: qwebirc.config.cookieDomain} );
-			Cookie.dispose("tl-ircauthcookie", {domain: qwebirc.config.cookieDomain});
-			qwebirc.ui.AccBoxLoggedOut();
+			qwebirc.ui.Atheme.handleLogout();
 		}
 		else {
 			alert("Connection failed; unable to logout.");
