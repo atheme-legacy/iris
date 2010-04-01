@@ -1,3 +1,14 @@
+/* Account box. */
+
+#qwebirc-accbox {
+  height: 3.5em;
+  padding-left: 0.5em;
+}
+
+.qwebirc-acctextbox {
+  padding-top: 0.5em;
+}
+
 /**************** LOGIN BOX *******************/
 
 .qwebirc-centrebox {
@@ -13,13 +24,14 @@
   width: auto;
 }
 
-.qwebirc-authbox {
-  height: 2em;
-}
-
 .qwebirc-loginbox .tr1 td {
   width: 100%;
   text-align: center;
+}
+
+.qwebirc-loginbox .tr1 td h1 {
+  padding-top: 0em;
+  margin-top: 0em;
 }
 
 .qwebirc-loginbox .tr2 td {

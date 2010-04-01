@@ -1,26 +1,20 @@
 qwebirc.irc.AthemeQuery = {};
 
 /**
- * Login to Atheme, getting an authentication token.
- * Callback signature is callback(token), where cookie is an authentication
- * token for later requests, the empty string to indicate authentication
- * failure, or null to indicate connection failure.
+ * Build a generic request to Atheme.
  *
- * \param callback Function to call to inform of results.
- * \param user Username as string.
- * \param pass Password as string.
+ * \param command The command being requested.
  */
-qwebirc.irc.AthemeQuery.login = function(callback, user, pass) {
-
-	var cacheAvoidance = qwebirc.util.randHexString(16);
-
+qwebirc.irc.AthemeQuery.newRequest = function(command) {
+	
 	/* New login request. */
+	var cacheAvoidance = qwebirc.util.randHexString(16);
 	var r = new Request.JSON({
-		url: "/a/l?r=" + cacheAvoidance,
+		url: "/a/" + command + "?r=" + cacheAvoidance,
 		async: true
 	});
 	
-	/* Try to minimise the amount of headers, or something. */
+	/* Try to minimise the amount of headers. */
 	r.headers = new Hash;
 	r.addEvent("request", function() {
 		var setHeader = function(key, value) {
@@ -37,24 +31,69 @@ qwebirc.irc.AthemeQuery.login = function(callback, user, pass) {
 	if(Browser.Engine.trident)
 		r.setHeader("If-Modified-Since", "Sat, 1 Jan 2000 00:00:00 GMT");
 	
-	r.addEvent("complete", function(o) {
-		if(!o)
-			callback(null);
-		if (o[0] == false)
-			callback(null);
+	return r;
+}
 
-		this.recv();
-	}.bind(this));
-	
+
+/**
+ * Login to Atheme, getting an authentication token.
+ * Callback signature is callback(token), where token is an authentication
+ * token for later requests, the empty string to indicate authentication
+ * failure, or null to indicate connection failure.
+ *
+ * \param callback Function to call to inform of results.
+ * \param user Username as string.
+ * \param pass Password as string.
+ */
+qwebirc.irc.AthemeQuery.login = function(callback, user, pass) {
+
+	r = qwebirc.irc.AthemeQuery.newRequest("l");
+
+	r.addEvent("failure", function(xhr) {
+		callback(null);
+	});
 	r.addEvent("success", function(json, string) {
-		if (typeof json === 'string')
+		if (typeof json === 'string') {
 			callback(json);
-		else {
+		} else {
+			callback(null);
+		}
+	});
+
+	var postdata = "u=" + encodeURIComponent(user);
+	postdata += "&p=" + encodeURIComponent(pass);
+	r.send(postdata);
+}
+
+/**
+ * Checks whether an authentication token is valid.
+ * Can't be used before a command as an alternative to dealing with failure,
+ * as the token can expire between this check and the command, but can be
+ * used to decide whether to even prompt the user to login.
+ * Callback signature is callback(valid), where valid is either true, false,
+ * or null to indicate connection failure.
+ *
+ * \param callback Function to call to inform of results.
+ * \param user Username as string.
+ * \param token Token as string.
+ */
+qwebirc.irc.AthemeQuery.checkLogin = function(callback, user, token) {
+
+	r = qwebirc.irc.AthemeQuery.newRequest("c");
+
+	r.addEvent("failure", function(xhr) {
+		callback(null);
+	});
+	r.addEvent("success", function(json, string) {
+		if (typeof json === 'boolean') {
+			callback(json);
+		} else {
+			alert(json);
 			callback(null);
 		}
 	}.bind(this));
 
 	var postdata = "u=" + encodeURIComponent(user);
-	postdata += "&p=" + encodeURIComponent(pass);
+	postdata += "&t=" + encodeURIComponent(token);
 	r.send(postdata);
 }
