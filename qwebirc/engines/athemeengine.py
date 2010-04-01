@@ -19,7 +19,7 @@ class AthemeEngine(resource.Resource):
     self.get_xmlrpc_conn()
 
   def get_xmlrpc_conn(self):
-    self.conn = ServerProxy("http://telarin.tellaerad.net:16080/xmlrpc")
+    self.conn = ServerProxy(config_options.XMLRPC_PATH)
   
   def do_xmlrpc(self, rpc, params):
     """Perform an XMLRPC request, running one Atheme command.

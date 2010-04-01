@@ -69,8 +69,8 @@ qwebirc.ui.AccBoxLogin = function(e) {
     else if (t == " ")
       alert("Incorrect username or password.");
     else {
-      var cookie = Cookie.write("tl-ircaccount", user);
-      var cookie = Cookie.write("tl-ircauthcookie", t);
+      var cookie = Cookie.write("tl-ircaccount", user, {domain: qwebirc.config.cookieDomain });
+      var cookie = Cookie.write("tl-ircauthcookie", t, {domain: qwebirc.config.cookieDomain });
       qwebirc.ui.AccBoxLoggedIn(user);
     }
   }, user, password);
