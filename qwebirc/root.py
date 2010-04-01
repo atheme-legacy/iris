@@ -79,6 +79,7 @@ class RootSite(server.Site):
       root.putChild(path, sobj)
       
     register(engines.AJAXEngine, "e")
+    register(engines.AthemeEngine, "a")
     register(engines.FeedbackEngine, "feedback")
     register(engines.AuthgateEngine, "auth")
     register(engines.AdminEngine, "adminengine", services)

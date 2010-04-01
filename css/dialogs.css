@@ -12,6 +12,11 @@
 .qwebirc-centrebox table table {
   width: auto;
 }
+
+.qwebirc-authbox {
+  height: 2em;
+}
+
 .qwebirc-loginbox .tr1 td {
   width: 100%;
   text-align: center;

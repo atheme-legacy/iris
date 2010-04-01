@@ -12,6 +12,19 @@ qwebirc.ui.AuthLogin = function(e) {
   new Event(e).stop();
 }
 
+qwebirc.ui.AccLogin = function(e) {
+  qwebirc.irc.AthemeQuery.login(function(t) {
+    if (t == null)
+      alert("Connection failed.");
+    else if (t == "")
+      alert("Incorrect username or password.");
+    else {
+      var cookie = Cookie.write("tl-authcookie", t);
+    }
+  }, "Namegduf", "notmypassword");
+  new Event(e).stop();
+}
+
 qwebirc.ui.ConfirmBox = function(parentElement, callback, initialNickname, initialChannels, autoNick, networkName) {
   var outerbox = new Element("table");
   outerbox.addClass("qwebirc-centrebox");
@@ -22,7 +35,17 @@ qwebirc.ui.ConfirmBox = function(parentElement, callback, initialNickname, initi
   tbody.appendChild(tr);
   var td = new Element("td");
   tr.appendChild(td);
-  
+
+  td.appendChild(document.createTextNode("Login to a Registered Account"));
+  var acclogin = new Element("input", {"type": "submit", "value": "Login"});
+  acclogin.addEvent("click", qwebirc.ui.AccLogin);
+  td.appendChild(acclogin);
+
+  var tr = new Element("tr");
+  tbody.appendChild(tr);
+  var td = new Element("td");
+  tr.appendChild(td);
+
   var box = new Element("table");
   box.addClass("qwebirc-confirmbox");
   td.appendChild(box);
@@ -92,6 +115,17 @@ qwebirc.ui.LoginBox = function(parentElement, callback, initialNickname, initial
   parentElement.appendChild(outerbox);
   var tbody = new Element("tbody");
   outerbox.appendChild(tbody);
+  var tr = new Element("tr");
+  tbody.appendChild(tr);
+  var td = new Element("td");
+  td.addClass("qwebirc-authbox");
+  tr.appendChild(td);
+
+  td.appendChild(document.createTextNode("Login to a Registered Account"));
+  var acclogin = new Element("input", {"type": "submit", "value": "Login"});
+  acclogin.addEvent("click", qwebirc.ui.AccLogin);
+  td.appendChild(acclogin);
+
   var tr = new Element("tr");
   tbody.appendChild(tr);
   var td = new Element("td");
