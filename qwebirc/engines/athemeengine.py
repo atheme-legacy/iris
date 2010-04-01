@@ -1,6 +1,7 @@
 from twisted.web import resource, server, static, error as http_error
 from xmlrpclib import ServerProxy
-import simplejson, md5, sys, os, time, config, qwebirc.config_options as config_options, traceback, socket, xmlrpclib
+import md5, sys, os, time, config, qwebirc.config_options as config_options, traceback, socket, xmlrpclib
+import qwebirc.util.qjson as json
 from adminengine import AdminEngineAction
 from qwebirc.util import HitCounter
 
@@ -79,12 +80,12 @@ class AthemeEngine(resource.Resource):
       result["output"] = self.do_xmlrpc(self.conn.atheme.login, (user[0],
           password[0]))
       if result["output"] is not None:
-        response = simplejson.dumps(result)
+        response = json.dumps(result)
       else:
-        response = simplejson.dumps(None)
+        response = json.dumps(None)
     except xmlrpclib.Fault, e:
       result = { "success": False, "output": e.faultString }
-      response = simplejson.dumps(result)
+      response = json.dumps(result)
 
     request.write(response) 
     request.finish() 
@@ -112,12 +113,12 @@ class AthemeEngine(resource.Resource):
       result = { "success": True, "output": None }
       result["output"] = self.do_xmlrpc(self.conn.atheme.logout, (user[0], token[0]))
       if result["output"] is not None:
-        response = simplejson.dumps(result)
+        response = json.dumps(result)
       else:
-        response = simplejson.dumps(None)
+        response = json.dumps(None)
     except xmlrpclib.Fault, e:
       result = { "success": False, "output": e.faultString }
-      response = simplejson.dumps(result)
+      response = json.dumps(result)
 
     request.write(response) 
     request.finish() 
@@ -155,12 +156,12 @@ class AthemeEngine(resource.Resource):
       result["output"] = self.do_xmlrpc(self.conn.atheme.command, (token[0], user[0],
           "0.0.0.0", service[0], command[0], params[0]))
       if result["output"] is not None:
-        response = simplejson.dumps(result)
+        response = json.dumps(result)
       else:
-        response = simplejson.dumps(None)
+        response = json.dumps(None)
     except xmlrpclib.Fault, e:
       result = { "success": False, "output": e.faultString }
-      response = simplejson.dumps(result)
+      response = json.dumps(result)
 
     request.write(response)
     request.finish()
