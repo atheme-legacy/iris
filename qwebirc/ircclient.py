@@ -145,6 +145,9 @@ class QWebIRCClient(basic.LineReceiver):
     if (self.saslauth):
       self.saslauth = False
       self.write("CAP END")
+
+      # Send an internally-generated failure response to the client.
+      self.handleCommand("904", "QWebIRC", ["*", "SASL authentication timed out"])
       
   def handleCommand(self, command, prefix, params):
     self("c", command, prefix, params)

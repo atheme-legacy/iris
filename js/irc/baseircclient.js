@@ -104,8 +104,11 @@ qwebirc.irc.BaseIRCClient = new Class({
         capslist = params[2].split(" ");
 
       var i;
-      for (i = 0; i < capslist.length; i++)
+      for (i = 0; i < capslist.length; i++) {
         this.caps[capslist[i]] = true;
+        if (capslist[i] == "sasl")
+          this.rawNumeric("AUTHENTICATE", prefix, ["*", "Attempting SASL authentication..."]);
+      }
     }
 
     return true;
