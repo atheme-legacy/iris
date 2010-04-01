@@ -23,9 +23,10 @@ qwebirc.ui.Interface = new Class({
     staticBaseURL: "/"
   },
   initialize: function(element, ui, options) {
+    /* Initialise the client options and login state. */
     qwebirc.global = {dynamicBaseURL: options.dynamicBaseURL, staticBaseURL: options.staticBaseURL}; /* HACK */
-
     this.setOptions(options);
+    qwebirc.ui.Atheme.check();
 
     window.addEvent("domready", function() {
       var callback = function(options) {

@@ -240,11 +240,15 @@ qwebirc.ui.LoginBox = function(parentElement, callback, initialNickname, initial
       }
     }
 
-    var authUser = Cookie.read("tl-ircaccount");
-    var authToken = Cookie.read("tl-ircauthcookie");
-    if (authUser && authToken) {
-      data["authUser"] = authUser;
-      data["authToken"] = authToken;
+    /* If the user is logged in via Atheme, try to pass this onto IRC.
+     * Attempt it even if we've yet to confirm the token is valid. */
+    if (qwebirc.ui.Atheme.state) {
+        data["authUser"] = qwebirc.ui.Atheme.user;
+        data["authToken"] = qwebirc.ui.Atheme.token;
+    }
+    else if (qwebirc.ui.Atheme.state == null && qwebirc.ui.Atheme.user) {
+        data["authUser"] = qwebirc.ui.Atheme.user;
+        data["authToken"] = qwebirc.ui.Atheme.token;
     }
 
     parentElement.removeChild(outerbox);
