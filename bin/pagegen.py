@@ -57,7 +57,8 @@ def producehtml(name, debug):
   jshtml = "\n".join("  <script type=\"text/javascript\" src=\"%s%s\"></script>" % (config.STATIC_BASE_URL, x) for x in js)
 
   div = ui.get("div", "")
-  customjs = ui.get("customjs", "")
+  customcss = "\n".join("  <link rel=\"stylesheet\" href=\"%s%s\" type=\"text/css\"/>" % (config.STATIC_BASE_URL, x) for x in ui.get("customcss", []))
+  customjs = "\n".join("  <script type=\"text/javascript\" src=\"%s%s\"></script>" % (config.STATIC_BASE_URL, x) for x in ui.get("customjs", []))
 
   return """%s
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
@@ -67,6 +68,7 @@ def producehtml(name, debug):
   <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
   <link rel="shortcut icon" type="image/png" href="%simages/favicon.png"/>
 %s%s
+%s
 %s
   <script type="text/javascript">
     var ui = new qwebirc.ui.Interface("ircui", qwebirc.ui.%s, %s);
@@ -80,7 +82,7 @@ def producehtml(name, debug):
   </div>
 </body>
 </html>
-""" % (ui["doctype"], config.APP_TITLE, config.STATIC_BASE_URL, csshtml, customjs, jshtml, ui["class"], optionsgen.get_options(), div)
+""" % (ui["doctype"], config.APP_TITLE, config.STATIC_BASE_URL, csshtml, customcss, jshtml, customjs, ui["class"], optionsgen.get_options(), div)
 
 def main(outputdir=".", produce_debug=True):
   p = os.path.join(outputdir, "static")
