@@ -21,21 +21,18 @@ qwebirc.ui.Atheme.token = null;
  *
  * \param user The provided username.
  * \param token The user's given token.
- * \param duration The amount of time to login for, null not to write cookies.
  */
-qwebirc.ui.Atheme.handleLogin = function(user, token, duration) {
+qwebirc.ui.Atheme.handleLogin = function(user, token) {
 
 	/* Update state. */
 	this.state = true;
 	this.user = user;
 	this.token = token;
 
-	/* Set cookies if duration is not null. */
-	if (duration != null) {
-		Cookie.write("ircaccount", user, { duration: duration });
-		Cookie.write("ircauthcookie", token, { duration: duration });
-	}
-  
+	/* Set cookies. */
+	Cookie.write("ircaccount", user, { duration: 0 });
+	Cookie.write("ircauthcookie", token, { duration: 0 });
+
 	/* Update any account box. */
 	if(document.getElementById("qwebirc-accbox") != null)
 		qwebirc.ui.AccBoxLoggedIn();
@@ -78,7 +75,7 @@ qwebirc.ui.Atheme.check = function() {
 		if (valid == null)
 			this.state = null;
 		else if (valid)
-			this.handleLogin(this.user, this.token, null);
+			this.handleLogin(this.user, this.token);
 		else
 			this.handleLogout();
 		}.bind(this), this.user, this.token);

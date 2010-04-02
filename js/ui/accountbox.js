@@ -59,11 +59,6 @@ qwebirc.ui.AccBoxLoggedOut = function() {
 	acclogin.addEvent("click", qwebirc.ui.AccBoxLogin);
 	form.appendChild(acclogin);
 
-	var input = new Element("input", {type: "checkbox"});
-	input.setAttribute("id", "qwebirc-accpersist");
-	form.appendChild(input);
-	form.appendChild(document.createTextNode("Remember Me"));
-
 	box.appendChild(form);
 	
 	box.appendChild(document.createTextNode("If you have a NickServ account, put your username and password in above to login."));
@@ -72,11 +67,6 @@ qwebirc.ui.AccBoxLoggedOut = function() {
 qwebirc.ui.AccBoxLogin = function(e) {
 	var user = document.getElementById('qwebirc-accuser').value;
 	var password = document.getElementById('qwebirc-accpass').value;
-	var duration = document.getElementById('qwebirc-accpersist').value;
-	if (duration)
-		duration = 3000;
-	else
-		duration = 0;
 
 	qwebirc.irc.AthemeQuery.login(function(token) {
 		if (token == null)
@@ -84,7 +74,7 @@ qwebirc.ui.AccBoxLogin = function(e) {
 		else if (token == "")
 			alert("Incorrect username or password.");
 		else
-			qwebirc.ui.Atheme.handleLogin(user, token, duration);
+			qwebirc.ui.Atheme.handleLogin(user, token);
 	}, user, password);
 	new Event(e).stop();
 }
