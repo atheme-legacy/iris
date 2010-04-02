@@ -32,10 +32,6 @@ qwebirc.ui.Atheme.handleLogin = function(user, token) {
 	/* Set cookies. */
 	Cookie.write("ircaccount", user, { duration: 0 });
 	Cookie.write("ircauthcookie", token, { duration: 0 });
-
-	/* Update any account box. */
-	if(document.getElementById("qwebirc-accbox") != null)
-		qwebirc.ui.AccBoxLoggedIn();
 }
 
 /**
@@ -49,10 +45,6 @@ qwebirc.ui.Atheme.handleLogout = function() {
 	/* Delete cookies. */
 	Cookie.dispose("ircaccount");
 	Cookie.dispose("ircauthcookie");
-
-	/* Update any account box. */
-	if(document.getElementById("qwebirc-accbox") != null)
-		qwebirc.ui.AccBoxLoggedOut();
 }
 
 /**

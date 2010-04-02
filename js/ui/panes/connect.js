@@ -17,12 +17,6 @@ qwebirc.ui.ConfirmBox = function(parentElement, callback, initialNickname, initi
   tbody.appendChild(tr);
   var td = new Element("td");
   tr.appendChild(td);
-  qwebirc.ui.AccBox(td);
-
-  var tr = new Element("tr");
-  tbody.appendChild(tr);
-  var td = new Element("td");
-  tr.appendChild(td);
 
   var box = new Element("table");
   box.addClass("qwebirc-confirmbox");
@@ -85,12 +79,6 @@ qwebirc.ui.LoginBox = function(parentElement, callback, initialNickname, initial
   parentElement.appendChild(outerbox);
   var tbody = new Element("tbody");
   outerbox.appendChild(tbody);
-
-  var tr = new Element("tr");
-  tbody.appendChild(tr);
-  var td = new Element("td");
-  tr.appendChild(td);
-  qwebirc.ui.AccBox(td);
 
   var tr = new Element("tr");
   tbody.appendChild(tr);
