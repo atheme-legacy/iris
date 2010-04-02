@@ -409,8 +409,6 @@ qwebirc.irc.IRCClient = new Class({
     } else {
       this.newTargetOrActiveLine(nick, "PRIVNOTICE", {"m": message, "h": host, "n": nick});
     }
-    
-    this.checkLogin(user, message);
   },
   isNetworkService: function(user) {
     return this.ui.options.networkServices.indexOf(user) > -1;
