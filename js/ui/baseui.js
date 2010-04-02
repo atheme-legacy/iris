@@ -310,6 +310,9 @@ qwebirc.ui.StandardUI = new Class({
   faqWindow: function() {
     this.addCustomWindow("FAQ", qwebirc.ui.FAQPane, "faqpane", this.uiOptions);
   },
+  listWindow: function() {
+    this.addCustomWindow("Channels", qwebirc.ui.ListPane, "listpane", this.uiOptions, {parentUI: this});
+  },
   urlDispatcher: function(name, window) {
     if(name == "embedded")
       return ["a", this.embeddedWindow.bind(this)];

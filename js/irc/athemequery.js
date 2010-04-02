@@ -132,3 +132,80 @@ qwebirc.irc.AthemeQuery.checkLogin = function(callback, user, token) {
 	postdata += "&p=" + encodeURIComponent(user);
 	r.send(postdata);
 }
+
+/**
+ * Retrieves a channel list.
+ * Callback signature is callback(channels, timestamp, more), where channel is
+ * null toindicate connection failure, or a list of channel objects, each with
+ * "name", "users", and "topic" entries, timestamp is the time this list was
+ * retrieved from Atheme, and more is a boolean indicating whether there were
+ * more channels to display.
+ *
+ * \param callback Function to call to inform of results.
+ * \param timestamp A list timestamp to request, or 0 for now.
+ * \param limit The maximum number of channels to show.
+ * \param page The multiple of limit to start at.
+ * \param chanmask A channel mask to filter on.
+ * \param topicmask A topic mask to filter on.
+ */
+qwebirc.irc.AthemeQuery.channelList = function(callback, timestamp, limit, page, chanmask, topicmask) {
+	r = qwebirc.irc.AthemeQuery.newRequest("c");
+
+	r.addEvent("failure", function(xhr) {
+		callback(null);
+	});
+	r.addEvent("success", function(json, string) {
+		if (json != null && json["success"]) {
+			var channels = [];
+			var more = false;
+			var chanlines = json["output"].split("\n");
+			for (var i = 1; i < chanlines.length-1; i++) {
+				if (chanlines[i] == "Maximum channel output reached") {
+					more = true;
+					break;
+				}
+				var channel = {};
+
+				var chanitems = chanlines[i].splitMax(" ", 2);
+				channel.name = chanitems[0];
+				chanitems[1] = chanitems[1].replace(/^ */, "");
+				
+				chanitems = chanitems[1].splitMax(" ", 2);
+				channel.users = chanitems[0];
+				if (chanitems.length > 1)
+					channel.topic = chanitems[1].slice(1);
+				else
+					channel.topic = "";
+
+				channels.push(channel);
+			}
+
+			callback(channels, (new Date()).getTime()/1000, more);
+		} else {
+			if (json != null)
+			callback(null, 0, false);
+		}
+	}.bind(this));
+
+	var pattern;
+	if (chanmask == "")
+		pattern = "*";
+	else
+		pattern = chanmask;
+
+	var postdata = "s=" + encodeURIComponent("ALIS");
+	postdata += "&c=" + encodeURIComponent("LIST");
+	postdata += "&p=" + encodeURIComponent(pattern);
+	postdata += "&p=" + encodeURIComponent("-maxmatches");
+	postdata += "&p=" + encodeURIComponent(limit);
+	if (page != 0) {
+		postdata += "&p=" + encodeURIComponent("-skip");
+		postdata += "&p=" + encodeURIComponent(limit*page);
+	}
+	if (topicmask != "") {
+		postdata += "&p=" + encodeURIComponent("-topic");
+		postdata += "&p=" + encodeURIComponent(topicmask);
+	}
+
+	r.send(postdata);
+}
