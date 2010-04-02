@@ -4,4 +4,4 @@
  */
 
 // The domain used for cookies recording your username and authentication token.
-qwebirc.config.cookieDomain = "tellaerad.net";
+qwebirc.config.cookieDomain = "example.com";
