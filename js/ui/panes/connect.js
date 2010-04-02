@@ -152,16 +152,31 @@ qwebirc.ui.LoginBox = function(parentElement, callback, initialNickname, initial
 
   var nick = new Element("input");
   createRow("Nickname:", nick);
-  
+    
+  var srvbutton = new Element("input");
+  srvbutton.set("type", "checkbox");
+  srvbutton.set("checked", false);
+  createRow("Login to Services:", srvbutton);  
+
+  var pass = new Element("input");
+  pass.set("type", "password");
+  var passRow = createRow("Password:", pass, {})[0];
+  passRow.setStyle("display", "none");
+  passRow.visible = false;
+
+  srvbutton.addEvent("click", function(e) {
+    passRow.visible = !passRow.visible;
+    passRow.setStyle("display", passRow.visible ? null : "none");
+  }.bind(this));
+
   var chanStyle = null;
-  
   var chan = new Element("input");
   createRow("Channels:", chan, chanStyle);
 
   var connbutton = new Element("input", {"type": "submit"});
   connbutton.set("value", "Connect");
   var r = createRow(undefined, connbutton);
-  
+
   form.addEvent("submit", function(e) {
     new Event(e).stop();
     var nickname = nick.value;
