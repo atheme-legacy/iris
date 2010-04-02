@@ -1,7 +1,7 @@
 qwebirc.ui.MochaUI = new Class({
   Extends: qwebirc.ui.RootUI,
   initialize: function(parentElement, theme, options) {
-    this.parent(parentElement, qwebirc.ui.MochaUI.Window, "mochaui");
+    this.parent(parentElement, qwebirc.ui.MochaUI.Window, "mochaui", options);
     this.theme = theme;
     this.parentElement = parentElement;
     
@@ -19,6 +19,7 @@ qwebirc.ui.MochaUI = new Class({
 
       MochaUI.Modal = new MochaUI.Modal();
       MochaUI.options.useEffects = false;
+      MochaUI.underlayInitialize();
     }.bind(this));
     
     window.addEvent("unload", function() {
