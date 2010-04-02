@@ -179,26 +179,25 @@ qwebirc.ui.LoginBox = function(parentElement, callback, initialNickname, initial
       return;
     }
 
-    if (pass) {
-      qwebirc.irc.AthemeQuery.login(qwebirc.ui.Atheme.handleLogin, nick.value, pass.value);
-    }
-
     var data = {"nickname": nickname, "autojoin": chans};
 
-    /* If the user is logged in via Atheme, try to pass this onto IRC.
-     * Attempt it even if we've yet to confirm the token is valid. */
-    if (qwebirc.ui.Atheme.state) {
-        data["authUser"] = qwebirc.ui.Atheme.user;
-        data["authToken"] = qwebirc.ui.Atheme.token;
-    }
-    else if (qwebirc.ui.Atheme.state == null && qwebirc.ui.Atheme.user) {
-        data["authUser"] = qwebirc.ui.Atheme.user;
-        data["authToken"] = qwebirc.ui.Atheme.token;
-    }
-
-    parentElement.removeChild(outerbox);
+    if (pass) {
+      qwebirc.irc.AthemeQuery.login(function(token) {
+        if (token == null) {
+          alert("Authentication failed");
+        }
+        qwebirc.ui.Atheme.handleLogin(nick.value, token);
+        data["authUser"] = nick.value;
+        data["authToken"] = token;
+        parentElement.removeChild(outerbox);
     
-    callback(data);
+        callback(data);
+      }, nick.value, pass.value);
+    } else {
+      parentElement.removeChild(outerbox);
+    
+      callback(data);
+    }
   }.bind(this));
     
   nick.set("value", initialNickname);
