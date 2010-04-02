@@ -74,14 +74,12 @@ class QWebIRCClient(basic.LineReceiver):
       # We're receiving acknowledgement of requested features. Handle it.
       # Once all acknowledgements are received, end CAP is SASL is not
       # underway.
-      if (params[1] == "ACK"):
-        for item in params[2].split(" "):
-          self.cap.remove(item)
-          if (item == "sasl"):
-            if (self.authUser and self.authToken):
-              self.write("AUTHENTICATE AUTHCOOKIE")
-              self.saslauth = True
-        if (not self.cap and not self.saslauth):
+      if "ACK" in params:
+        if "sasl" in params[-1].split(" "):
+          if (self.authUser and self.authToken):
+            self.write("AUTHENTICATE AUTHCOOKIE")
+            self.saslauth = True
+        if (not self.saslauth):
           self.write("CAP END")
 
       # We're receiving negative acknowledgement; a feature upgrade was denied.
@@ -90,7 +88,7 @@ class QWebIRCClient(basic.LineReceiver):
       if (params[1] == "NACK"):
         for item in params[2].split(" "):
           self.cap.remove(item)
-        if (not self.cap and not self.saslauth):
+        if (not self.saslauth):
           self.write("CAP END")
 
     
@@ -115,7 +113,7 @@ class QWebIRCClient(basic.LineReceiver):
     if (command in ["903", "904", "905","906","907"]):
       if (self.saslauth):
         self.saslauth = False
-        if (not self.cap and not self.saslauth):
+        if (not self.saslauth):
           self.write("CAP END")
         
     if command == "001":
