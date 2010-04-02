@@ -181,6 +181,7 @@ qwebirc.ui.LoginBox = function(parentElement, callback, initialNickname, initial
     new Event(e).stop();
     var nickname = nick.value;
     var chans = chan.value;
+    var password = pass.value;
     if(chans == "#") /* sorry channel "#" :P */
       chans = "";
 
@@ -188,6 +189,10 @@ qwebirc.ui.LoginBox = function(parentElement, callback, initialNickname, initial
       alert("You must supply a nickname.");
       nick.focus();
       return;
+    }
+
+    if (pass) {
+      qwebirc.irc.AthemeQuery.login(qwebirc.ui.Atheme.handleLogin, nick.value, pass.value);
     }
 
     var data = {"nickname": nickname, "autojoin": chans};
