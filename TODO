@@ -1,0 +1,6 @@
+TODO, in no particular order
+----------------------------
+
+- ensure that Iris may be used without an Atheme directory server on the network.
+- replace twisted stuff (maybe?)
+- replace qwebirc UI elements
