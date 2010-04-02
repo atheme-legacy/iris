@@ -1,7 +1,6 @@
 from twisted.web import resource, server, static, error as http_error
 from twisted.names import client
 from twisted.internet import reactor, error
-from authgateengine import login_optional, getSessionData
 import md5, sys, os, time, config, qwebirc.config_options as config_options, traceback, socket
 import qwebirc.ircclient as ircclient
 from adminengine import AdminEngineAction
@@ -183,8 +182,6 @@ class AJAXEngine(resource.Resource):
     raise PassthruException, http_error.NoResource().render(request)
 
   def newConnection(self, request):
-    ticket = login_optional(request)
-    
     ip = request.getClientIP()
 
     nick = request.args.get("nick")
@@ -211,14 +208,7 @@ class AJAXEngine(resource.Resource):
       raise IDGenerationException()
 
     session = IRCSession(id)
-
-    qticket = getSessionData(request).get("qticket")
-    if qticket is None:
-      perform = None
-    else:
-      service_mask = config.AUTH_SERVICE
-      msg_mask = service_mask.split("!")[0] + "@" + service_mask.split("@", 1)[1]
-      perform = ["PRIVMSG %s :TICKETAUTH %s" % (msg_mask, qticket)]
+    perform = None
 
     ident, realname = config.IDENT, config.REALNAME
     if ident is config_options.IDENT_HEX or ident is None: # latter is legacy

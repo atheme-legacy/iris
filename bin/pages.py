@@ -4,7 +4,7 @@ PANES = ["connect", "embed", "options", "about", "privacypolicy", "feedback", "f
 UI_BASE = ["accountbox", "atheme", "menuitems", "baseui", "baseuiwindow", "colour", "url", "theme", "notifications", "tabcompleter", "style"]
 UI_BASE.extend(["panes/%s" % x for x in PANES])
 
-DEBUG_BASE = ["qwebirc", "version", "jslib", "crypto", "md5", ["irc/%s" % x for x in IRC_BASE], ["ui/%s" % x for x in UI_BASE], "qwebircinterface", "auth", "sound", "config"]
+DEBUG_BASE = ["qwebirc", "version", "jslib", "crypto", "md5", ["irc/%s" % x for x in IRC_BASE], ["ui/%s" % x for x in UI_BASE], "qwebircinterface", "sound", "config"]
 BUILD_BASE = ["qwebirc"]
 JS_BASE = ["mootools-1.2.1-core", "mootools-1.2-more"]
 JS_EXTRA = ["soundmanager2"]

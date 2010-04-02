@@ -393,32 +393,7 @@ qwebirc.ui.NewLoginUI = new Class({
   }
 });
 
-qwebirc.ui.QuakeNetUI = new Class({
-  Extends: qwebirc.ui.NewLoginUI,
-  urlDispatcher: function(name, window) {
-    if(name == "qwhois") {
-      return ["span", function(auth) {
-        this.client.exec("/MSG Q whois #" + auth);
-      }.bind(window)];
-    }
-    return this.parent(name, window);
-  },
-  logout: function() {
-    if(!qwebirc.auth.loggedin())
-      return;
-    if(confirm("Log out?")) {
-      for(var client in this.clients) {
-        this.clients[client].quit("Logged out");
-      };
-      
-      /* HACK */
-      var foo = function() { document.location = qwebirc.global.dynamicBaseURL + "auth?logout=1"; };
-      foo.delay(500);
-    }
-  }
-});
-
-qwebirc.ui.RootUI = qwebirc.ui.QuakeNetUI;
+qwebirc.ui.RootUI = qwebirc.ui.NewLoginUI;
 
 qwebirc.ui.RequestTransformHTML = function(options) {
   var HREF_ELEMENTS = {

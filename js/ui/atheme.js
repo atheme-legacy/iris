@@ -32,8 +32,8 @@ qwebirc.ui.Atheme.handleLogin = function(user, token, duration) {
 
 	/* Set cookies if duration is not null. */
 	if (duration != null) {
-		Cookie.write("tl-ircaccount", user, {domain: qwebirc.config.cookieDomain, duration: duration });
-		Cookie.write("tl-ircauthcookie", token, {domain: qwebirc.config.cookieDomain, duration: duration });
+		Cookie.write("ircaccount", user, {domain: qwebirc.config.cookieDomain, duration: duration });
+		Cookie.write("ircauthcookie", token, {domain: qwebirc.config.cookieDomain, duration: duration });
 	}
   
 	/* Update any account box. */
@@ -50,8 +50,8 @@ qwebirc.ui.Atheme.handleLogout = function() {
 	this.state = false;
 
 	/* Delete cookies. */
-	Cookie.dispose("tl-ircaccount", {domain: qwebirc.config.cookieDomain});
-	Cookie.dispose("tl-ircauthcookie", {domain: qwebirc.config.cookieDomain});
+	Cookie.dispose("ircaccount", {domain: qwebirc.config.cookieDomain});
+	Cookie.dispose("ircauthcookie", {domain: qwebirc.config.cookieDomain});
 
 	/* Update any account box. */
 	if(document.getElementById("qwebirc-accbox") != null)
@@ -67,8 +67,8 @@ qwebirc.ui.Atheme.check = function() {
 	/* If we have no previous state, try to get a user and token from
 	 * cookies. */
         if (this.state == null) {
-		this.user = Cookie.read("tl-ircaccount");
-		this.token = Cookie.read("tl-ircauthcookie");
+		this.user = Cookie.read("ircaccount");
+		this.token = Cookie.read("ircauthcookie");
 	}
 
 	/* If we have a user and token, check them for validity. Otherwise,

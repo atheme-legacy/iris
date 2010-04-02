@@ -23,7 +23,6 @@ qwebirc.irc.IRCClient = new Class({
     this.inviteChanList = [];
     this.activeTimers = {};
     
-    this.loginRegex = new RegExp(this.ui.options.loginRegex);
     this.tracker = new qwebirc.irc.IRCTracker(this);
   },
   newLine: function(window, type, data) {
@@ -206,24 +205,7 @@ qwebirc.irc.IRCClient = new Class({
     this.nickname = nickname;
     this.newServerLine("SIGNON");
     
-    /* we guarantee that +x is sent out before the joins */
-    if(this.ui.uiOptions.USE_HIDDENHOST)
-      this.exec("/UMODE +x");
-      
     if(this.options.autojoin) {
-      if(qwebirc.auth.loggedin() && this.ui.uiOptions.USE_HIDDENHOST) {
-        var d = function() {
-          if($defined(this.activeTimers.autojoin))
-            this.ui.getActiveWindow().infoMessage("Waiting for login before joining channels...");
-        }.delay(5, this);
-        this.activeTimers.autojoin = function() {
-          var w = this.ui.getActiveWindow();
-          w.errorMessage("No login response in 10 seconds.");
-          w.errorMessage("You may want to try authing manually and then type: /autojoin (if you don't auth your host may be visible).");
-        }.delay(10000, this);
-        return;
-      }
-
       this.exec("/AUTOJOIN");
     }
   },
@@ -409,18 +391,6 @@ qwebirc.irc.IRCClient = new Class({
     this.newQueryWindow(nick, true);
     this.pushLastNick(nick);
     this.newQueryLine(nick, "PRIVMSG", {"m": message, "h": host, "n": nick}, true);
-
-    this.checkLogin(user, message);
-  },
-  checkLogin: function(user, message) {
-    if(this.isNetworkService(user) && $defined(this.activeTimers.autojoin)) {
-      if($defined(this.loginRegex) && message.match(this.loginRegex)) {
-        $clear(this.activeTimers.autojoin);
-        delete this.activeTimers["autojoin"];
-        this.ui.getActiveWindow().infoMessage("Joining channels...");
-        this.exec("/AUTOJOIN");
-      }
-    }
   },
   serverNotice: function(user, message) {
     if(user == "") {

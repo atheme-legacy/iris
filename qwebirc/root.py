@@ -81,7 +81,6 @@ class RootSite(server.Site):
     register(engines.AJAXEngine, "e")
     register(engines.AthemeEngine, "a")
     register(engines.FeedbackEngine, "feedback")
-    register(engines.AuthgateEngine, "auth")
     register(engines.AdminEngine, "adminengine", services)
     
 mimetypes.types_map[".ico"] = "image/vnd.microsoft.icon"

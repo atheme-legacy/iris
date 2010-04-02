@@ -5,16 +5,7 @@ from twisted.internet import reactor, protocol
 from twisted.web import resource, server
 from twisted.protocols import basic
 
-import hmac, base64, time, config, qwebirc.config_options as config_options
-from config import HMACTEMPORAL
-
-if hasattr(config, "WEBIRC_MODE") and config.WEBIRC_MODE == "hmac":
-  HMACKEY = hmac.HMAC(key=config.HMACKEY)
-
-def hmacfn(*args):
-  h = HMACKEY.copy()
-  h.update("%d %s" % (int(time.time() / HMACTEMPORAL), " ".join(args)))
-  return h.hexdigest()
+import base64, time, config, qwebirc.config_options as config_options
 
 def utf8_iso8859_1(data, table=dict((x, x.decode("iso-8859-1")) for x in map(chr, range(0, 256)))):
   return (table.get(data.object[data.start]), data.start+1)
@@ -175,9 +166,6 @@ class QWebIRCClient(basic.LineReceiver):
 
     if not hasattr(config, "WEBIRC_MODE"):
       self.write("USER %s bleh bleh %s :%s" % (ident, ip, realname))
-    elif config.WEBIRC_MODE == "hmac":
-      hmac = hmacfn(ident, ip)
-      self.write("USER %s bleh bleh %s %s :%s" % (ident, ip, hmac, realname))
     elif config.WEBIRC_MODE == "webirc":
       self.write("WEBIRC %s qwebirc %s %s" % (config.WEBIRC_PASSWORD, hostname, ip))
       self.write("USER %s bleh %s :%s" % (ident, ip, realname))
