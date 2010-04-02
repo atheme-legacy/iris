@@ -32,8 +32,8 @@ qwebirc.ui.Atheme.handleLogin = function(user, token, duration) {
 
 	/* Set cookies if duration is not null. */
 	if (duration != null) {
-		Cookie.write("ircaccount", user, {domain: qwebirc.config.cookieDomain, duration: duration });
-		Cookie.write("ircauthcookie", token, {domain: qwebirc.config.cookieDomain, duration: duration });
+		Cookie.write("ircaccount", user, { duration: duration });
+		Cookie.write("ircauthcookie", token, { duration: duration });
 	}
   
 	/* Update any account box. */
@@ -50,8 +50,8 @@ qwebirc.ui.Atheme.handleLogout = function() {
 	this.state = false;
 
 	/* Delete cookies. */
-	Cookie.dispose("ircaccount", {domain: qwebirc.config.cookieDomain});
-	Cookie.dispose("ircauthcookie", {domain: qwebirc.config.cookieDomain});
+	Cookie.dispose("ircaccount");
+	Cookie.dispose("ircauthcookie");
 
 	/* Update any account box. */
 	if(document.getElementById("qwebirc-accbox") != null)
