@@ -110,6 +110,16 @@ FEEDBACK_TO = "moo@moo.com"
 #         Port of SMTP server feedback will be sent through.
 FEEDBACK_SMTP_HOST, FEEDBACK_SMTP_PORT = "127.0.0.1", 25
 
+# ATHEME ENGINE OPTIONS
+# ---------------------------------------------------------------------
+#
+# OPTION: XMLRPC_PATH:
+#         Address of your Atheme directory instance.  Allows
+#         authentication to NickServ ala SASL AUTHCOOKIE.
+#         If you don't have an Atheme directory instance;
+#         comment this value out.
+XMLRPC_PATH = "http://127.0.0.1:8080/xmlrpc"
+
 # ADMIN ENGINE OPTIONS
 # ---------------------------------------------------------------------
 #
