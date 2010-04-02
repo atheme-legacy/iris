@@ -28,7 +28,10 @@ class AthemeEngine(resource.Resource):
 
   def get_xmlrpc_conn(self):
     """Get an XMLRPC connection to Atheme, replacing any previous connection."""
-    self.conn = ServerProxy(config.XMLRPC_PATH)
+    try:
+      self.conn = ServerProxy(config.XMLRPC_PATH)
+    except AttributeError:
+      self.conn = None
   
   def do_xmlrpc(self, rpc, params):
     """Perform an XMLRPC request, running one Atheme command.
