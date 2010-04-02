@@ -1,6 +1,9 @@
 TODO, in no particular order
 ----------------------------
 
-- ensure that Iris may be used without an Atheme directory server on the network.
+General:
 - replace twisted stuff (maybe?)
-- replace qwebirc UI elements
+
+UI:
+- replace qwebirc UI elements (logo, pages, etc)
+- QUI sucks.  SUCKS.  Needs a new colour scheme; white on black would be good here.
