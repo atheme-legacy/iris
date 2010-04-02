@@ -136,10 +136,10 @@ class AthemeEngine(resource.Resource):
     """
     user = request.args.get("u")
     if user is None:
-      user = ""
+      user = [""]
     token = request.args.get("t")
     if token is None:
-      token = ""
+      token = [""]
 
     service = request.args.get("s")
     if service is None:
@@ -149,15 +149,14 @@ class AthemeEngine(resource.Resource):
       raise AJAXException, "No command specified."
     params = request.args.get("p")
     if params is None:
-      params = ""
+      params = []
     
     self.__total_hit()
     
     response = None
     try:
       result = { "success": True, "output": None }
-      result["output"] = self.do_xmlrpc(self.conn.atheme.command, (token[0], user[0],
-          "0.0.0.0", service[0], command[0], params[0]))
+      result["output"] = self.do_xmlrpc(self.conn.atheme.command, (token[0], user[0], "0.0.0.0", service[0], command[0]) + tuple(params))
       if result["output"] is not None:
         response = json.dumps(result)
       else:
