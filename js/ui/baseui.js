@@ -326,6 +326,11 @@ qwebirc.ui.StandardUI = new Class({
         this.client.exec("/WHOIS " + nick);
       }.bind(window)];
     }
+    if(name == "accinfo") {
+      return ["span", function(account) {
+        this.client.exec("/MSG NickServ INFO " + account);
+      }.bind(window)];
+    }
 
     return null;
   },

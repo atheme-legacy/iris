@@ -233,12 +233,12 @@ div#noscript {
   border-top: 0;
 }
 
-.qwebirc-qui .hyperlink-whois, .hyperlink-qwhois, .hyperlink-channel {
+.qwebirc-qui .hyperlink-whois, .hyperlink-accinfo, .hyperlink-channel {
   cursor: pointer;
   cursor: hand;
 }
 
-.qwebirc-qui .hyperlink-whois:hover, .hyperlink-qwhois:hover, .hyperlink-channel:hover {
+.qwebirc-qui .hyperlink-whois:hover, .hyperlink-accinfo:hover, .hyperlink-channel:hover {
   text-decoration: underline;
 }
 
