@@ -1,0 +1,237 @@
+# Iris configuration file
+#
+# This is in a format similar to ini files and similar.
+# Lines beginning with # are comments.
+#
+# Note that some changes to this configuration file require re-running
+# compile.py, others require restarting Iris, and some may require both.
+# Individual blocks are labeled with their requirements.
+#
+# Be warned that some settings are, via inclusion in the frontend, exposed
+# to users. These blocks are labeled.
+
+# EXECUTION OPTIONS
+# These options set parameters to Iris startup and execution.
+# They require a backend restart to change.
+[execution]
+
+# ARGS: These arguments will be used as if Iris was run directly with
+# with them, see run.py --help for a list of options.
+# Set empty for no options.
+args: -n -p 3989
+
+# SYSLOG ADDR: Used in conjunction with util/syslog.py and -s option.
+# This option specifies the address that syslog datagrams will be sent
+# to. If enabled, set syslog_port, too.
+# syslog_addr: 127.0.0.1
+
+# SYSLOG PORT: Sets the port to send syslog datagrams to, if
+# syslog_addr is set
+# syslog_port: 514
+
+
+
+# BACKEND IRC CONNECTION OPTIONS
+# These options provide the needed information for the backend to connect to
+# the IRC server and perform registration.
+# They require a backend restart to change.
+[irc]
+
+# SERVER: Hostname (or IP address) of IRC server to connect to.
+server: irc.myserver.com
+
+# PORT: Port of IRC server to connect to.
+port: 6667
+
+# REALNAME: The realname field for clients connecting through the
+# webclient.
+realname: http://moo.com/
+
+# IDENT: Type of ident to use on IRC, possible values include:
+# - string: Use a fixed string specified by ident_string.
+# - identhex: Use the user's IP, in hexadecimal.
+# - nickname: Use the user's specified nickname.
+ident: string
+
+# IDENT STRING: A fixed string to use as an ident on IRC.
+# See ident setting documentation.
+ident_string: webchat
+
+# WEBIRC MODE: This option controls how the IP/hostname of the
+# connecting browser will be sent to IRC. If set, the IRC server may
+# be able to transparently display users of Iris as from their
+# original hosts, rather than as coming from the webclient's IP.
+# Possible values include:
+# - webirc: Use WEBIRC type blocks, with a server configuration of
+#   the following style:
+#
+#   cgiirc: {
+#     type webirc;
+#     hostname <qwebirc's ip address>;
+#     password <password>;
+#   };
+#
+#   You must set webirc_password to be the same as <password>.
+#
+# - cgiirc: Use an old style CGIIRC command, set cgiirc_string to be
+#   the command used to set the ip/hostname, and set webirc_password
+#   to be the password used in the server's configuration file.
+#
+# Set empty: Disables WEBIRC.
+#   Sends the IP and hostname in the realname field, overriding
+#   the REALNAME option.
+webirc_mode:
+
+# WEBIRC PASSWORD: Used for webirc modes webirc and cgiirc, see
+# webirc_mode option documentation.
+webirc_password: fish
+
+# CGIIRC STRING: Command sent to IRC server in for cgiirc webirc
+# mode. See webirc_mode option documentation.
+cgiirc_string: CGIIRC
+
+
+
+# FRONTEND UI OPTIONS
+# These alter the behaviour or appearance of the JavaScript UI.
+# These are exposed to users.
+# These require a rerun of compile.py to change.
+[ui]
+
+# BASE URL: URL that this qwebirc instance will be available at, add
+# the port number if your instance runs on a port other than 80.
+base_url: http://foo.foo.org/
+
+# NETWORK NAME: The name of your IRC network, displayed throughout the
+# application.
+network_name: FooNet
+
+# APP TITLE: The title of the application in the web browser.
+# The title of the application in the web browser.
+app_title: %(network_name)s Web IRC
+
+
+
+
+
+# ATHEME ENGINE OPTIONS
+# These options control integration with Atheme by the Atheme engine backend.
+# They require a backend restart to change.
+[athemeengine]
+
+# XMLRPC PATH: Address of your Atheme directory instance.  Allows
+# authentication to NickServ ala SASL AUTHCOOKIE.
+# If you don't have an Atheme directory instance, leave unset.
+xmlrpc_path: http://127.0.0.1:8080/xmlrpc
+
+
+
+# FEEDBACK ENGINE OPTIONS
+# These options control the feedback system backend, which allows users to
+# send feedback directly from Iris, when forwards it via email.
+# They require a backend restart to change.
+[feedback]
+
+# FEEDBACK FROM: E-mail address that feedback will originate from.
+from: moo@moo.com
+
+# FEEDBACK TO: E-mail address that feedback will be sent to.
+to: moo@moo.com
+
+# SMTP HOST: Hostname/IP address of SMTP server feedback will be sent
+# through.
+smtp_host: 127.0.0.1
+
+# SMTP PORT: Port of SMTP server feedback will be sent through.
+smtp_port: 25
+
+
+
+# ADMIN ENGINE OPTIONS
+# These options control the admin engine backend.
+# They require a backend restart to change.
+[adminengine]
+
+# HOSTS: Comma-separated list of IP addresses to allow onto the admin
+# engine at http://instance/adminengine
+hosts: 127.0.0.1
+
+
+
+# PROXY OPTIONS
+# These options manage trust of proxies between the users and the backend.
+# They require a backend restart to change.
+[proxy]
+
+# FORWARDED FOR HEADER: If you're using a proxy that passes through a
+# forwarded-for header, set this option to the header name, also set
+# forwarded_for_ips. Leave empty otherwise.
+forwarded_for_header:
+
+# FORWARDED FOR IPS: This option specifies the IP addresses that
+# forwarded-for headers will be accepted from as a comma-separated
+# list. Ignored if forwarded_for_header is empty.
+forwarded_for_ips: 127.0.0.1
+
+
+
+# BACKEND TUNEABLE VALUES
+# You probably don't want to fiddle with these unless you really know what
+# you're doing...
+# These options require a backend restart to change.
+[tuneback]
+
+# UPDATE FREQ: Maximum rate (in seconds) at which updates will be
+# propagated to clients
+update_freq: 0.5
+
+# MAXBUFLEN: Maximum client AJAX recieve buffer size (in bytes), if
+# this buffer size is exceeded then the client will be disconnected.
+# This value should match the client sendq size in your ircd's
+# configuration.
+maxbuflen: 100000
+
+# MAXSUBSCRIPTIONS: Maximum amount of 'subscriptions' to a specific
+# AJAX channel, i.e. an IRC connection. In theory with a value greater
+# than one you can connect more than one web IRC client to the same
+# IRC connection, ala irssi-proxy.
+maxsubscriptions: 1
+
+# MAXLINELEN: If the client sends a line greater than maxlinelen (in
+# bytes) then they will be disconnected.
+# Note that IRC normally silently drops messages >=512 bytes.
+maxlinelen: 600
+
+# DNS TIMEOUT: DNS requests that do not respond within dns_timeout
+# seconds will be cancelled.
+dns_timeout: 5
+
+# HTTP AJAX REQUEST TIMEOUT: Connections made to the AJAX engine are
+# closed after this many seconds. Note that this value is intimately
+# linked with the client AJAX code at this time, changing it will
+# result in bad things happening.
+http_ajax_request_timeout: 30
+
+# HTTP REQUEST TIMEOUT: Connections made to everything but the AJAX
+# engine will be closed after this many seconds, including connections
+# that haven't started/completed an HTTP request.
+http_request_timeout: 5
+
+
+
+# FRONTEND TUNABLE SETTINGS
+# You probably don't want to fiddle with these unless you really know what
+# you're doing...
+# These options are exposed to the users.
+# They require a rerun of compile.py to change.
+[tunefront]
+
+# STATIC BASE URL: This value is used to build the URL for all static
+# HTTP requests. You'd find this useful if you're running multiple
+# Iris instances on the same host.
+static_base_url:
+
+# DYNAMIC BASE URL:This value is used to build the URL for all dynamic
+# HTTP requests. You'd find this useful if you're running multiple
+# Iris instances on the same host.
+dynamic_base_url:

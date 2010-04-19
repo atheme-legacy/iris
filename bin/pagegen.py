@@ -1,4 +1,5 @@
-import os, sys, pages, subprocess, re, optionsgen, config
+import os, sys, pages, subprocess, re
+import qwebirc.config as config
 
 class HGException(Exception):
   pass
@@ -53,18 +54,18 @@ def producehtml(name, debug):
   ui = pages.UIs[name]
   js = jslist(name, debug)
   css = csslist(name, debug, gen=True)
-  csshtml = "\n".join("  <link rel=\"stylesheet\" href=\"%s%s\" type=\"text/css\"/>" % (config.STATIC_BASE_URL, x) for x in css)
-  jshtml = "\n".join("  <script type=\"text/javascript\" src=\"%s%s\"></script>" % (config.STATIC_BASE_URL, x) for x in js)
+  csshtml = "\n".join("  <link rel=\"stylesheet\" href=\"%s%s\" type=\"text/css\"/>" % (config.tunefront["static_base_url"], x) for x in css)
+  jshtml = "\n".join("  <script type=\"text/javascript\" src=\"%s%s\"></script>" % (config.tunefront["static_base_url"], x) for x in js)
 
   div = ui.get("div", "")
-  customcss = "\n".join("  <link rel=\"stylesheet\" href=\"%s%s\" type=\"text/css\"/>" % (config.STATIC_BASE_URL, x) for x in ui.get("customcss", []))
-  customjs = "\n".join("  <script type=\"text/javascript\" src=\"%s%s\"></script>" % (config.STATIC_BASE_URL, x) for x in ui.get("customjs", []))
+  customcss = "\n".join("  <link rel=\"stylesheet\" href=\"%s%s\" type=\"text/css\"/>" % (config.tunefront["static_base_url"], x) for x in ui.get("customcss", []))
+  customjs = "\n".join("  <script type=\"text/javascript\" src=\"%s%s\"></script>" % (config.tunefront["static_base_url"], x) for x in ui.get("customjs", []))
 
   return """%s
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
   <base />
-  <title>%s (qwebirc)</title>
+  <title>%s (Iris)</title>
   <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
   <link rel="shortcut icon" type="image/png" href="%simages/favicon.png"/>
 %s%s
@@ -82,7 +83,7 @@ def producehtml(name, debug):
   </div>
 </body>
 </html>
-""" % (ui["doctype"], config.APP_TITLE, config.STATIC_BASE_URL, csshtml, customcss, jshtml, customjs, ui["class"], optionsgen.get_options(), div)
+""" % (ui["doctype"], config.ui["app_title"], config.tunefront["static_base_url"], csshtml, customcss, jshtml, customjs, ui["class"], config.js_config(), div)
 
 def main(outputdir=".", produce_debug=True):
   p = os.path.join(outputdir, "static")

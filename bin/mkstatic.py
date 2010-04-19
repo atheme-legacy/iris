@@ -92,11 +92,10 @@ def main():
     copy(os.path.join("bin", "cleanpyc.py"), os.path.join(DEST, "cleanpyc.py"), nojoin=1)
     
   copy("run.py", DEST)
-  copy("config.py.example", DEST)
+  copy("iris.conf.example", DEST)
   
-  if os.path.exists("config.py"):
-    print "NOT copying current config.py!"
-    #copy("config.py", DEST)
+  if os.path.exists("iris.conf"):
+    print "NOT copying current iris.conf!"
   
 if __name__ == "__main__":
   main()
