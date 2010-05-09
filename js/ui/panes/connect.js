@@ -49,7 +49,7 @@ qwebirc.ui.ConfirmBox = function(session, parentElement, callback) {
     
   }
   
-  if(!session.config.ui.randomNick) {
+  if(!session.config.ui.random_nick) {
     text.appendChild(document.createTextNode(" as "));
     text.appendChild(nick);
   }

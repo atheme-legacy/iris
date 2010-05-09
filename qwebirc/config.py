@@ -77,6 +77,7 @@ def __interpret_config():
 
     boolean_options = [
         (ui, "random_nick"),
+        (ui, "prompt"),
         (ui, "lastpos_line"),
         (ui, "nick_colors"),
     ]

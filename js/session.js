@@ -57,7 +57,7 @@ qwebirc.session = new Class({
 
 		/* If random nick is on, and initial_nick is blank, apply it to
 		 * generate a random nick. */
-		if (!this.config.ui.random_nick &&
+		if (this.config.ui.random_nick &&
 				!this.config.ui.initial_nick) {
 			this.config.ui.initial_nick = "iris" +
 					Math.ceil(Math.random() * 100000);
