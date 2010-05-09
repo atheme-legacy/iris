@@ -2,7 +2,7 @@ qwebirc.ui.QUI = new Class({
   Extends: qwebirc.ui.RootUI,
   initialize: function(session, parentElement) {
     this.parent(session, parentElement, qwebirc.ui.QUI.Window, "qui");
-    this.theme = qwebirc.ui.Theme(this.session.theme);
+    this.theme = new qwebirc.ui.Theme(this.session.theme);
     this.setModifiableStylesheet("qui");
   },
   postInitialize: function() {
@@ -343,8 +343,8 @@ qwebirc.ui.QUI.JSUI = new Class({
 qwebirc.ui.QUI.Window = new Class({
   Extends: qwebirc.ui.Window,
   
-  initialize: function(session, client, type, name, identifier) {
-    this.parent(session, client, type, name, identifier);
+  initialize: function(session, type, name, identifier) {
+    this.parent(session, type, name, identifier);
 
     this.tab = new Element("a", {"href": "#"});
     this.tab.addClass("tab");
@@ -373,7 +373,7 @@ qwebirc.ui.QUI.Window = new Class({
           return;
           
         if(type == qwebirc.ui.WINDOW_CHANNEL)
-          this.client.exec("/PART " + name);
+          this.session.irc.exec("/PART " + name);
 
         this.close();
         
@@ -430,8 +430,8 @@ qwebirc.ui.QUI.Window = new Class({
     this.nicksColoured = this.session.config.ui.nick_colors;
   },
   editTopic: function() {
-    if(!this.client.nickOnChanHasPrefix(this.client.nickname, this.name, "@")) {
-/*      var cmodes = this.client.getChannelModes(channel);
+    if(!this.session.irc.nickOnChanHasPrefix(this.session.irc.nickname, this.name, "@")) {
+/*      var cmodes = this.session.irc.getChannelModes(channel);
       if(cmodes.indexOf("t")) {*/
         alert("Sorry, you need to be a channel operator to change the topic!");
         return;
@@ -441,7 +441,7 @@ qwebirc.ui.QUI.Window = new Class({
     if(newTopic === null)
       return;
 
-    this.client.exec("/TOPIC " + newTopic);
+    this.session.irc.exec("/TOPIC " + newTopic);
   },
   reflow: function() {
     this.session.ui.reflow();
@@ -510,7 +510,7 @@ qwebirc.ui.QUI.Window = new Class({
     this.prevNick = null;
   },
   nickListAdd: function(nick, position) {
-    var realNick = this.client.stripPrefix(nick);
+    var realNick = this.session.irc.stripPrefix(nick);
     
     var e = new Element("a");
     qwebirc.ui.insertAt(position, this.nicklist, e);
@@ -518,7 +518,7 @@ qwebirc.ui.QUI.Window = new Class({
     e.href = "#";
     var span = new Element("span");
     if(this.session.config.ui.nick_colors) {
-      var colour = realNick.toHSBColour(this.client);
+      var colour = realNick.toHSBColour(this.session);
       if($defined(colour))
         span.setStyle("color", colour.rgbToHex());
     }
@@ -592,7 +592,7 @@ qwebirc.ui.QUI.Window = new Class({
       if(this.session.config.ui.nick_colors) {
         for(var i=0;i<nodes.length;i++) {
           var e = nodes[i], span = e.firstChild;
-          var colour = e.realNick.toHSBColour(this.client);
+          var colour = e.realNick.toHSBColour(this.session);
           if($defined(colour))
             span.setStyle("color", colour.rgbToHex());
         };

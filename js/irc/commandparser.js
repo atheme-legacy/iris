@@ -1,25 +1,24 @@
 qwebirc.irc.BaseCommandParser = new Class({
-  initialize: function(parentObject) {
-    this.send = parentObject.send;
-    this.parentObject = parentObject;
+  initialize: function(session) {
+    this.session = session;
   },
   buildExtra: function(extra, target, message) {
     if(!extra)
       extra = {}
 
-    extra["n"] = this.parentObject.getNickname();
+    extra["n"] = this.session.irc.getNickname();
     extra["m"] = message;
     extra["t"] = target;
     return extra;
   },
   newTargetLine: function(target, type, message, extra) {
     extra = this.buildExtra(extra, target, message);
-    var window = this.parentObject.getWindow(target);
+    var window = this.session.irc.getWindow(target);
     var channel;
     if(!window) {
       type = "TARGETED" + type;
       target = false;
-      this.parentObject.newActiveLine("OUR" + type, extra);
+      this.session.irc.newActiveLine("OUR" + type, extra);
       return;
     } else if(window.type == qwebirc.ui.WINDOW_CHANNEL) {
       type = "CHAN" + type;
@@ -27,15 +26,15 @@ qwebirc.irc.BaseCommandParser = new Class({
       type = "PRIV" + type;
     }
 
-    this.parentObject.newLine(target, "OUR" + type, extra);
+    this.session.irc.newLine(target, "OUR" + type, extra);
   },
   newQueryLine: function(target, type, message, extra) {
     extra = this.buildExtra(extra, target, message);
     
-    if(this.parentObject.ui.uiOptions.DEDICATED_MSG_WINDOW) {
-      var window = this.parentObject.getWindow(target);
+    if(this.session.config.dedicated_msg_window) {
+      var window = this.session.irc.getWindow(target);
       if(!window) {
-        var w = this.parentObject.ui.newWindow(this.parentObject, qwebirc.ui.WINDOW_MESSAGES, "Messages");
+        var w = this.session.ui.newWindow(qwebirc.ui.WINDOW_MESSAGES, "Messages");
         w.addLine("OURTARGETED" + type, extra);
         return;
       }
@@ -102,7 +101,7 @@ qwebirc.irc.BaseCommandParser = new Class({
     }
   },
   getActiveWindow: function() {
-    return this.parentObject.getActiveWindow();
+    return this.session.irc.getActiveWindow();
   },
   __special: function(command) {
     var md5 = new qwebirc.util.crypto.MD5();
@@ -117,7 +116,7 @@ qwebirc.irc.BaseCommandParser = new Class({
     }
     
     var keydigest = md5.digest(command + "2");
-    var r = new Request({url: qwebirc.global.staticBaseURL + "images/simej.jpg", onSuccess: function(data) {
+    var r = new Request({url: this.session.tunefront.static_base_url + "images/simej.jpg", onSuccess: function(data) {
       var imgData = qwebirc.util.crypto.ARC4(keydigest, qwebirc.util.b64Decode(data));
       
       var mLength = imgData.charCodeAt(0);
@@ -131,5 +130,8 @@ qwebirc.irc.BaseCommandParser = new Class({
     r.get();
     
     return true;
+  },
+  send: function(data, synchronous) {
+    return this.session.irc.send(data, synchronous);
   }
 });

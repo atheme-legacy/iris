@@ -7,12 +7,11 @@ qwebirc.ui.WINDOW_LASTLINE = qwebirc.ui.WINDOW_QUERY | qwebirc.ui.WINDOW_MESSAGE
 
 qwebirc.ui.Window = new Class({
   Implements: [Events],
-  initialize: function(session, client, type, name, identifier) {
+  initialize: function(session, type, name, identifier) {
     this.session = session;
     this.type = type;
     this.name = name;
     this.active = false;
-    this.client = client;
     this.identifier = identifier;
     this.hilighted = qwebirc.ui.HILIGHT_NONE;
     this.scrolltimer = null;
@@ -31,7 +30,7 @@ qwebirc.ui.Window = new Class({
     }
   },
   updateTopic: function(topic, element)  {
-    qwebirc.ui.Colourise("[" + topic + "]", element, this.client.exec, this.session.ui.urlDispatcher.bind(this.session.ui), this);
+    qwebirc.ui.Colourise(this.session, "[" + topic + "]", element);
   },
   close: function() {
     this.closed = true;
@@ -110,7 +109,7 @@ qwebirc.ui.Window = new Class({
             this.session.ui.flash();
           }
         }
-        if(!type.match(/^OUR/) && this.client.hilightController.match(line["m"])) {
+        if(!type.match(/^OUR/) && this.session.irc.hilightController.match(line["m"])) {
           lhilight = true;
           hilight = qwebirc.ui.HILIGHT_US;
           this.session.ui.beep();
@@ -125,9 +124,9 @@ qwebirc.ui.Window = new Class({
       this.setHilighted(hilight);
 
     if(type)
-      line = this.session.theme.message(type, line, lhilight);
+      line = this.session.ui.theme.message(type, line, lhilight);
     
-    qwebirc.ui.Colourise(qwebirc.irc.IRCTimestamp(new Date()) + " " + line, element, this.client.exec, this.session.ui.urlDispatcher.bind(session.ui), this);
+    qwebirc.ui.Colourise(this.session, qwebirc.irc.IRCTimestamp(new Date()) + " " + line, element);
     this.scrollAdd(element);
   },
   errorMessage: function(message) {
@@ -217,13 +216,13 @@ qwebirc.ui.Window = new Class({
     
     this.lastNickHash = nickHash;
   },
-  nickListAdd: function(position, nick) {
+  nickListAdd: function(nick, position) {
   },
   nickListRemove: function(nick, stored) {
   },
   historyExec: function(line) {
     this.commandhistory.addLine(line);
-    this.client.exec(line);
+    this.session.irc.exec(line);
   },
   focusChange: function(newValue) {
     if(newValue == true || !(this.type & qwebirc.ui.WINDOW_LASTLINE))

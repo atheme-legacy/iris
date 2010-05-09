@@ -1,4 +1,4 @@
-qwebirc.ui.urlificate = function(element, text, execfn, cmdfn, window) {
+qwebirc.ui.urlificate = function(session, element, text) {
   var punct_re = /[[\)|\]]?(\.*|[\,;])$/;
   var addedText = [];
   
@@ -38,7 +38,7 @@ qwebirc.ui.urlificate = function(element, text, execfn, cmdfn, window) {
     a.addClass("hyperlink-channel");
     a.addEvent("click", function(e) {
       new Event(e).stop();
-      execfn("/JOIN " + newtext);
+      session.irc.exec("/JOIN " + newtext);
     });
     a.appendChild(document.createTextNode(newtext));
     element.appendChild(a);
@@ -65,7 +65,7 @@ qwebirc.ui.urlificate = function(element, text, execfn, cmdfn, window) {
         return; 
       }
       
-      var cmd = cmdfn(m[1], window);
+      var cmd = session.ui.urlDispatcher(m[1]);
       if(cmd) {
         addClass = m[1];
         elementType = cmd[0];

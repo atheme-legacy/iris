@@ -1,5 +1,10 @@
+qwebirc.sessionCount = 0;
+
 /* Stores settings and handles for a single IRC connection. */
 qwebirc.session = new Class({
+
+	/* The session number for this session. */
+	id: null,
 
 	/* The configuration we're using. */
 	config: null,
@@ -14,6 +19,9 @@ qwebirc.session = new Class({
 	ui: null,
 
 	initialize: function(config) {
+		/* Set our ID. */
+		this.id = qwebirc.sessionCount++;
+
 		/* Load settings from passed Iris configuration. */
 		this.config = config
 

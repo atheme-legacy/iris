@@ -181,7 +181,7 @@ qwebirc.ui.LoginBox = function(session, parentElement, callback) {
 
     var data = {"nickname": nickname, "autojoin": chans};
 
-    if (pass) {
+    if (password) {
       qwebirc.irc.AthemeQuery.login(function(token) {
         if (token == null) {
           alert("Authentication failed");

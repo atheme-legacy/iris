@@ -126,14 +126,31 @@ random_nick: false
 # even if both are specified.
 prompt: false
 
+# DEDICATED MSG WINDOW: Whether PMs should be shown in a dedicated window.
+dedicated_msg_window: false
+
+# DEDICATED NOTICE WINDOW: Whether notices should be shown in a dedicated
+# window.
+dedicated_notice_window: false
+
+# HIDE JOINPARTS: Whether joins and parts should be hidden in channels.
+hide_joinparts: false
+
 # HUE: The default colour for the interface.
 hue: 210
 
-# NICK COLORS: Whether nicks are coloured by default.
-nick_colors: true
-
 # LASTPOS LINE: Whether a "last position" marker should be displayed.
 lastpos_line: true
+
+# NICK COLORS: Whether nicks are coloured by default.
+nick_colors: false
+
+# FLASH ON MENTION: Whether to flash the title for attention when highlighted.
+flash_on_mention: false
+
+# BEEP ON MENTION: Whether to beep for attention when highlighted.
+# Requires Flash; does nothing if the user lacks it.
+beep_on_mention: false
 
 
 
@@ -252,9 +269,9 @@ http_request_timeout: 5
 # STATIC BASE URL: This value is used to build the URL for all static
 # HTTP requests. You'd find this useful if you're running multiple
 # Iris instances on the same host.
-static_base_url:
+static_base_url: /
 
 # DYNAMIC BASE URL:This value is used to build the URL for all dynamic
 # HTTP requests. You'd find this useful if you're running multiple
 # Iris instances on the same host.
-dynamic_base_url:
+dynamic_base_url: /

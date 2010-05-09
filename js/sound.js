@@ -5,7 +5,9 @@ window.addEvent("domready", function() {
 
 qwebirc.sound.SoundPlayer = new Class({
   Implements: [Events],
-  initialize: function() {
+  session: null,
+  initialize: function(session) {
+    this.session = session;
     this.loadingSWF = false;
     this.loadedSWF = false;
   },
@@ -29,8 +31,8 @@ qwebirc.sound.SoundPlayer = new Class({
     }
     
     var debugMode = false;
-    qwebirc.util.importJS(qwebirc.global.staticBaseURL + "js/" + (debugMode?"soundmanager2":"soundmanager2-nodebug-jsmin") + ".js", "soundManager", function() {
-      soundManager.url = qwebirc.global.staticBaseURL + "sound/";
+    qwebirc.util.importJS(this.session.config.tunefront.statis_base_url + "js/" + (debugMode?"soundmanager2":"soundmanager2-nodebug-jsmin") + ".js", "soundManager", function() {
+      soundManager.url = this.session.config.tunefront.statis_base_url + "sound/";
       
       soundManager.debugMode = debugMode;
       soundManager.useConsole = debugMode;
@@ -49,7 +51,7 @@ qwebirc.sound.SoundPlayer = new Class({
   },
   beep: function() {
     if(!this.beepLoaded) {
-      this.createSound("beep", qwebirc.global.staticBaseURL + "sound/beep3.mp3");
+      this.createSound("beep", this.session.config.tunefront.statis_base_url + "sound/beep3.mp3");
       this.beepLoaded = true;
     }
     this.playSound("beep");

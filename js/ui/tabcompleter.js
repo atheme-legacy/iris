@@ -1,6 +1,6 @@
 qwebirc.ui.TabCompleterFactory = new Class({
-  initialize: function(ui) {
-    this.ui = ui;
+  initialize: function(session) {
+    this.session = session;
     this.reset();
   },
   tabComplete: function(textBox) {
@@ -25,7 +25,7 @@ qwebirc.ui.TabCompleterFactory = new Class({
       if(text == "") {
         preword = "/msg ";
         obj = qwebirc.ui.QueryTabCompleter;
-      } else if(w.client.isChannel(word)) {
+      } else if(session.irc.isChannel(word)) {
         obj = qwebirc.ui.ChannelNameTabCompleter;
       } else if(ltext.match(/^\/(q|query|msg) /i)) {
         obj = qwebirc.ui.QueryTabCompleter;
@@ -67,19 +67,19 @@ qwebirc.ui.TabCompleterFactory = new Class({
 });
 
 qwebirc.ui.TabIterator = new Class({
-  initialize: function(client, prefix, list) {
+  initialize: function(session, prefix, list) {
     this.prefix = prefix;
     if(!$defined(list) || list.length == 0) {
       this.list = null;
     } else {
       var l = [];
       
-      var prefixl = qwebirc.irc.toIRCCompletion(client, prefix);
+      var prefixl = qwebirc.irc.toIRCCompletion(session, prefix);
       
       /* convert the nick list to IRC lower case, stripping all non letters
        * before comparisions */
       for(var i=0;i<list.length;i++) {
-        var l2 = qwebirc.irc.toIRCCompletion(client, list[i]);
+        var l2 = qwebirc.irc.toIRCCompletion(session, list[i]);
         
         if(l2.startsWith(prefixl))
           l.push(list[i]);
@@ -106,11 +106,11 @@ qwebirc.ui.TabIterator = new Class({
 });
 
 qwebirc.ui.BaseTabCompleter = new Class({
-  initialize: function(client, prefix, existingNick, suffix, list) {
+  initialize: function(session, prefix, existingNick, suffix, list) {
     this.existingNick = existingNick;
     this.prefix = prefix;
     this.suffix = suffix;
-    this.iterator = new qwebirc.ui.TabIterator(client, existingNick, list);
+    this.iterator = new qwebirc.ui.TabIterator(session, existingNick, list);
   },
   get: function() {
     var n = this.iterator.next();
@@ -124,28 +124,28 @@ qwebirc.ui.BaseTabCompleter = new Class({
 
 qwebirc.ui.QueryTabCompleter = new Class({
   Extends: qwebirc.ui.BaseTabCompleter,
-  initialize: function(prefix, existingNick, suffix, window) {
-    this.parent(window.client, prefix, existingNick, suffix, window.client.lastNicks);
+  initialize: function(session, prefix, existingNick, suffix) {
+    this.parent(session, prefix, existingNick, suffix, session.irc.lastNicks);
   }
 });
 
 qwebirc.ui.QueryNickTabCompleter = new Class({
   Extends: qwebirc.ui.BaseTabCompleter,
-  initialize: function(prefix, existingText, suffix, window) {
+  initialize: function(session, prefix, existingText, suffix) {
     var nick = window.name
-    this.parent(window.client, prefix, existingText, suffix, [nick]);
+    this.parent(session, prefix, existingText, suffix, [nick]);
   }
 });
 
 qwebirc.ui.ChannelNameTabCompleter = new Class({
   Extends: qwebirc.ui.BaseTabCompleter,
-  initialize: function(prefix, existingText, suffix, window) {
+  initialize: function(session, prefix, existingText, suffix) {
 
     /* WTB map */
     var l = [];
-    var wa = window.parentObject.windows[window.parentObject.getClientId(window.client)];
+    var wa = session.ui.windows[session.id];
     
-    for(var c in window.client.channels) {
+    for(var c in session.irc.channels) {
       var w = wa[c];
       
       /* redundant? */
@@ -162,15 +162,15 @@ qwebirc.ui.ChannelNameTabCompleter = new Class({
     var l2 = [];    
     for(var i=0;i<l.length;i++)
       l2.push(l[i][1]);
-    this.parent(window.client, prefix, existingText, suffix, l2);
+    this.parent(session, prefix, existingText, suffix, l2);
   }
 });
 
 qwebirc.ui.ChannelUsersTabCompleter = new Class({
   Extends: qwebirc.ui.BaseTabCompleter,
-  initialize: function(prefix, existingText, suffix, window) {
-    var nc = window.client.tracker.getSortedByLastSpoke(window.name);
+  initialize: function(session, existingText, suffix) {
+    var nc = session.irc.tracker.getSortedByLastSpoke(session.ui.getActiveWindow().name);
 
-    this.parent(window.client, prefix, existingText, suffix, nc);
+    this.parent(session, prefix, existingText, suffix, nc);
   }
 });

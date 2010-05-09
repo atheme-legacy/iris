@@ -17,8 +17,8 @@ qwebirc.ui.Interface = new Class({
     window.addEvent("domready", function() {
 
       /* Define login function. */
-      var callback = function() {
-        this.session.irc = new qwebirc.irc.IRCClient(this.session);
+      var callback = function(connOptions) {
+        this.session.irc = new qwebirc.irc.IRCClient(this.session, connOptions);
         this.session.irc.connect();
         window.onbeforeunload = qwebirc_ui_onbeforeunload;
         window.addEvent("unload", function() {

@@ -23,7 +23,7 @@ qwebirc.ui.Beeper = new Class({
     this.soundInited = false;
     this.soundReady = false;
 
-    if(this.session.config.ui.beepOnMention)
+    if(this.session.config.ui.beep_on_mention)
       this.soundInit();
   },
   soundInit: function() {
@@ -33,7 +33,7 @@ qwebirc.ui.Beeper = new Class({
       return;
     this.soundInited = true;
     
-    this.soundPlayer = new qwebirc.sound.SoundPlayer();
+    this.soundPlayer = new qwebirc.sound.SoundPlayer(this.session);
     this.soundPlayer.addEvent("ready", function() {
       this.soundReady = true;
     }.bind(this));
@@ -41,7 +41,7 @@ qwebirc.ui.Beeper = new Class({
     this.soundPlayer.go();
   },
   beep: function() {
-    if(!this.soundReady || !this.session.config.ui.beepOnMention)
+    if(!this.soundReady || !this.session.config.ui.beep_on_mention)
       return;
       
     this.soundPlayer.beep();
@@ -81,7 +81,7 @@ qwebirc.ui.Flasher = new Class({
         return favIcons[i];
   },
   flash: function() {
-    if(!this.session.config.ui.flashOnMention || this.windowFocused || !this.canFlash || this.flashing)
+    if(!this.session.config.ui.flash_on_mention || this.windowFocused || !this.canFlash || this.flashing)
       return;
 
     this.titleText = document.title; /* just in case */      

@@ -2,6 +2,7 @@
 
 qwebirc.irc.IRCConnection = new Class({
   Implements: [Events, Options],
+  session: null,
   options: {
     initialNickname: "ircconnX",
     timeout: 45000,
@@ -14,7 +15,8 @@ qwebirc.irc.IRCConnection = new Class({
     authUser: null,
     authToken: null
   },
-  initialize: function(options) {
+  initialize: function(session, options) {
+    this.session = session;
     this.setOptions(options);
     
     this.initialNickname = this.options.initialNickname;
@@ -54,7 +56,7 @@ qwebirc.irc.IRCConnection = new Class({
       asynchronous = false;
 
     var r = new Request.JSON({
-      url: qwebirc.global.dynamicBaseURL + "e/" + url + "?r=" + this.cacheAvoidance + "&t=" + this.counter++,
+      url: this.session.config.tunefront.dynamic_base_url + "e/" + url + "?r=" + this.cacheAvoidance + "&t=" + this.counter++,
       async: asynchronous
     });
     

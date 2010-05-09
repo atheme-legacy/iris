@@ -11,32 +11,32 @@ qwebirc.ui.UI_COMMANDS = [
 qwebirc.ui.MENU_ITEMS = function() {
   var isOpped = function(nick) {
     var channel = this.name; /* window name */
-    var myNick = this.client.nickname;
+    var myNick = this.session.irc.nickname;
 
-    return this.client.nickOnChanHasPrefix(myNick, channel, "@");
+    return this.session.irc.nickOnChanHasPrefix(myNick, channel, "@");
   };
 
   var isVoiced = function(nick) {
     var channel = this.name;
-    var myNick = this.client.nickname;
+    var myNick = this.session.irc.nickname;
 
-    return this.client.nickOnChanHasPrefix(myNick, channel, "+");
+    return this.session.irc.nickOnChanHasPrefix(myNick, channel, "+");
   };
 
   var targetOpped = function(nick) {
     var channel = this.name;
-    return this.client.nickOnChanHasPrefix(nick, channel, "@");
+    return this.session.irc.nickOnChanHasPrefix(nick, channel, "@");
   };
 
   var targetVoiced = function(nick) {
     var channel = this.name;
-    return this.client.nickOnChanHasPrefix(nick, channel, "+");
+    return this.session.irc.nickOnChanHasPrefix(nick, channel, "+");
   };
 
   var invert = qwebirc.util.invertFn, compose = qwebirc.util.composeAnd;
   
   var command = function(cmd) {
-    return function(nick) { this.client.exec("/" + cmd + " " + nick); };
+    return function(nick) { this.session.irc.exec("/" + cmd + " " + nick); };
   };
   
   return [
@@ -52,12 +52,12 @@ qwebirc.ui.MENU_ITEMS = function() {
     },
     {
       text: "slap",
-      fn: function(nick) { this.client.exec("/ME slaps " + nick + " around a bit with a large fishbot"); },
+      fn: function(nick) { this.session.irc.exec("/ME slaps " + nick + " around a bit with a large fishbot"); },
       predicate: true
     },
     {
       text: "kick", /* TODO: disappear when we're deopped */
-      fn: function(nick) { this.client.exec("/KICK " + nick + " wibble"); },
+      fn: function(nick) { this.session.irc.exec("/KICK " + nick + " wibble"); },
       predicate: isOpped
     },
     {

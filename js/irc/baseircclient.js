@@ -10,16 +10,13 @@ qwebirc.irc.RegisteredCTCPs = {
 };
 
 qwebirc.irc.BaseIRCClient = new Class({
-  Implements: [Options],
-  options: {
-    nickname: "qwebirc"
-  },
-  initialize: function(options) {
-    this.setOptions(options);
+  session: null,
+  initialize: function(session, connOptions) {
+    this.session = session;
 
     this.toIRCLower = qwebirc.irc.RFC1459toIRCLower;
 
-    this.nickname = this.options.nickname;
+    this.nickname = connOptions.nickname;
     this.lowerNickname = this.toIRCLower(this.nickname);    
 
     this.__signedOn = false;
@@ -28,13 +25,9 @@ qwebirc.irc.BaseIRCClient = new Class({
     this.channels = {}
     this.nextctcp = 0;    
 
-    this.connection = new qwebirc.irc.IRCConnection({
-      initialNickname: this.nickname,
-      onRecv: this.dispatch.bind(this),
-      serverPassword: this.options.serverPassword,
-      authUser: this.options.authUser,
-      authToken: this.options.authToken
-    });
+    connOptions.initialNickname = this.nickname;
+    connOptions.onRecv = this.dispatch.bind(this);
+    this.connection = new qwebirc.irc.IRCConnection(session, connOptions);
   
     this.send = this.connection.send.bind(this.connection);
     this.connect = this.connection.connect.bind(this.connection);

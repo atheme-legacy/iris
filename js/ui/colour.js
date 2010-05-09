@@ -1,4 +1,4 @@
-qwebirc.ui.Colourise = function(line, entity, execfn, cmdfn, window) {
+qwebirc.ui.Colourise = function(session, line, entity) {
   var fg;
   var bg;
   var underline = false;
@@ -46,7 +46,7 @@ qwebirc.ui.Colourise = function(line, entity, execfn, cmdfn, window) {
   function emitEndToken() {
     var data = "";
     if(out.length > 0) {
-      var data = qwebirc.ui.urlificate(element, out.join(""), execfn, cmdfn, window);
+      var data = qwebirc.ui.urlificate(session, element, out.join(""));
       entity.appendChild(element);
       out = [];
     }
@@ -70,7 +70,7 @@ qwebirc.ui.Colourise = function(line, entity, execfn, cmdfn, window) {
     element.className = classes.join(" ");
   }
   
-  var nickColouring = window.parentObject.uiOptions.NICK_COLOURS; /* HACK */
+  var nickColouring = session.config.ui.nick_colors;
   var capturingNick = false;
   for(var i=0;i<xline.length;i++) {
     var lc = xline[i];
@@ -90,7 +90,7 @@ qwebirc.ui.Colourise = function(line, entity, execfn, cmdfn, window) {
           var e = emitStartToken();
           var text = emitEndToken();
           
-          var c = text.toHSBColour(window.client);
+          var c = text.toHSBColour(session);
           if($defined(c))
             e.style.color = c.rgbToHex();
           capturingNick = autoNickColour = false;
@@ -138,9 +138,9 @@ qwebirc.ui.Colourise = function(line, entity, execfn, cmdfn, window) {
   emitEndToken();
 }
 
-String.prototype.toHSBColour = function(client) {
-  var lower = client.toIRCLower(client.stripPrefix(this));
-  if(lower == client.lowerNickname)
+String.prototype.toHSBColour = function(session) {
+  var lower = session.irc.toIRCLower(session.irc.stripPrefix(this));
+  if(lower == session.irc.lowerNickname)
     return null;
     
   var hash = 0;

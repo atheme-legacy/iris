@@ -1,7 +1,7 @@
 qwebirc.irc.Commands = new Class({
   Extends: qwebirc.irc.BaseCommandParser,
-  initialize: function(parentObject) {
-    this.parent(parentObject);
+  initialize: function(session) {
+    this.parent(session);
     
     this.aliases = {
       "J": "JOIN",
@@ -15,11 +15,11 @@ qwebirc.irc.Commands = new Class({
   },
   
   newUIWindow: function(property) {
-    var p = this.parentObject.ui[property];
+    var p = this.session.ui[property];
     if(!$defined(p)) {
       this.getActiveWindow().errorMessage("Current UI does not support that command.");
     } else {
-      p.bind(this.parentObject.ui)();
+      p.bind(this.session.ui)();
     }
   },
   
@@ -32,7 +32,7 @@ qwebirc.irc.Commands = new Class({
     if(!this.send("PRIVMSG " + target + " :\x01ACTION " + args + "\x01"))
       return;
 
-    this.newQueryLine(target, "ACTION", args, {"@": this.parentObject.getNickStatus(target, this.parentObject.nickname)});
+    this.newQueryLine(target, "ACTION", args, {"@": this.session.irc.getNickStatus(target, this.session.irc.nickname)});
   }],
   cmd_CTCP: [false, 3, 2, function(args) {
     var target = args[0];
@@ -56,30 +56,30 @@ qwebirc.irc.Commands = new Class({
     var target = args[0];
     var message = args[1];
     
-    if(!this.parentObject.isChannel(target))
-      this.parentObject.pushLastNick(target);
+    if(!this.session.irc.isChannel(target))
+      this.session.irc.pushLastNick(target);
     if(this.send("PRIVMSG " + target + " :" + message))
-      this.newQueryLine(target, "MSG", message, {"@": this.parentObject.getNickStatus(target, this.parentObject.nickname)});  
+      this.newQueryLine(target, "MSG", message, {"@": this.session.irc.getNickStatus(target, this.session.irc.nickname)});  
   }],
   cmd_NOTICE: [false, 2, 2, function(args) {
     var target = args[0];
     var message = args[1];
 
     if(this.send("NOTICE " + target + " :" + message)) {
-      if(this.parentObject.isChannel(target)) {
-        this.newTargetLine(target, "NOTICE", message, {"@": this.parentObject.getNickStatus(target, this.parentObject.nickname)});
+      if(this.session.irc.isChannel(target)) {
+        this.newTargetLine(target, "NOTICE", message, {"@": this.session.irc.getNickStatus(target, this.session.irc.nickname)});
       } else {
         this.newTargetLine(target, "NOTICE", message);
       }
     }
   }],
   cmd_QUERY: [false, 2, 1, function(args) {
-    if(this.parentObject.isChannel(args[0])) {
+    if(this.session.irc.isChannel(args[0])) {
       this.getActiveWindow().errorMessage("Can't target a channel with this command.");
       return;
     }
 
-    this.parentObject.newWindow(args[0], qwebirc.ui.WINDOW_QUERY, true);
+    this.session.irc.newWindow(args[0], qwebirc.ui.WINDOW_QUERY, true);
 
     if((args.length > 1) && (args[1] != ""))
       return ["SAY", args[1]];
@@ -91,7 +91,7 @@ qwebirc.irc.Commands = new Class({
     return ["PRIVMSG", this.getActiveWindow().name + " " + args]
   }],
   cmd_LOGOUT: [false, undefined, undefined, function(args) {
-    this.parentObject.ui.logout();
+    this.session.irc.ui.logout();
   }],
   cmd_OPTIONS: [false, undefined, undefined, function(args) {
     this.newUIWindow("optionsWindow");
@@ -164,7 +164,7 @@ qwebirc.irc.Commands = new Class({
     var warn = false;
     
     schans.forEach(function(x) {
-      if(!this.parentObject.isChannel(x)) {
+      if(!this.session.irc.isChannel(x)) {
         x = "#" + x;
         warn = true;
       }
@@ -180,13 +180,13 @@ qwebirc.irc.Commands = new Class({
     this.send("JOIN " + fchans.join(",") + " " + args.join(" "));
   }],
   cmd_UMODE: [false, 1, 0, function(args) {
-    this.send("MODE " + this.parentObject.getNickname() + (args?(" " + args[0]):""));
+    this.send("MODE " + this.session.irc.getNickname() + (args?(" " + args[0]):""));
   }],
   cmd_BEEP: [false, undefined, undefined, function(args) {
-    this.parentObject.ui.beep();
+    this.session.irc.ui.beep();
   }],
   cmd_AUTOJOIN: [false, undefined, undefined, function(args) {
-    return ["JOIN", this.parentObject.options.autojoin];
+    return ["JOIN", this.session.irc.autojoin];
   }],
   cmd_CLEAR: [false, undefined, undefined, function(args) {
     var w = this.getActiveWindow().lines;
@@ -210,7 +210,7 @@ qwebirc.irc.Commands = new Class({
       if(!args || args.length == 0) {
         channel = w.name;
       } else {
-        var isChan = this.parentObject.isChannel(args[0]);
+        var isChan = this.session.irc.isChannel(args[0]);
         if(isChan) {
           channel = args[0];
           if(args.length > 1)

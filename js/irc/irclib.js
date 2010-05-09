@@ -66,6 +66,6 @@ qwebirc.irc.IRCDate = function(d) {
   return qwebirc.util.DaysOfWeek[d.getDay()] + " " + qwebirc.util.MonthsOfYear[d.getMonth()] + " " + pad(d.getDate()) + " "  + pad(d.getHours()) + ":" + pad(d.getMinutes()) + ":" + pad(d.getSeconds()) + " " + d.getFullYear();
 }
 
-qwebirc.irc.toIRCCompletion = function(client, data) {
-  return client.toIRCLower(data).replace(/[^\w]+/g, "");
+qwebirc.irc.toIRCCompletion = function(session, data) {
+  return session.irc.toIRCLower(data).replace(/[^\w]+/g, "");
 }

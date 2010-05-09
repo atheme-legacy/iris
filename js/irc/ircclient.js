@@ -1,23 +1,19 @@
 qwebirc.irc.IRCClient = new Class({
   Extends: qwebirc.irc.BaseIRCClient,
-  options: {
-    nickname: "qwebirc",
-    autojoin: "",
-    maxnicks: 10
-  },
-  initialize: function(options, ui) {
-    this.parent(options);
-
-    this.ui = ui;
+  session: null,
+  initialize: function(session, connOptions) {
+    this.parent(session, connOptions);
 
     this.prefixes = "@+";
     this.modeprefixes = "ov";
     this.windows = {};
+    this.autojoin = connOptions.autojoin;
     
-    this.commandparser = new qwebirc.irc.Commands(this);
+    this.commandparser = new qwebirc.irc.Commands(session);
     this.exec = this.commandparser.dispatch.bind(this.commandparser);
 
-    this.statusWindow = this.ui.newClient(this);
+    this.hilightController = new qwebirc.ui.HilightController(session);
+    this.statusWindow = this.session.ui.newClient();
     this.lastNicks = [];
     
     this.inviteChanList = [];
@@ -99,7 +95,7 @@ qwebirc.irc.IRCClient = new Class({
   newWindow: function(name, type, select) {
     var w = this.getWindow(name);
     if(!w) {
-      w = this.windows[this.toIRCLower(name)] = this.ui.newWindow(this, type, name);
+      w = this.windows[this.toIRCLower(name)] = this.session.ui.newWindow(type, name);
       
       w.addEvent("close", function(w) {
         delete this.windows[this.toIRCLower(name)];
@@ -107,12 +103,12 @@ qwebirc.irc.IRCClient = new Class({
     }
     
     if(select)
-      this.ui.selectWindow(w);
+      this.session.ui.selectWindow(w);
       
     return w;
   },
   getQueryWindow: function(name) {
-    return this.ui.getWindow(this, qwebirc.ui.WINDOW_QUERY, name);
+    return this.session.ui.getWindow(this, qwebirc.ui.WINDOW_QUERY, name);
   },
   newQueryWindow: function(name, privmsg) {
     var e;
@@ -125,29 +121,29 @@ qwebirc.irc.IRCClient = new Class({
     return this.newNoticeQueryWindow(name);
   },
   newPrivmsgQueryWindow: function(name) {
-    if(this.ui.uiOptions.DEDICATED_MSG_WINDOW) {
-      if(!this.ui.getWindow(this, qwebirc.ui.WINDOW_MESSAGES))
-        return this.ui.newWindow(this, qwebirc.ui.WINDOW_MESSAGES, "Messages");
+    if(this.session.config.ui.dedicated_msg_window) {
+      if(!this.session.ui.getWindow(this, qwebirc.ui.WINDOW_MESSAGES))
+        return this.session.ui.newWindow(this, qwebirc.ui.WINDOW_MESSAGES, "Messages");
     } else {
       return this.newWindow(name, qwebirc.ui.WINDOW_QUERY, false);
     }
   },
   newNoticeQueryWindow: function(name) {
-    if(this.ui.uiOptions.DEDICATED_NOTICE_WINDOW)
-      if(!this.ui.getWindow(this, qwebirc.ui.WINDOW_MESSAGES))
-        return this.ui.newWindow(this, qwebirc.ui.WINDOW_MESSAGES, "Messages");
+    if(this.session.config.ui.dedicated_notice_window)
+      if(!this.session.ui.getWindow(this, qwebirc.ui.WINDOW_MESSAGES))
+        return this.session.ui.newWindow(this, qwebirc.ui.WINDOW_MESSAGES, "Messages");
   },
   newQueryLine: function(window, type, data, privmsg, active) {
     if(this.getQueryWindow(window))
       return this.newLine(window, type, data);
       
-    var w = this.ui.getWindow(this, qwebirc.ui.WINDOW_MESSAGES);
+    var w = this.session.ui.getWindow(this, qwebirc.ui.WINDOW_MESSAGES);
     
     var e;
     if(privmsg) {
-      e = this.ui.uiOptions.DEDICATED_MSG_WINDOW;
+      e = this.session.config.ui.dedicated_msg_window;
     } else {
-      e = this.ui.uiOptions.DEDICATED_NOTICE_WINDOW;
+      e = this.session.config.ui.dedicated_notice_window;
     }
     if(e && w) {
       return w.addLine(type, data);
@@ -163,7 +159,7 @@ qwebirc.irc.IRCClient = new Class({
     this.newQueryLine(window, type, data, privmsg, true);
   },
   getActiveWindow: function() {
-    return this.ui.getActiveIRCWindow(this);
+    return this.session.ui.getActiveIRCWindow();
   },
   getNickname: function() {
     return this.nickname;
@@ -204,8 +200,8 @@ qwebirc.irc.IRCClient = new Class({
     this.tracker = new qwebirc.irc.IRCTracker(this);
     this.nickname = nickname;
     this.newServerLine("SIGNON");
-    
-    if(this.options.autojoin) {
+
+    if(this.autojoin) {
       this.exec("/AUTOJOIN");
     }
   },
@@ -220,7 +216,7 @@ qwebirc.irc.IRCClient = new Class({
     if(nick == this.nickname) {
       this.newChanLine(channel, "OURJOIN", user);
     } else {
-      if(!this.ui.uiOptions.HIDE_JOINPARTS) {
+      if(!this.session.config.ui.hide_joinparts) {
         this.newChanLine(channel, "JOIN", user);
       }
     }
@@ -234,7 +230,7 @@ qwebirc.irc.IRCClient = new Class({
       this.tracker.removeChannel(channel);
     } else {
       this.tracker.removeNickFromChannel(nick, channel);
-      if(!this.ui.uiOptions.HIDE_JOINPARTS) {
+      if(!this.session.config.ui.hide_joinparts) {
         this.newChanLine(channel, "PART", user, {"m": message});
       }
     }
@@ -290,7 +286,7 @@ qwebirc.irc.IRCClient = new Class({
     var clist = [];
     for(var c in channels) {
       clist.push(c);
-      if(!this.ui.uiOptions.HIDE_JOINPARTS) {
+      if(!this.session.config.ui.hide_joinparts) {
         this.newChanLine(c, "QUIT", user, {"m": message});
       }
     }
@@ -403,15 +399,12 @@ qwebirc.irc.IRCClient = new Class({
     var nick = user.hostToNick();
     var host = user.hostToHost();
 
-    if(this.ui.uiOptions.DEDICATED_NOTICE_WINDOW) {
+    if(this.session.config.ui.dedicated_notice_window) {
       this.newQueryWindow(nick, false);
       this.newQueryOrActiveLine(nick, "PRIVNOTICE", {"m": message, "h": host, "n": nick}, false);
     } else {
       this.newTargetOrActiveLine(nick, "PRIVNOTICE", {"m": message, "h": host, "n": nick});
     }
-  },
-  isNetworkService: function(user) {
-    return this.ui.options.networkServices.indexOf(user) > -1;
   },
   __joinInvited: function() {
     this.exec("/JOIN " + this.inviteChanList.join(","));
@@ -423,15 +416,6 @@ qwebirc.irc.IRCClient = new Class({
     var host = user.hostToHost();
 
     this.newServerLine("INVITE", {"c": channel, "h": host, "n": nick});
-    if(this.ui.uiOptions.ACCEPT_SERVICE_INVITES && this.isNetworkService(user)) {
-      if(this.activeTimers.serviceInvite)
-        $clear(this.activeTimers.serviceInvite);
-        
-      /* we do this so we can batch the joins, i.e. instead of sending 5 JOIN comands we send 1 with 5 channels. */
-      this.activeTimers.serviceInvite = this.__joinInvited.delay(100, this);
-      
-      this.inviteChanList.push(channel);
-    }
   },
   userMode: function(modes) {
     this.newServerLine("UMODE", {"m": modes, "n": this.nickname});
@@ -576,7 +560,7 @@ qwebirc.irc.IRCClient = new Class({
     if(i != -1) {
       this.lastNicks.splice(i, 1);
     } else {
-      if(this.lastNicks.length == this.options.maxnicks)
+      if(this.lastNicks.length == 10)
         this.lastNicks.pop();
     }
     this.lastNicks.unshift(nick);
