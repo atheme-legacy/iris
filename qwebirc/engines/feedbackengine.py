@@ -4,7 +4,7 @@ from twisted.internet import defer, reactor
 from StringIO import StringIO
 from email.mime.text import MIMEText
 import qwebirc.util as util
-import config
+import qwebirc.config as config
 
 class FeedbackException(Exception):
   pass
@@ -41,13 +41,13 @@ class FeedbackEngine(resource.Resource):
       
     msg = MIMEText(text.encode("utf-8"), _charset="utf-8")
     msg["Subject"] = "qwebirc feedback from %s" % (request.client[1])
-    msg["From"] = config.FEEDBACK_FROM
-    msg["To"] = config.FEEDBACK_TO
+    msg["From"] = config.feedbackengine["from"]
+    msg["To"] = config.feedbackengine["to"]
     email = StringIO(msg.as_string())
     email.seek(0, 0)
     
     factorytype = SMTPSenderFactory
-    factory = factorytype(fromEmail=config.FEEDBACK_FROM, toEmail=config.FEEDBACK_TO, file=email, deferred=defer.Deferred())
-    reactor.connectTCP(config.FEEDBACK_SMTP_HOST, config.FEEDBACK_SMTP_PORT, factory)
+    factory = factorytype(fromEmail=config.feedbackengine["from"], toEmail=config.feedbackengine["to"], file=email, deferred=defer.Deferred())
+    reactor.connectTCP(config.feedbackengine["smtp_host"], config.feedbackengine["smtp_port"], factory)
     self.__hit()
     return "1"

@@ -14,7 +14,7 @@ class RootResource(resource.Resource):
 
 # we do NOT use the built-in timeOut mixin as it's very very buggy!
 class TimeoutHTTPChannel(http.HTTPChannel):
-  timeout = config.HTTP_REQUEST_TIMEOUT
+  timeout = config.tuneback["http_request_timeout"]
 
   def connectionMade(self):
     self.customTimeout = reactor.callLater(self.timeout, self.timeoutOccured)
@@ -46,10 +46,10 @@ class ProxyRequest(server.Request):
     
   def getClientIP(self):
     real_ip = http.Request.getClientIP(self)
-    if real_ip not in config.FORWARDED_FOR_IPS:
+    if real_ip not in config.proxy["forwarded_for_ips"]:
       return real_ip
       
-    fake_ips = self.getHeader(config.FORWARDED_FOR_HEADER)
+    fake_ips = self.getHeader(config.proxy["forwarded_for_header"])
     if fake_ips is None:
       return real_ip
       
@@ -63,7 +63,7 @@ class RootSite(server.Site):
   # we do this ourselves as the built in timeout stuff is really really buggy
   protocol = TimeoutHTTPChannel
   
-  if hasattr(config, "FORWARDED_FOR_HEADER"):
+  if config.proxy["forwarded_for_header"]:
     requestFactory = ProxyRequest
 
   def __init__(self, path, *args, **kwargs):

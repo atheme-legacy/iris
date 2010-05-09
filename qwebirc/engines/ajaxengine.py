@@ -1,12 +1,13 @@
 from twisted.web import resource, server, static, error as http_error
 from twisted.names import client
 from twisted.internet import reactor, error
-import md5, sys, os, time, config, qwebirc.config_options as config_options, traceback, socket
+import md5, sys, os, time, traceback, socket
 import qwebirc.ircclient as ircclient
 from adminengine import AdminEngineAction
 from qwebirc.util import HitCounter
 import qwebirc.dns as qdns
 import qwebirc.util.qjson as json
+import qwebirc.config as config
 Sessions = {}
 
 def get_session_id():
@@ -60,7 +61,7 @@ class IRCSession:
     self.cleanupschedule = None
 
   def subscribe(self, channel, notifier):
-    timeout_entry = reactor.callLater(config.HTTP_AJAX_REQUEST_TIMEOUT, self.timeout, channel)
+    timeout_entry = reactor.callLater(config.tuneback["http_ajax_request_timeout"], self.timeout, channel)
     def cancel_timeout(result):
       if channel in self.subscriptions:
         self.subscriptions.remove(channel)
@@ -70,7 +71,7 @@ class IRCSession:
         pass
     notifier.addCallbacks(cancel_timeout, cancel_timeout)
     
-    if len(self.subscriptions) >= config.MAXSUBSCRIPTIONS:
+    if len(self.subscriptions) >= config.tuneback["maxsubscriptions"]:
       self.subscriptions.pop(0).close()
 
     self.subscriptions.append(channel)
@@ -104,7 +105,7 @@ class IRCSession:
           self.schedule = reactor.callLater(0, self.flush, True)
         return
         
-    self.throttle = t + config.UPDATE_FREQ
+    self.throttle = t + config.tuneback["update_freq"]
 
     encdata = json.dumps(self.buffer)
     self.buffer = []
@@ -121,7 +122,7 @@ class IRCSession:
 
   def event(self, data):
     newbuflen = self.buflen + len(data)
-    if newbuflen > config.MAXBUFLEN:
+    if newbuflen > config.tuneback["maxbuflen"]:
       self.buffer = []
       self.client.error("Buffer overflow.")
       return
@@ -210,10 +211,10 @@ class AJAXEngine(resource.Resource):
     session = IRCSession(id)
     perform = None
 
-    ident, realname = config.IDENT, config.REALNAME
-    if ident is config_options.IDENT_HEX or ident is None: # latter is legacy
+    ident, realname = config.irc["ident_string"], config.irc["realname"]
+    if config.irc["ident"] == "hex":
       ident = socket.inet_aton(ip).encode("hex")
-    elif ident is config_options.IDENT_NICKNAME:
+    elif config.irc["ident"] == "nick":
       ident = nick
 
     self.__connect_hit()
@@ -230,9 +231,9 @@ class AJAXEngine(resource.Resource):
       client = ircclient.createIRC(session, **kwargs)
       session.client = client
 
-    if not hasattr(config, "WEBIRC_MODE") or config.WEBIRC_MODE == "hmac":
+    if config.irc["webirc_mode"] == "":
       proceed(None)
-    elif config.WEBIRC_MODE != "hmac":
+    else:
       notice = lambda x: session.event(connect_notice(x))
       notice("Looking up your hostname...")
       def callback(hostname):
@@ -241,7 +242,7 @@ class AJAXEngine(resource.Resource):
       def errback(failure):
         notice("Couldn't look up your hostname!")
         proceed(ip)
-      qdns.lookupAndVerifyPTR(ip, timeout=[config.DNS_TIMEOUT]).addCallbacks(callback, errback)
+      qdns.lookupAndVerifyPTR(ip, timeout=[config.tuneback["dns_timeout"]]).addCallbacks(callback, errback)
 
     Sessions[id] = session
     
@@ -274,7 +275,7 @@ class AJAXEngine(resource.Resource):
     
     session = self.getSession(request)
 
-    if len(decoded) > config.MAXLINELEN:
+    if len(decoded) > config.tuneback["maxlinelen"]:
       session.disconnect()
       raise AJAXException, "Line too long."
 

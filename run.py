@@ -7,7 +7,8 @@ DEFAULT_PORT = 9090
 
 from twisted.scripts.twistd import run
 from optparse import OptionParser
-import sys, os, config
+import sys, os
+import qwebirc.config as config
 
 def run_twistd(args1=None, args2=None):
   args = [sys.argv[0]]
@@ -43,9 +44,9 @@ parser.add_option("-s", "--syslog", help="Log to syslog", action="store_true", d
 parser.add_option("--syslog-prefix", help="Syslog prefix", dest="syslog_prefix", default="qwebirc")
 
 sargs = sys.argv[1:]
-if "ARGS" in dir(config):
+if config.execution["args"] != "":
   import shlex
-  sargs = shlex.split(config.ARGS) + sargs
+  sargs = shlex.split(config.execution["args"]) + sargs
 
 (options, args) = parser.parse_args(args=sargs)
 

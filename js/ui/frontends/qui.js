@@ -1,9 +1,8 @@
 qwebirc.ui.QUI = new Class({
   Extends: qwebirc.ui.RootUI,
-  initialize: function(parentElement, theme, options) {
-    this.parent(parentElement, qwebirc.ui.QUI.Window, "qui", options);
-    this.theme = theme;
-    this.parentElement = parentElement;
+  initialize: function(session, parentElement) {
+    this.parent(session, parentElement, qwebirc.ui.QUI.Window, "qui");
+    this.theme = qwebirc.ui.Theme(this.session.theme);
     this.setModifiableStylesheet("qui");
   },
   postInitialize: function() {
@@ -81,7 +80,7 @@ qwebirc.ui.QUI = new Class({
     
     var dropdown = new Element("div");
     dropdown.addClass("dropdown-tab");
-    dropdown.appendChild(new Element("img", {src: qwebirc.global.staticBaseURL + "images/icon.png", title: "menu", alt: "menu"}));
+    dropdown.appendChild(new Element("img", {src: this.session.config.tunefront.static_base_url + "images/icon.png", title: "menu", alt: "menu"}));
     dropdown.setStyle("opacity", 1);
 
     var dropdownEffect = new Fx.Tween(dropdown, {duration: "long", property: "opacity", link: "chain"});
@@ -344,14 +343,14 @@ qwebirc.ui.QUI.JSUI = new Class({
 qwebirc.ui.QUI.Window = new Class({
   Extends: qwebirc.ui.Window,
   
-  initialize: function(parentObject, client, type, name, identifier) {
-    this.parent(parentObject, client, type, name, identifier);
+  initialize: function(session, client, type, name, identifier) {
+    this.parent(session, client, type, name, identifier);
 
     this.tab = new Element("a", {"href": "#"});
     this.tab.addClass("tab");
     this.tab.addEvent("focus", function() { this.blur() }.bind(this.tab));;
     
-    parentObject.tabs.appendChild(this.tab);
+    session.ui.tabs.appendChild(this.tab);
     
     this.tab.appendText(name);
     this.tab.addEvent("click", function(e) {
@@ -360,7 +359,7 @@ qwebirc.ui.QUI.Window = new Class({
       if(this.closed)
         return;
         
-      parentObject.selectWindow(this);
+      session.ui.selectWindow(this);
     }.bind(this));
     
     if(type != qwebirc.ui.WINDOW_STATUS && type != qwebirc.ui.WINDOW_CONNECT) {
@@ -378,7 +377,7 @@ qwebirc.ui.QUI.Window = new Class({
 
         this.close();
         
-        //parentObject.inputbox.focus();
+        //session.ui.inputbox.focus();
       }.bind(this);
       
       tabclose.addEvent("click", close);
@@ -396,7 +395,7 @@ qwebirc.ui.QUI.Window = new Class({
     }
 
     this.lines = new Element("div");
-    this.parentObject.qjsui.applyClasses("middle", this.lines);
+    this.session.ui.qjsui.applyClasses("middle", this.lines);
     this.lines.addClass("lines");
     if(type != qwebirc.ui.WINDOW_CUSTOM && type != qwebirc.ui.WINDOW_CONNECT)
       this.lines.addClass("ircwindow");
@@ -412,14 +411,14 @@ qwebirc.ui.QUI.Window = new Class({
       this.topic.addClass("tab-invisible");
       this.topic.set("html", "&nbsp;");
       this.topic.addEvent("dblclick", this.editTopic.bind(this));
-      this.parentObject.qjsui.applyClasses("topic", this.topic);
+      this.session.ui.qjsui.applyClasses("topic", this.topic);
       
       this.prevNick = null;
       this.nicklist = new Element("div");
       this.nicklist.addClass("nicklist");
       this.nicklist.addClass("tab-invisible");
       this.nicklist.addEvent("click", this.removePrevMenu.bind(this));
-      this.parentObject.qjsui.applyClasses("nicklist", this.nicklist);
+      this.session.ui.qjsui.applyClasses("nicklist", this.nicklist);
     }
     
     if(type == qwebirc.ui.WINDOW_CHANNEL) {
@@ -428,7 +427,7 @@ qwebirc.ui.QUI.Window = new Class({
       this.reflow();
     }
     
-    this.nicksColoured = this.parentObject.uiOptions.NICK_COLOURS;
+    this.nicksColoured = this.session.config.ui.nick_colors;
   },
   editTopic: function() {
     if(!this.client.nickOnChanHasPrefix(this.client.nickname, this.name, "@")) {
@@ -445,7 +444,7 @@ qwebirc.ui.QUI.Window = new Class({
     this.client.exec("/TOPIC " + newTopic);
   },
   reflow: function() {
-    this.parentObject.reflow();
+    this.session.ui.reflow();
   },
   onResize: function() {
     if(this.scrolleddown) {
@@ -518,7 +517,7 @@ qwebirc.ui.QUI.Window = new Class({
     
     e.href = "#";
     var span = new Element("span");
-    if(this.parentObject.uiOptions.NICK_COLOURS) {
+    if(this.session.config.ui.nick_colors) {
       var colour = realNick.toHSBColour(this.client);
       if($defined(colour))
         span.setStyle("color", colour.rgbToHex());
@@ -574,23 +573,23 @@ qwebirc.ui.QUI.Window = new Class({
     this.tab.removeClass("tab-unselected");
     this.tab.addClass("tab-selected");
 
-    this.parentObject.setLines(this.lines);
-    this.parentObject.setChannelItems(this.nicklist, this.topic);
-    this.parentObject.qjsui.showInput(inputVisible);
-    this.parentObject.qjsui.showChannel($defined(this.nicklist));
+    this.session.ui.setLines(this.lines);
+    this.session.ui.setChannelItems(this.nicklist, this.topic);
+    this.session.ui.qjsui.showInput(inputVisible);
+    this.session.ui.qjsui.showChannel($defined(this.nicklist));
 
     this.reflow();
     
     this.parent();
     
     if(inputVisible)
-      this.parentObject.inputbox.focus();
+      this.session.ui.inputbox.focus();
 
-    if(this.type == qwebirc.ui.WINDOW_CHANNEL && this.nicksColoured != this.parentObject.uiOptions.NICK_COLOURS) {
-      this.nicksColoured = this.parentObject.uiOptions.NICK_COLOURS;
+    if(this.type == qwebirc.ui.WINDOW_CHANNEL && this.nicksColoured != this.session.config.ui.nick_colors) {
+      this.nicksColoured = this.session.config.ui.nick_colors;
       
       var nodes = this.nicklist.childNodes;
-      if(this.parentObject.uiOptions.NICK_COLOURS) {
+      if(this.session.config.ui.nick_colors) {
         for(var i=0;i<nodes.length;i++) {
           var e = nodes[i], span = e.firstChild;
           var colour = e.realNick.toHSBColour(this.client);
@@ -614,7 +613,7 @@ qwebirc.ui.QUI.Window = new Class({
   close: function() {
     this.parent();
     
-    this.parentObject.tabs.removeChild(this.tab);
+    this.session.ui.tabs.removeChild(this.tab);
   },
   addLine: function(type, line, colourClass) {
     var e = new Element("div");

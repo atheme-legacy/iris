@@ -1,11 +1,12 @@
 import twisted, sys, codecs, traceback
+import base64, time
+import qwebirc.config as config
 from threading import Timer
 from twisted.words.protocols import irc
 from twisted.internet import reactor, protocol
 from twisted.web import resource, server
 from twisted.protocols import basic
 
-import base64, time, config, qwebirc.config_options as config_options
 
 def utf8_iso8859_1(data, table=dict((x, x.decode("iso-8859-1")) for x in map(chr, range(0, 256)))):
   return (table.get(data.object[data.start]), data.start+1)
@@ -162,15 +163,15 @@ class QWebIRCClient(basic.LineReceiver):
     self.authUser = f.get("authUser")
     self.authToken = f.get("authToken")
 
-    if not hasattr(config, "WEBIRC_MODE"):
+    if config.irc["webirc_mode"] == "":
       self.write("USER %s bleh bleh %s :%s" % (ident, ip, realname))
-    elif config.WEBIRC_MODE == "webirc":
-      self.write("WEBIRC %s qwebirc %s %s" % (config.WEBIRC_PASSWORD, hostname, ip))
+    elif config.irc["webirc_mode"] == "webirc":
+      self.write("WEBIRC %s qwebirc %s %s" % (config.irc["webirc_password"], hostname, ip))
       self.write("USER %s bleh %s :%s" % (ident, ip, realname))
-    elif config.WEBIRC_MODE == "cgiirc":
-      self.write("PASS %s_%s_%s" % (config.CGIIRC_STRING, ip, hostname))
+    elif config.irc["webirc_mode"] == "cgiirc":
+      self.write("PASS %s_%s_%s" % (config.irc["cgiirc_string"], ip, hostname))
       self.write("USER %s bleh %s :%s" % (ident, ip, realname))
-    elif config.WEBIRC_MODE == config_options.WEBIRC_REALNAME or config.WEBIRC_MODE is None: # last bit is legacy
+    elif config.irc["webirc_mode"] == "realname":
       if ip == hostname:
         dispip = ip
       else:
@@ -225,7 +226,7 @@ class QWebIRCFactory(protocol.ClientFactory):
 
 def createIRC(*args, **kwargs):
   f = QWebIRCFactory(*args, **kwargs)
-  reactor.connectTCP(config.IRCSERVER, config.IRCPORT, f)
+  reactor.connectTCP(config.irc["server"], config.irc["port"], f)
   return f
 
 if __name__ == "__main__":

@@ -7,8 +7,8 @@ qwebirc.ui.WINDOW_LASTLINE = qwebirc.ui.WINDOW_QUERY | qwebirc.ui.WINDOW_MESSAGE
 
 qwebirc.ui.Window = new Class({
   Implements: [Events],
-  initialize: function(parentObject, client, type, name, identifier) {
-    this.parentObject = parentObject;
+  initialize: function(session, client, type, name, identifier) {
+    this.session = session;
     this.type = type;
     this.name = name;
     this.active = false;
@@ -16,7 +16,7 @@ qwebirc.ui.Window = new Class({
     this.identifier = identifier;
     this.hilighted = qwebirc.ui.HILIGHT_NONE;
     this.scrolltimer = null;
-    this.commandhistory = this.parentObject.commandhistory;
+    this.commandhistory = this.session.ui.commandhistory;
     this.scrolleddown = true;
     this.scrollpos = null;
     this.lastNickHash = {};
@@ -31,7 +31,7 @@ qwebirc.ui.Window = new Class({
     }
   },
   updateTopic: function(topic, element)  {
-    qwebirc.ui.Colourise("[" + topic + "]", element, this.client.exec, this.parentObject.urlDispatcher.bind(this.parentObject), this);
+    qwebirc.ui.Colourise("[" + topic + "]", element, this.client.exec, this.session.ui.urlDispatcher.bind(this.session.ui), this);
   },
   close: function() {
     this.closed = true;
@@ -41,7 +41,7 @@ qwebirc.ui.Window = new Class({
       this.scrolltimer = null;
     }
 
-    this.parentObject.__closed(this);
+    this.session.ui.__closed(this);
     this.fireEvent("close", this);
   },
   subEvent: function(event) {
@@ -52,13 +52,13 @@ qwebirc.ui.Window = new Class({
     this.subWindow = window;
   },
   select: function() {
-    if(this.lastPositionLineInserted && !this.parentObject.uiOptions.LASTPOS_LINE) {
+    if(this.lastPositionLineInserted && !this.session.config.ui.lastpos_line) {
       this.lines.removeChild(this.lastPositionLine);
       this.lastPositionLineInserted = false;
     }
   
     this.active = true;
-    this.parentObject.__setActiveWindow(this);
+    this.session.ui.__setActiveWindow(this);
     if(this.hilighted)
       this.setHilighted(qwebirc.ui.HILIGHT_NONE);
 
@@ -88,7 +88,7 @@ qwebirc.ui.Window = new Class({
     }
   },
   setScrollPos: function() {
-    if(!this.parentObject.singleWindow) {
+    if(!this.session.ui.singleWindow) {
       this.scrolleddown = this.scrolledDown();
       this.scrollpos = this.lines.getScroll();
     }
@@ -106,15 +106,15 @@ qwebirc.ui.Window = new Class({
             hilight = qwebirc.ui.HILIGHT_ACTIVITY;
           } else {
             hilight = qwebirc.ui.HILIGHT_US;
-            this.parentObject.beep();
-            this.parentObject.flash();
+            this.session.ui.beep();
+            this.session.ui.flash();
           }
         }
         if(!type.match(/^OUR/) && this.client.hilightController.match(line["m"])) {
           lhilight = true;
           hilight = qwebirc.ui.HILIGHT_US;
-          this.parentObject.beep();
-          this.parentObject.flash();
+          this.session.ui.beep();
+          this.session.ui.flash();
         } else if(hilight != qwebirc.ui.HILIGHT_US) {
           hilight = qwebirc.ui.HILIGHT_SPEECH;
         }
@@ -125,9 +125,9 @@ qwebirc.ui.Window = new Class({
       this.setHilighted(hilight);
 
     if(type)
-      line = this.parentObject.theme.message(type, line, lhilight);
+      line = this.session.theme.message(type, line, lhilight);
     
-    qwebirc.ui.Colourise(qwebirc.irc.IRCTimestamp(new Date()) + " " + line, element, this.client.exec, this.parentObject.urlDispatcher.bind(this.parentObject), this);
+    qwebirc.ui.Colourise(qwebirc.irc.IRCTimestamp(new Date()) + " " + line, element, this.client.exec, this.session.ui.urlDispatcher.bind(session.ui), this);
     this.scrollAdd(element);
   },
   errorMessage: function(message) {
@@ -232,7 +232,7 @@ qwebirc.ui.Window = new Class({
     this.replaceLastPositionLine();
   },
   replaceLastPositionLine: function() {
-    if(this.parentObject.uiOptions.LASTPOS_LINE) {
+    if(this.session.config.ui.lastpos_line) {
       if(!this.lastPositionLineInserted) {
         this.scrollAdd(this.lastPositionLine);
       } else if(this.lines.lastChild != this.lastPositionLine) {
@@ -248,6 +248,6 @@ qwebirc.ui.Window = new Class({
         this.lines.removeChild(this.lastPositionLine);
     }
     
-    this.lastPositionLineInserted = this.parentObject.uiOptions.LASTPOS_LINE;
+    this.lastPositionLineInserted = this.session.config.ui.lastpos_line;
   }
 });

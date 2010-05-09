@@ -17,13 +17,13 @@ qwebirc.ui.HilightController = new Class({
 });
 
 qwebirc.ui.Beeper = new Class({
-  initialize: function(uiOptions) {
-    this.uiOptions = uiOptions;
+  initialize: function(session) {
+    this.session = session;
     
     this.soundInited = false;
     this.soundReady = false;
 
-    if(this.uiOptions.BEEP_ON_MENTION)
+    if(this.session.config.ui.beepOnMention)
       this.soundInit();
   },
   soundInit: function() {
@@ -41,7 +41,7 @@ qwebirc.ui.Beeper = new Class({
     this.soundPlayer.go();
   },
   beep: function() {
-    if(!this.soundReady || !this.uiOptions.BEEP_ON_MENTION)
+    if(!this.soundReady || !this.session.config.ui.beepOnMention)
       return;
       
     this.soundPlayer.beep();
@@ -49,8 +49,8 @@ qwebirc.ui.Beeper = new Class({
 });
 
 qwebirc.ui.Flasher = new Class({
-  initialize: function(uiOptions) {
-    this.uiOptions = uiOptions;
+  initialize: function(session) {
+    this.session = session;
     
     this.windowFocused = false;
     this.canUpdateTitle = true;
@@ -63,7 +63,7 @@ qwebirc.ui.Flasher = new Class({
       this.favIconVisible = true;
       this.emptyFavIcon = new Element("link");
       this.emptyFavIcon.rel = "shortcut icon";
-      this.emptyFavIcon.href = qwebirc.global.staticBaseURL + "images/empty_favicon.ico";
+      this.emptyFavIcon.href = this.session.config.tunefront.static_base_url + "images/empty_favicon.ico";
       this.emptyFavIcon.type = "image/x-icon";
       this.flashing = false;
     
@@ -81,7 +81,7 @@ qwebirc.ui.Flasher = new Class({
         return favIcons[i];
   },
   flash: function() {
-    if(!this.uiOptions.FLASH_ON_MENTION || this.windowFocused || !this.canFlash || this.flashing)
+    if(!this.session.config.ui.flashOnMention || this.windowFocused || !this.canFlash || this.flashing)
       return;
 
     this.titleText = document.title; /* just in case */      

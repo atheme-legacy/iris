@@ -1,7 +1,8 @@
 from twisted.web import resource, server, static
 from cgi import escape
 from urllib import urlencode
-import config, copy, time
+import copy, time
+import qwebirc.config as config
 
 HEADER = """
 <html><head><link rel="stylesheet" href="/css/qui.css"></link><link rel="stylesheet" href="/css/dialogs.css"></link></head><body class="qwebirc-qui">
@@ -44,7 +45,7 @@ class AdminEngine(resource.Resource):
   @property
   def adminEngine(self):
     return {
-      "Permitted hosts": (config.ADMIN_ENGINE_HOSTS,),
+      "Permitted hosts": (config.adminengine["hosts"],),
       "Started": ((time.asctime(time.localtime(self.__creation_time)),),),
       "Running for": (("%d seconds" % int(time.time() - self.__creation_time),),),
       "CPU time used (UNIX only)": (("%.2f seconds" % time.clock(),),)
@@ -76,7 +77,7 @@ class AdminEngine(resource.Resource):
         raise AdminEngineException("Action does not exist.")
     
   def render_GET(self, request):
-    if request.getClientIP() not in config.ADMIN_ENGINE_HOSTS:
+    if request.getClientIP() not in config.adminengine["hosts"]:
       raise AdminEngineException("Access denied")
   
     args = request.args.get("engine")

@@ -110,7 +110,30 @@ network_name: FooNet
 # The title of the application in the web browser.
 app_title: %(network_name)s Web IRC
 
+# INITIAL NICK: An initial nickname for the user.
+# Leave blank for most uses.
+initial_nick:
 
+# INITIAL CHANS: Default channel list.
+# Comma-separate channels, and provide keys after, space-separated.
+# Leave blank if undesired.
+initial_chans:
+
+# RANDOM NICK: Whether a random nick for the user should be generated.
+random_nick: false
+
+# PROMPT: Whether the user should be prompted to edit their nick and channel
+# even if both are specified.
+prompt: false
+
+# HUE: The default colour for the interface.
+hue: 210
+
+# NICK COLORS: Whether nicks are coloured by default.
+nick_colors: true
+
+# LASTPOS LINE: Whether a "last position" marker should be displayed.
+lastpos_line: true
 
 
 

@@ -1,7 +1,8 @@
 from twisted.web import resource, server, static, error as http_error
 from xmlrpclib import ServerProxy
-import md5, sys, os, time, config, qwebirc.config_options as config_options, traceback, socket, xmlrpclib
+import md5, sys, os, time, traceback, socket, xmlrpclib
 import qwebirc.util.qjson as json
+import qwebirc.config as config
 from adminengine import AdminEngineAction
 from qwebirc.util import HitCounter
 
@@ -29,7 +30,7 @@ class AthemeEngine(resource.Resource):
   def get_xmlrpc_conn(self):
     """Get an XMLRPC connection to Atheme, replacing any previous connection."""
     try:
-      self.conn = ServerProxy(config.XMLRPC_PATH)
+      self.conn = ServerProxy(config.athemeengine["xmlrpc_path"])
     except AttributeError:
       self.conn = None
   

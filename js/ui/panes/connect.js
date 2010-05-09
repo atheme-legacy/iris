@@ -1,12 +1,12 @@
-qwebirc.ui.GenericLoginBox = function(parentElement, callback, initialNickname, initialChannels, autoConnect, autoNick, networkName) {
-  if(autoConnect) {
-    qwebirc.ui.ConfirmBox(parentElement, callback, initialNickname, initialChannels, autoNick, networkName);
-  } else {
-    qwebirc.ui.LoginBox(parentElement, callback, initialNickname, initialChannels, networkName);
-  }
+qwebirc.ui.GenericLoginBox = function(session, parentElement, callback) {
+  if (!session.config.ui.prompt && session.config.ui.initial_nick &&
+        session.config.ui.initial_chans)
+    qwebirc.ui.ConfirmBox(session, parentElement, callback);
+  else
+    qwebirc.ui.LoginBox(session, parentElement, callback);
 }
 
-qwebirc.ui.ConfirmBox = function(parentElement, callback, initialNickname, initialChannels, autoNick, networkName) {
+qwebirc.ui.ConfirmBox = function(session, parentElement, callback) {
   var outerbox = new Element("table");
   outerbox.addClass("qwebirc-centrebox");
   parentElement.appendChild(outerbox);
@@ -33,11 +33,11 @@ qwebirc.ui.ConfirmBox = function(parentElement, callback, initialNickname, initi
   tr.appendChild(text);
   
   var nick = new Element("b");
-  nick.set("text", initialNickname);
+  nick.set("text", session.config.ui.initial_nick);
   
-  var c = initialChannels.split(" ")[0].split(",");
+  var c = session.config.ui.initial_chans.split(" ")[0].split(",");
   
-  text.appendChild(document.createTextNode("To connect to " + networkName + " IRC and join channel" + ((c.length>1)?"s":"") + " "));
+  text.appendChild(document.createTextNode("To connect to " + session.config.ui.network_name + " IRC and join channel" + ((c.length>1)?"s":"") + " "));
 
   for(var i=0;i<c.length;i++) {
     if((c.length > 1) && (i == c.length - 1)) {
@@ -49,7 +49,7 @@ qwebirc.ui.ConfirmBox = function(parentElement, callback, initialNickname, initi
     
   }
   
-  if(!autoNick) {
+  if(!session.config.ui.randomNick) {
     text.appendChild(document.createTextNode(" as "));
     text.appendChild(nick);
   }
@@ -69,11 +69,11 @@ qwebirc.ui.ConfirmBox = function(parentElement, callback, initialNickname, initi
   yes.focus();
   yes.addEvent("click", function(e) {
     parentElement.removeChild(outerbox);
-    callback({"nickname": initialNickname, "autojoin": initialChannels});
+    callback({"nickname": session.config.ui.initial_nick, "autojoin": session.config.ui.initial_chans});
   });
 }
 
-qwebirc.ui.LoginBox = function(parentElement, callback, initialNickname, initialChannels, networkName) {
+qwebirc.ui.LoginBox = function(session, parentElement, callback) {
   var outerbox = new Element("table");
   outerbox.addClass("qwebirc-centrebox");
   parentElement.appendChild(outerbox);
@@ -98,7 +98,7 @@ qwebirc.ui.LoginBox = function(parentElement, callback, initialNickname, initial
   
   var td = new Element("td");
   tr.appendChild(td);
-  td.set("html", "<h1>Connect to " + networkName + " IRC</h1>");  
+  td.set("html", "<h1>Connect to " + session.config.ui.network_name + " IRC</h1>");  
     
   var tr = new Element("tr");
   tbody.appendChild(tr);
@@ -200,8 +200,10 @@ qwebirc.ui.LoginBox = function(parentElement, callback, initialNickname, initial
     }
   }.bind(this));
     
-  nick.set("value", initialNickname);
-  chan.set("value", initialChannels);
+  if (session.config.ui.initial_nick)
+    nick.set("value", session.config.ui.initial_nick);
+  if (session.config.ui.initial_chans)
+    chan.set("value", session.config.ui.initial_chans);
 
   nick.focus();
 }

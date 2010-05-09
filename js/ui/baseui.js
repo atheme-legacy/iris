@@ -8,16 +8,15 @@ qwebirc.ui.WINDOW_MESSAGES = 0x20;
 qwebirc.ui.CUSTOM_CLIENT = "custom";
 
 qwebirc.ui.BaseUI = new Class({
-  Implements: [Events],
-  initialize: function(parentElement, windowClass, uiName, options) {
-    this.options = options;
+  initialize: function(session, parentElement, windowClass, uiName) {
+    this.session = session;
+    this.parentElement = parentElement;
+    this.windowClass = windowClass;
     
     this.windows = {};
     this.clients = {};
     this.windows[qwebirc.ui.CUSTOM_CLIENT] = {};
     this.windowArray = [];
-    this.windowClass = windowClass;
-    this.parentElement = parentElement;
     this.parentElement.addClass("qwebirc");
     this.parentElement.addClass("qwebirc-" + uiName);
     this.firstClient = false;
@@ -89,7 +88,7 @@ qwebirc.ui.BaseUI = new Class({
       return w;
       
     var wId = this.getWindowIdentifier(client, type, name);
-    var w = this.windows[this.getClientId(client)][wId] = new this.windowClass(this, client, type, name, wId);
+    var w = this.windows[this.getClientId(client)][wId] = new this.windowClass(this.session, client, type, name, wId);
     this.windowArray.push(w);
     
     return w;
@@ -118,7 +117,7 @@ qwebirc.ui.BaseUI = new Class({
     if(this.active)
       this.active.deselect();
     window.select();  /* calls setActiveWindow */
-    this.updateTitle(window.name + " - " + this.options.appTitle);
+    this.updateTitle(window.name + " - " + this.session.config.ui.appTitle);
   },
   updateTitle: function(text) {
     document.title = text;
@@ -166,16 +165,6 @@ qwebirc.ui.BaseUI = new Class({
     this.windowArray = this.windowArray.erase(window);
     delete this.windows[this.getClientId(window.client)][window.identifier];
   },
-    /*
-      this shouldn't be called by overriding classes!
-      they should implement their own!
-      some form of user input MUST be received before an
-      IRC connection is made, else users are going to get
-      tricked into getting themselves glined
-    */
-  loginBox: function(callback, initialNickname, initialChannels, autoConnect, autoNick) {
-    qwebirc.ui.GenericLoginBox(this.parentElement, callback, initialNickname, initialChannels, autoConnect, autoNick, this.options.networkName);
-  },
   focusChange: function(newValue) {
     var window_ = this.getActiveWindow();
     if($defined(window_))
@@ -186,11 +175,10 @@ qwebirc.ui.BaseUI = new Class({
 qwebirc.ui.StandardUI = new Class({
   Extends: qwebirc.ui.BaseUI,
   UICommands: qwebirc.ui.UI_COMMANDS,
-  initialize: function(parentElement, windowClass, uiName, options) {
-    this.parent(parentElement, windowClass, uiName, options);
+  initialize: function(session, parentElement, windowClass, uiName) {
+    this.parent(session, parentElement, windowClass, uiName);
 
     this.tabCompleter = new qwebirc.ui.TabCompleterFactory(this);
-    this.uiOptions = new qwebirc.ui.DefaultOptionsClass(this);
     this.customWindows = {};
     
     var ev;
@@ -266,10 +254,8 @@ qwebirc.ui.StandardUI = new Class({
 
     return w;
   },
-  addCustomWindow: function(windowName, class_, cssClass, options) {
-    if(!$defined(options))
-      options = {};
-      
+  addCustomWindow: function(windowName, class_, cssClass) {
+
     if(this.customWindows[windowName]) {
       this.selectWindow(this.customWindows[windowName]);
       return;
@@ -285,7 +271,7 @@ qwebirc.ui.StandardUI = new Class({
     if(cssClass)
       d.lines.addClass("qwebirc-" + cssClass);
       
-    var ew = new class_(d.lines, options);
+    var ew = new class_(this.session, d.lines);
     ew.addEvent("close", function() {
       d.close();
     }.bind(this));
@@ -293,25 +279,25 @@ qwebirc.ui.StandardUI = new Class({
     d.setSubWindow(ew);
   },
   embeddedWindow: function() {
-    this.addCustomWindow("Embedding wizard", qwebirc.ui.EmbedWizard, "embeddedwizard", {baseURL: this.options.baseURL});
+    this.addCustomWindow("Embedding wizard", qwebirc.ui.EmbedWizard, "embeddedwizard");
   },
   optionsWindow: function() {
-    this.addCustomWindow("Options", qwebirc.ui.OptionsPane, "optionspane", this.uiOptions);
+    this.addCustomWindow("Options", qwebirc.ui.OptionsPane, "optionspane");
   },
   aboutWindow: function() {
-    this.addCustomWindow("About", qwebirc.ui.AboutPane, "aboutpane", this.uiOptions);
+    this.addCustomWindow("About", qwebirc.ui.AboutPane, "aboutpane");
   },
   privacyWindow: function() {
-    this.addCustomWindow("Privacy policy", qwebirc.ui.PrivacyPolicyPane, "privacypolicypane", this.uiOptions);
+    this.addCustomWindow("Privacy policy", qwebirc.ui.PrivacyPolicyPane, "privacypolicypane");
   },
   feedbackWindow: function() {
-    this.addCustomWindow("Feedback", qwebirc.ui.FeedbackPane, "feedbackpane", this.uiOptions);
+    this.addCustomWindow("Feedback", qwebirc.ui.FeedbackPane, "feedbackpane");
   },
   faqWindow: function() {
-    this.addCustomWindow("FAQ", qwebirc.ui.FAQPane, "faqpane", this.uiOptions);
+    this.addCustomWindow("FAQ", qwebirc.ui.FAQPane, "faqpane");
   },
   listWindow: function() {
-    this.addCustomWindow("Channels", qwebirc.ui.ListPane, "listpane", this.uiOptions, {parentUI: this});
+    this.addCustomWindow("Channels", qwebirc.ui.ListPane, "listpane");
   },
   urlDispatcher: function(name, window) {
     if(name == "embedded")
@@ -341,13 +327,9 @@ qwebirc.ui.StandardUI = new Class({
     this.tabCompleter.reset();
   },
   setModifiableStylesheet: function(name) {
-    this.__styleSheet = new qwebirc.ui.style.ModifiableStylesheet(qwebirc.global.staticBaseURL + "css/" + name + qwebirc.FILE_SUFFIX + ".mcss");
+    this.__styleSheet = new qwebirc.ui.style.ModifiableStylesheet(this.session.config.tunefront.static_base_url + "css/" + name + qwebirc.FILE_SUFFIX + ".mcss");
     
-    if($defined(this.options.hue)) {
-      this.setModifiableStylesheetValues(this.options.hue, 0, 0);
-    } else {
-      this.setModifiableStylesheetValues(this.uiOptions.STYLE_HUE, 0, 0);
-    }
+    this.setModifiableStylesheetValues(this.session.config.ui.hue, 0, 0);
   },
   setModifiableStylesheetValues: function(hue, saturation, lightness) {
     if(!$defined(this.__styleSheet))
@@ -360,11 +342,11 @@ qwebirc.ui.StandardUI = new Class({
 
 qwebirc.ui.NotificationUI = new Class({
   Extends: qwebirc.ui.StandardUI,
-  initialize: function(parentElement, windowClass, uiName, options) {
-    this.parent(parentElement, windowClass, uiName, options);
+  initialize: function(session, parentElement, windowClass, uiName) {
+    this.parent(session, parentElement, windowClass, uiName);
     
-    this.__beeper = new qwebirc.ui.Beeper(this.uiOptions);
-    this.__flasher = new qwebirc.ui.Flasher(this.uiOptions);
+    this.__beeper = new qwebirc.ui.Beeper(session);
+    this.__flasher = new qwebirc.ui.Flasher(session);
     
     this.beep = this.__beeper.beep.bind(this.__beeper);
     
@@ -387,7 +369,7 @@ qwebirc.ui.NotificationUI = new Class({
 
 qwebirc.ui.NewLoginUI = new Class({
   Extends: qwebirc.ui.NotificationUI,
-  loginBox: function(callbackfn, initialNickname, initialChannels, autoConnect, autoNick) {
+  loginBox: function(callbackfn) {
     this.postInitialize();
 
     /* I'd prefer something shorter and snappier! */
@@ -397,13 +379,13 @@ qwebirc.ui.NewLoginUI = new Class({
       callbackfn(args);
     };
     
-    qwebirc.ui.GenericLoginBox(w.lines, callback, initialNickname, initialChannels, autoConnect, autoNick, this.options.networkName);
+    qwebirc.ui.GenericLoginBox(this.session, w.lines, callback);
   }
 });
 
 qwebirc.ui.RootUI = qwebirc.ui.NewLoginUI;
 
-qwebirc.ui.RequestTransformHTML = function(options) {
+qwebirc.ui.RequestTransformHTML = function(session, options) {
   var HREF_ELEMENTS = {
     "IMG": 1
   };
@@ -422,7 +404,7 @@ qwebirc.ui.RequestTransformHTML = function(options) {
       if($defined(attr) && $defined(value)) {
         node.removeAttribute("transform_attr");
         node.removeAttribute("transform_value");
-        node.setAttribute(attr, qwebirc.global.staticBaseURL + value);
+        node.setAttribute(attr, session.config.tunefront.static_base_url + value);
       }
     }
 
