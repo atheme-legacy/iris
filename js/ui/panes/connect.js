@@ -214,7 +214,7 @@ qwebirc.ui.LoginBox = function(session, parentElement, pane) {
         if (token == null) {
           alert("Authentication failed");
         }
-        qwebirc.ui.Atheme.handleLogin(nick.value, token);
+        qwebirc.ui.Atheme.handleLogin(session, nick.value, token);
         data["authUser"] = nick.value;
         data["authToken"] = token;
         parentElement.removeChild(outerbox);

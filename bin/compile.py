@@ -30,6 +30,7 @@ def jmerge_files(prefix, suffix, output, files, *args, **kwargs):
   
   # cough hack
   try:
+    raise MinifyException("Boom")
     compiled = jarit(o)
   except MinifyException, e:
     global JAVA_WARNING_SURPRESSED

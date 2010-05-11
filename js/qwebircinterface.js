@@ -12,7 +12,7 @@ qwebirc.ui.Interface = new Class({
 
     /* Initialise the client options and login state. */
     this.session = new qwebirc.session(config);
-    qwebirc.ui.Atheme.check();
+    qwebirc.ui.Atheme.check(this.session);
 
     window.addEvent("domready", function() {
 

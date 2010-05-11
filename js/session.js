@@ -18,6 +18,13 @@ qwebirc.session = new Class({
 	/* The UI instance. */
 	ui: null,
 
+        /* Atheme state. */
+        atheme: {
+          state: null,
+          user: null,
+          token: null
+        },
+
 	initialize: function(config) {
 		/* Set our ID. */
 		this.id = qwebirc.sessionCount++;
