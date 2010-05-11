@@ -1,8 +1,8 @@
 qwebirc.ui.MochaUI = new Class({
   Extends: qwebirc.ui.RootUI,
-  initialize: function(parentElement, theme, options) {
-    this.parent(parentElement, qwebirc.ui.MochaUI.Window, "mochaui", options);
-    this.theme = theme;
+  initialize: function(session, parentElement) {
+    this.parent(session, parentElement, qwebirc.ui.MochaUI.Window, "mochaui");
+    this.theme = new qwebirc.ui.Theme(this.session.theme);
     this.parentElement = parentElement;
     
     window.addEvent("domready", function() {
@@ -46,7 +46,7 @@ qwebirc.ui.MochaUI = new Class({
     form.addEvent("submit", function(e) {
       new Event(e).stop();
     
-      this.getActiveWindow().client.exec(inputbox.value);
+      this.getActiveWindow().session.irc.exec(inputbox.value);
       inputbox.value = "";
     }.bind(this));
     this.parentElement.appendChild(form);  
@@ -58,12 +58,12 @@ qwebirc.ui.MochaUI = new Class({
 qwebirc.ui.MochaUI.Window = new Class({
   Extends: qwebirc.ui.Window,
   
-  initialize: function(parentObject, client, type, name, identifier) {
-    this.parent(parentObject, client, type, name, identifier);
+  initialize: function(session, type, name, identifier) {
+    this.parent(session, type, name, identifier);
 
     this.lines = new Element("div", {styles: {overflow: "auto", "width": "90"}});
 
-    var toolbar = (type != qwebirc.ui.WINDOW_CUSTOM) && (type != qwebirc.ui.WINDOW_CONNECT);
+    var toolbar = type != qwebirc.ui.WINDOW_CUSTOM;
     
     if(toolbar) {
       this.form = new Element("form");
@@ -76,13 +76,13 @@ qwebirc.ui.MochaUI.Window = new Class({
         //alert(this.windowObject.windowEl);
         //MochaUI.focusWindow.pass(this.windowObject.windowEl, this.windowObject);
         //this.windowObject.focusWindow();
-        this.parentObject.selectWindow(this);
+        this.session.ui.selectWindow(this);
       }.bind(this));
     
       this.form.addEvent("submit", function(e) {
         new Event(e).stop();
       
-        this.client.exec(this.inputbox.value);
+        this.session.irc.exec(this.inputbox.value);
         this.inputbox.value = "";
       }.bind(this));
       //this.container.appendChild(form);  
@@ -95,7 +95,7 @@ qwebirc.ui.MochaUI.Window = new Class({
       title: name,
       footerHeight: 0,
       container: $("pageWrapper"),
-      toolbarHeight: parentObject.inputHeight,
+      toolbarHeight: session.ui.inputHeight,
       toolbarPosition: "bottom",
       toolbarContent: "",
       //toolbarURL: "",
@@ -104,11 +104,11 @@ qwebirc.ui.MochaUI.Window = new Class({
       minimized: true,
       addClass: "hidenewwin",
       onFocus: function() {
-        parentObject.selectWindow(this);
+        session.ui.selectWindow(this);
       }.bind(this),
       onClose: function() {
         if(type == qwebirc.ui.WINDOW_CHANNEL)
-          this.client.exec("/PART " + name);
+          this.session.irc.exec("/PART " + name);
         this.close();
       }.bind(this)
     };
@@ -183,14 +183,13 @@ qwebirc.ui.MochaUI.Window = new Class({
     });
   },
   updateTopic: function(topic) {
-    this.parent(topic);
-    return;
-    var t = this.topic;
-    
-    while(t.firstChild)
-      t.removeChild(t.firstChild);
+    if (!this.topic)
+      return;
 
-    qwebirc.ui.Colourise(topic, t);
+    while (this.topic.firstChild)
+      this.topic.removeChild(this.topic.firstChild);
+
+    qwebirc.ui.Colourise(topic, this.topic);
   },
   addLine: function(type, line, colour) {
     var e = new Element("div");
