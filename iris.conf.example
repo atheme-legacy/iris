@@ -23,11 +23,10 @@ args: -n -p 3989
 # SYSLOG ADDR: Used in conjunction with util/syslog.py and -s option.
 # This option specifies the address that syslog datagrams will be sent
 # to. If enabled, set syslog_port, too.
-# syslog_addr: 127.0.0.1
+syslog_addr:
 
-# SYSLOG PORT: Sets the port to send syslog datagrams to, if
-# syslog_addr is set
-# syslog_port: 514
+# SYSLOG PORT: Sets the port to send syslog datagrams to, if syslog_addr is set.
+syslog_port: 514
 
 
 
@@ -62,7 +61,7 @@ ident_string: webchat
 # be able to transparently display users of Iris as from their
 # original hosts, rather than as coming from the webclient's IP.
 # Possible values include:
-# - webirc: Use WEBIRC type blocks, with a server configuration of
+# - webirc: Use WEBIRC type blocks, with an IRCD configuration of
 #   the following style:
 #
 #   cgiirc: {
@@ -94,6 +93,8 @@ cgiirc_string: CGIIRC
 
 # FRONTEND UI OPTIONS
 # These alter the behaviour or appearance of the JavaScript UI.
+# Many of these are overridable by query string or user set options, in which
+# case these settings serve as the default when they are not.
 # These are exposed to users.
 # These require a rerun of compile.py to change.
 [ui]
@@ -170,7 +171,7 @@ xmlrpc_path: http://127.0.0.1:8080/xmlrpc
 # These options control the feedback system backend, which allows users to
 # send feedback directly from Iris, when forwards it via email.
 # They require a backend restart to change.
-[feedback]
+[feedbackengine]
 
 # FEEDBACK FROM: E-mail address that feedback will originate from.
 from: moo@moo.com
@@ -192,7 +193,7 @@ smtp_port: 25
 # They require a backend restart to change.
 [adminengine]
 
-# HOSTS: Comma-separated list of IP addresses to allow onto the admin
+# HOSTS: Space-separated list of IP addresses to allow onto the admin
 # engine at http://instance/adminengine
 hosts: 127.0.0.1
 
@@ -209,7 +210,7 @@ hosts: 127.0.0.1
 forwarded_for_header:
 
 # FORWARDED FOR IPS: This option specifies the IP addresses that
-# forwarded-for headers will be accepted from as a comma-separated
+# forwarded-for headers will be accepted from as a space-separated
 # list. Ignored if forwarded_for_header is empty.
 forwarded_for_ips: 127.0.0.1
 
