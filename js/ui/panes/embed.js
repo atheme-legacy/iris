@@ -33,14 +33,14 @@ qwebirc.ui.EmbedWizard = new Class({
   Implements: [Events],
   parent: null,
   session: null,
-  iniitialize: function(session, parent) {
+  initialize: function(session, parent) {
     this.session = session;
     this.parent = parent;
-    this.create(parent);
+    this.create();
     this.addSteps();
   },
-  create: function(parent) {
-    this.t = parent;
+  create: function() {
+    this.t = this.parent;
 
     var titleRow = this.newRow();
     this.title = new Element("h2");

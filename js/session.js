@@ -75,6 +75,9 @@ qwebirc.session = new Class({
 			this.config.ui.hue = urlhue;
 		}
 
+		/* Load user settings from cookie. */
+		this.loadCookieSettings();
+
 		/* If random nick is on, apply it to generate a random nick. */
 		if (this.config.ui.random_nick) {
 			this.config.ui.initial_nick = "iris" +
@@ -94,6 +97,9 @@ qwebirc.session = new Class({
 			cdata[0] = chans.join(",");
 			this.config.ui.initial_chans = cdata.join(" ");
 		}
+    
+		/* Check our Atheme login state. */
+		qwebirc.ui.Atheme.check(this);
 	},
 	getHueArg: function(args) {
 		var hue = args["hue"];
@@ -182,5 +188,27 @@ qwebirc.session = new Class({
 			alert("The following IRC URL components were not accepted: " + not_supported.join(", ") + ".");
 		
 		return channel;
-	}
+	},
+        loadCookieSettings: function() {
+          var cookie = new Hash.Cookie("iris-settings", {duration: 3650, autoSave: false});
+          for (var i = 0; i < qwebirc.config.UserOptions.length; i++) {
+            var option = qwebirc.config.UserOptions[i].option;
+            if ($defined(cookie.get(option)))
+              this.config.ui[option] = cookie.get(option);
+          }
+
+          cookie = new Hash.Cookie("iris-auth");
+          if ($defined(cookie.get("user"))) {
+            this.atheme.user = cookie.get("user");
+            this.atheme.token = cookie.get("token");
+          }
+        },
+        saveUserSettings: function() {
+          var cookie = new Hash.Cookie("iris-settings", {duration: 3650, autoSave: false});
+          for (var i = 0; i < qwebirc.config.UserOptions.length; i++) {
+            var option = qwebirc.config.UserOptions[i].option;
+            cookie.set(option, this.config.ui[option]);
+          }
+          cookie.save();
+        }
 });

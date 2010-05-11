@@ -18,6 +18,12 @@ qwebirc.ui.Atheme.handleLogin = function(session, user, token) {
 	session.atheme.state = true;
 	session.atheme.user = user;
 	session.atheme.token = token;
+	
+	/* Save cookie. */  
+	cookie = new Hash.Cookie("iris-auth");
+	cookie.set("user", session.atheme.user);
+	cookie.set("token", session.atheme.token);
+	cookie.save();
 }
 
 /**

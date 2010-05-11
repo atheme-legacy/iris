@@ -221,6 +221,8 @@ qwebirc.ui.OptionsPane = new Class({
       if (option.onSave)
         option.onSave(this.session);
     }.bind(this));
+
+    this.session.saveUserSettings();
   },
   cancel: function() {
     this.boxList.forEach(function(x) {
