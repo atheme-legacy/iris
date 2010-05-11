@@ -43,12 +43,12 @@ qwebirc.ui.Atheme.check = function(session) {
 
 	/* If we have a user and token, check them for validity. Otherwise,
 	 * we're definitely logged out. */
-	if (session.atheme.user && session.atheme.token) {
+	if ($defined(session.atheme.user) && $defined(session.atheme.token)) {
 		qwebirc.irc.AthemeQuery.checkLogin(function(valid) {
 		if (valid == null)
 			session.atheme.state = null;
 		else if (valid)
-			this.handleLogin(session.atheme.user, session.atheme.token);
+			this.handleLogin(session, session.atheme.user, session.atheme.token);
 		else
 			this.handleLogout();
 		}.bind(this), session.atheme.user, session.atheme.token);

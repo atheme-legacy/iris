@@ -330,7 +330,7 @@ qwebirc.ui.StandardUI = new Class({
     this.__styleSheet.set(function(x) {
       return x.setHue(hue).setSaturation(x.hsb[1] + saturation).setBrightness(x.hsb[2] + lightness);
     });
-  },
+  }
 });
 
 qwebirc.ui.NotificationUI = new Class({

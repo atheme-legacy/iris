@@ -55,11 +55,13 @@ qwebirc.ui.ListPane = new Class({
     parent.appendChild(topicinput);
     
     /* Create the channel table. */
-    this.chanbox = new Element("table");
-    parent.appendChild(this.chanbox);
+    var table = new Element("table");
+    parent.appendChild(table);
+    this.chanbox = new Element("tbody");
+    table.appendChild(this.chanbox);
     
     /* Start the loading display timer. */
-    var delayfn = function() { this.chanbox.set("html", "<tr><td class=\"loading\">Loading. . .</td></tr>"); };
+    var delayfn = function() { this.chanbox.set("html", "<tr><td class=\"loading\">Loading. . .</td></tr>"); }.bind(this);
     this.loading = delayfn.delay(500);
 
     /* Get a channel list. */
