@@ -30,13 +30,12 @@ qwebirc.ui.EmbedWizardStep = new Class({
 });
 
 qwebirc.ui.EmbedWizard = new Class({
-  Implements: [Options, Events],
-  options: {
-    parent: null,
-    baseURL: "http://webchat.quakenet.org/"
-  },
-  initialize: function(parent, options) {
-    this.setOptions(options);
+  Implements: [Events],
+  parent: null,
+  session: null,
+  iniitialize: function(session, parent) {
+    this.session = session;
+    this.parent = parent;
     this.create(parent);
     this.addSteps();
   },
@@ -259,6 +258,8 @@ qwebirc.ui.EmbedWizard = new Class({
       URL.push("nick=" + escape(nick));
     } else if(!this.choosenick.checked) {
       URL.push("randomnick=1");
+    } else {
+      URL.push("nick=");
     }
     
     if(chans) {
@@ -274,10 +275,14 @@ qwebirc.ui.EmbedWizard = new Class({
       
       URL.push("channels=" + escape(d2.join(",")));
     }
+    else
+      URL.push("channels=");
     
     if(connectdialog)
       URL.push("prompt=1");
+    else
+      URL.push("prompt=0");
 
-    return this.options.baseURL + (URL.length>0?"?":"") + URL.join("&");
+    return this.session.config.ui.base_url + (URL.length>0?"?":"") + URL.join("&");
   }
 });

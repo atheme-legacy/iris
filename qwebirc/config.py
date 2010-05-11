@@ -90,6 +90,10 @@ def __interpret_config():
         else:
             section[option] = False
 
+    # An initial nick being specified overrides random_nick.
+    if ui["initial_nick"] != "":
+        ui["random_nick"] = False
+
 
 def js_config():
     options = {

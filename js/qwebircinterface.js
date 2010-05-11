@@ -30,7 +30,7 @@ qwebirc.ui.Interface = new Class({
       this.session.ui = new ui(this.session, $(element));
 
       /* Create login window. */ 
-      this.session.ui.loginBox(callback);
+      this.session.ui.connectWindow(callback);
     }.bind(this));
   }
 });

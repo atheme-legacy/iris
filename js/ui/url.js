@@ -38,7 +38,16 @@ qwebirc.ui.urlificate = function(session, element, text) {
     a.addClass("hyperlink-channel");
     a.addEvent("click", function(e) {
       new Event(e).stop();
-      session.irc.exec("/JOIN " + newtext);
+      if (session.irc)
+        session.irc.exec("/JOIN " + newtext);
+      else {
+        var connect = session.ui.getWindow(qwebirc.ui.WINDOW_CUSTOM, "Connect");
+        if (connect) {
+          var connected = connect.subWindow.setChannel(newtext);
+          if (!connected)
+            session.ui.selectWindow(connect);
+        }
+      }
     });
     a.appendChild(document.createTextNode(newtext));
     element.appendChild(a);

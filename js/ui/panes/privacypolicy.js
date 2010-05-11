@@ -1,10 +1,12 @@
 qwebirc.ui.PrivacyPolicyPane = new Class({
   Implements: [Events],
-  initialize: function(parent) {
+  session: null,
+  initialize: function(session, parent) {
+    this.session = session;
     var delayfn = function() { parent.set("html", "<div class=\"loading\">Loading. . .</div>"); };
     var cb = delayfn.delay(500);
     
-    var r = qwebirc.ui.RequestTransformHTML({url: qwebirc.global.staticBaseURL + "panes/privacypolicy.html", update: parent, onSuccess: function() {
+    var r = qwebirc.ui.RequestTransformHTML(session, {url: this.session.config.tunefront.static_base_url + "panes/privacypolicy.html", update: parent, onSuccess: function() {
       $clear(cb);
       
       parent.getElement("input[class=close]").addEvent("click", function() {

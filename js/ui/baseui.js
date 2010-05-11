@@ -1,9 +1,8 @@
 qwebirc.ui.WINDOW_STATUS =   0x01;
 qwebirc.ui.WINDOW_QUERY =    0x02;
 qwebirc.ui.WINDOW_CHANNEL =  0x04;
-qwebirc.ui.WINDOW_CUSTOM =   0x08;
-qwebirc.ui.WINDOW_CONNECT =  0x10;
-qwebirc.ui.WINDOW_MESSAGES = 0x20;
+qwebirc.ui.WINDOW_MESSAGES = 0x08;
+qwebirc.ui.WINDOW_CUSTOM =   0x10;
 
 qwebirc.ui.BaseUI = new Class({
   initialize: function(session, parentElement, windowClass, uiName) {
@@ -43,6 +42,7 @@ qwebirc.ui.BaseUI = new Class({
     }
     
     this.windows[this.session.id] = {}
+    this.postInitialize();
   },
   newClient: function() {
     var w = this.newWindow(qwebirc.ui.WINDOW_STATUS, "Status");
@@ -61,7 +61,7 @@ qwebirc.ui.BaseUI = new Class({
       return "-M";
     if(type == qwebirc.ui.WINDOW_STATUS)
       return "";
-    if(type == qwebirc.ui.WINDOW_CUSTOM || type == qwebirc.ui.WINDOW_CONNECT)
+    if(type == qwebirc.ui.WINDOW_CUSTOM)
       return "internal_" + qwebirc.irc.ASCIItoIRCLower(name);
 
     return "_" + this.session.irc.toIRCLower(name);
@@ -73,6 +73,7 @@ qwebirc.ui.BaseUI = new Class({
       
     var wId = this.getWindowIdentifier(type, name);
     var w = this.windows[this.session.id][wId] = new this.windowClass(this.session, type, name, wId);
+
     this.windowArray.push(w);
     
     return w;
@@ -261,6 +262,14 @@ qwebirc.ui.StandardUI = new Class({
     }.bind(this));
     
     d.setSubWindow(ew);
+    return d;
+  },
+  connectWindow: function(callbackfn) {
+    var w = this.addCustomWindow("Connect", qwebirc.ui.LoginPane, "connect");
+    w.subWindow.connectCallback = function(args) {
+      w.close();
+      callbackfn(args);
+    };
   },
   embeddedWindow: function() {
     this.addCustomWindow("Embedding wizard", qwebirc.ui.EmbedWizard, "embeddedwizard");
@@ -321,7 +330,7 @@ qwebirc.ui.StandardUI = new Class({
     this.__styleSheet.set(function(x) {
       return x.setHue(hue).setSaturation(x.hsb[1] + saturation).setBrightness(x.hsb[2] + lightness);
     });
-  }
+  },
 });
 
 qwebirc.ui.NotificationUI = new Class({
@@ -351,23 +360,7 @@ qwebirc.ui.NotificationUI = new Class({
   }
 });
 
-qwebirc.ui.NewLoginUI = new Class({
-  Extends: qwebirc.ui.NotificationUI,
-  loginBox: function(callbackfn) {
-    this.postInitialize();
-
-    /* I'd prefer something shorter and snappier! */
-    var w = this.newCustomWindow("Connection details", true, qwebirc.ui.WINDOW_CONNECT);
-    var callback = function(args) {
-      w.close();
-      callbackfn(args);
-    };
-    
-    qwebirc.ui.GenericLoginBox(this.session, w.lines, callback);
-  }
-});
-
-qwebirc.ui.RootUI = qwebirc.ui.NewLoginUI;
+qwebirc.ui.RootUI = qwebirc.ui.NotificationUI;
 
 qwebirc.ui.RequestTransformHTML = function(session, options) {
   var HREF_ELEMENTS = {

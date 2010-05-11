@@ -349,8 +349,18 @@ qwebirc.ui.QUI.Window = new Class({
     this.tab = new Element("a", {"href": "#"});
     this.tab.addClass("tab");
     this.tab.addEvent("focus", function() { this.blur() }.bind(this.tab));;
-    
-    session.ui.tabs.appendChild(this.tab);
+  
+    /* Always put the connect/status windows in front. */
+    if (session.ui.tabs.hasChildNodes()) { 
+      if (type == qwebirc.ui.WINDOW_STATUS)
+        session.ui.tabs.insertBefore(this.tab, session.ui.tabs.firstChild);
+      else if (type == qwebirc.ui.WINDOW_CUSTOM && name == "Connect")
+        session.ui.tabs.insertBefore(this.tab, session.ui.tabs.firstChild);
+      else
+        session.ui.tabs.appendChild(this.tab);
+    } 
+    else
+      session.ui.tabs.appendChild(this.tab);
     
     this.tab.appendText(name);
     this.tab.addEvent("click", function(e) {
@@ -362,7 +372,7 @@ qwebirc.ui.QUI.Window = new Class({
       session.ui.selectWindow(this);
     }.bind(this));
     
-    if(type != qwebirc.ui.WINDOW_STATUS && type != qwebirc.ui.WINDOW_CONNECT) {
+    if(type != qwebirc.ui.WINDOW_STATUS && (type != qwebirc.ui.WINDOW_CUSTOM || name != "Connect")) {
       var tabclose = new Element("span");
       tabclose.set("text", "X");
       tabclose.addClass("tabclose");
@@ -397,7 +407,7 @@ qwebirc.ui.QUI.Window = new Class({
     this.lines = new Element("div");
     this.session.ui.qjsui.applyClasses("middle", this.lines);
     this.lines.addClass("lines");
-    if(type != qwebirc.ui.WINDOW_CUSTOM && type != qwebirc.ui.WINDOW_CONNECT)
+    if(type != qwebirc.ui.WINDOW_CUSTOM)
       this.lines.addClass("ircwindow");
     
     this.lines.addEvent("scroll", function() {
@@ -568,7 +578,7 @@ qwebirc.ui.QUI.Window = new Class({
     this.reflow();
   },
   select: function() {
-    var inputVisible = this.type != qwebirc.ui.WINDOW_CONNECT && this.type != qwebirc.ui.WINDOW_CUSTOM;
+    var inputVisible = this.type != qwebirc.ui.WINDOW_CUSTOM;
     
     this.tab.removeClass("tab-unselected");
     this.tab.addClass("tab-selected");

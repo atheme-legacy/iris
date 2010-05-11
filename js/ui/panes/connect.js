@@ -1,12 +1,40 @@
-qwebirc.ui.GenericLoginBox = function(session, parentElement, callback) {
-  if (!session.config.ui.prompt && session.config.ui.initial_nick &&
-        session.config.ui.initial_chans)
-    qwebirc.ui.ConfirmBox(session, parentElement, callback);
-  else
-    qwebirc.ui.LoginBox(session, parentElement, callback);
-}
+qwebirc.ui.LoginPane = new Class({
+  Implements: [Events],
+  session: null,
+  parentElement: null,
+  connectCallback: null,
+  initialize: function(session, parentElement) {
+    this.session = session;
+    this.parentElement = parentElement;
+    this.createPane();
+    
+    if (!this.session.config.ui.prompt && this.session.config.ui.initial_nick
+          && this.session.config.ui.initial_chans)
+      qwebirc.ui.ConfirmBox(this.session, this.parentElement, this);
+    else
+      qwebirc.ui.LoginBox(this.session, this.parentElement, this);
+  },
+  createPane: function() {
+  },
+  setChannel: function(channel) {
+    this.session.config.ui.initial_chans = channel;
 
-qwebirc.ui.ConfirmBox = function(session, parentElement, callback) {
+    while(this.parentElement.childNodes.length > 0)
+      this.parentElement.removeChild(this.parentElement.firstChild);
+
+    if (!this.session.config.ui.prompt && this.session.config.ui.initial_nick
+          && this.session.config.ui.initial_chans) {
+      this.connectCallback({"nickname": this.session.config.ui.initial_nick, "autojoin": this.session.config.ui.initial_chans});
+      return true;
+    }
+    else {
+      qwebirc.ui.LoginBox(this.session, this.parentElement, this);
+      return false;
+    }
+  }
+});
+
+qwebirc.ui.ConfirmBox = function(session, parentElement, pane) {
   var outerbox = new Element("table");
   outerbox.addClass("qwebirc-centrebox");
   parentElement.appendChild(outerbox);
@@ -69,11 +97,11 @@ qwebirc.ui.ConfirmBox = function(session, parentElement, callback) {
   yes.focus();
   yes.addEvent("click", function(e) {
     parentElement.removeChild(outerbox);
-    callback({"nickname": session.config.ui.initial_nick, "autojoin": session.config.ui.initial_chans});
+    pane.connectCallback({"nickname": session.config.ui.initial_nick, "autojoin": session.config.ui.initial_chans});
   });
 }
 
-qwebirc.ui.LoginBox = function(session, parentElement, callback) {
+qwebirc.ui.LoginBox = function(session, parentElement, pane) {
   var outerbox = new Element("table");
   outerbox.addClass("qwebirc-centrebox");
   parentElement.appendChild(outerbox);
@@ -191,12 +219,12 @@ qwebirc.ui.LoginBox = function(session, parentElement, callback) {
         data["authToken"] = token;
         parentElement.removeChild(outerbox);
     
-        callback(data);
+        pane.connectCallback(data);
       }, nick.value, pass.value);
     } else {
       parentElement.removeChild(outerbox);
     
-      callback(data);
+      pane.connectCallback(data);
     }
   }.bind(this));
     

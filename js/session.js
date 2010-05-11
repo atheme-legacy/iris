@@ -29,8 +29,10 @@ qwebirc.session = new Class({
 		var args = qwebirc.util.parseURI(String(document.location));
 		
 		/* Load nick from query string. */
-		if($defined(args["nick"]))
+		if($defined(args["nick"])) {
 			this.config.ui.initial_nick = this.randSub(args["nick"]);
+			this.config.ui.random_nick = false
+		}
 
 		/* Load channels from query string. */
 		if($defined(args["url"])) {
@@ -38,15 +40,18 @@ qwebirc.session = new Class({
 			if (urlchans)
 				this.config.ui.initial_chans = urlchans;
 		}
-		if (args["channels"])
+		if ($defined(args["channels"]))
 			this.config.ui.initial_chans = args["channels"];
 
-		/* Load random_nick option from query string. */
-		else if($defined(args["randomnick"])) {
-			if (args["randomnick"] == 1)
+		/* Load random_nick option from query string, overriden by a
+		 * nick being specified in the query string. */
+		if($defined(args["randomnick"])) {
+			if (args["randomnick"] && !$defined(args["nick"])) {
 				this.config.ui.random_nick = true;
-			else
+			}
+			else {
 				this.config.ui.random_nick = false;
+			}
 		}
 
 		/* Load prompt option from query string. */
@@ -63,10 +68,8 @@ qwebirc.session = new Class({
 			this.config.ui.hue = urlhue;
 		}
 
-		/* If random nick is on, and initial_nick is blank, apply it to
-		 * generate a random nick. */
-		if (this.config.ui.random_nick &&
-				!this.config.ui.initial_nick) {
+		/* If random nick is on, apply it to generate a random nick. */
+		if (this.config.ui.random_nick) {
 			this.config.ui.initial_nick = "iris" +
 					Math.ceil(Math.random() * 100000);
 		}

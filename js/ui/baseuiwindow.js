@@ -166,7 +166,7 @@ qwebirc.ui.Window = new Class({
     return scrollparent;
   },
   scrollToBottom: function() {
-    if(this.type == qwebirc.ui.WINDOW_CUSTOM || this.type == qwebirc.ui.WINDOW_CONNECT)
+    if(this.type == qwebirc.ui.WINDOW_CUSTOM)
       return;
 
     var parent = this.lines;

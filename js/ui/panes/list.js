@@ -3,6 +3,7 @@
  */
 qwebirc.ui.ListPane = new Class({
   Implements: [Events],
+  session: null,
 
   /* Store the list's current state. */
   loading: null,
@@ -15,7 +16,8 @@ qwebirc.ui.ListPane = new Class({
   namefilter: "",
   topicfilter: "",
 
-  initialize: function(parent) {
+  initialize: function(session, parent) {
+    this.session = session;
 
     var nameinput;
     var topicinput;
@@ -128,7 +130,7 @@ qwebirc.ui.ListPane = new Class({
         var channel = new Element("tr");
 
 	var name = new Element("td");
-	name.appendChild(document.createTextNode(channels[i].name));
+        qwebirc.ui.Colourise(this.session, channels[i].name, name);
 	channel.appendChild(name);
 
 	var users = new Element("td");
@@ -136,7 +138,7 @@ qwebirc.ui.ListPane = new Class({
 	channel.appendChild(users);
 
 	var topic = new Element("td");
-	topic.appendChild(document.createTextNode(channels[i].topic));
+        qwebirc.ui.Colourise(this.session, channels[i].topic, topic);
 	channel.appendChild(topic);
 
 	this.chanbox.appendChild(channel);
