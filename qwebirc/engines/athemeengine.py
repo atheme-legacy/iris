@@ -50,7 +50,7 @@ class AthemeEngine(resource.Resource):
         result = rpc(*params)
         return result
       except xmlrpclib.ProtocolError:
-        get_xmlrpc_conn() 
+        self.get_xmlrpc_conn() 
     return None
   
   def render_POST(self, request):
