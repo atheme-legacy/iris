@@ -102,7 +102,7 @@ qwebirc.ui.BaseUI = new Class({
     if(this.active)
       this.active.deselect();
     window.select();  /* calls setActiveWindow */
-    this.updateTitle(window.name + " - " + this.session.config.ui.app_title);
+    this.updateTitle(window.name + " - " + this.session.config.frontend.app_title);
   },
   updateTitle: function(text) {
     document.title = text;
@@ -290,6 +290,9 @@ qwebirc.ui.StandardUI = new Class({
     this.addCustomWindow("FAQ", qwebirc.ui.FAQPane, "faqpane");
   },
   listWindow: function() {
+    if (!this.session.config.atheme.chan_list)
+      return;
+
     this.addCustomWindow("Channels", qwebirc.ui.ListPane, "listpane");
   },
   urlDispatcher: function(name) {
@@ -320,7 +323,7 @@ qwebirc.ui.StandardUI = new Class({
     this.tabCompleter.reset();
   },
   setModifiableStylesheet: function(name) {
-    this.__styleSheet = new qwebirc.ui.style.ModifiableStylesheet(this.session.config.tunefront.static_base_url + "css/" + name + qwebirc.FILE_SUFFIX + ".mcss");
+    this.__styleSheet = new qwebirc.ui.style.ModifiableStylesheet(this.session.config.frontend.static_base_url + "css/" + name + qwebirc.FILE_SUFFIX + ".mcss");
     
     this.setModifiableStylesheetValues(this.session.config.ui.hue, 0, 0);
   },
@@ -381,7 +384,7 @@ qwebirc.ui.RequestTransformHTML = function(session, options) {
       if($defined(attr) && $defined(value)) {
         node.removeAttribute("transform_attr");
         node.removeAttribute("transform_value");
-        node.setAttribute(attr, session.config.tunefront.static_base_url + value);
+        node.setAttribute(attr, session.config.frontend.static_base_url + value);
       }
     }
 

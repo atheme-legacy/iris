@@ -13,7 +13,7 @@ qwebirc.config.Input = new Class({
   initialize: function(session, parent, option, position) {
     this.session = session;
     this.option = option;
-    this.value = session.config.ui[option.option];
+    this.value = session.config[option.category][option.option];
     this.enabled = true;
     this.position = position;
     this.parentElement = parent;
@@ -217,7 +217,7 @@ qwebirc.ui.OptionsPane = new Class({
       var option = x[0];
       var box = x[1];
 
-      this.session.config.ui[option.option] = box.get();
+      this.session.config[option.category][option.option] = box.get();
       if (option.onSave)
         option.onSave(this.session);
     }.bind(this));
@@ -234,6 +234,7 @@ qwebirc.ui.OptionsPane = new Class({
 
 qwebirc.config.UserOptions = [
   {
+    category: "ui",
     option: "beep_on_mention",
     label: "Beep when nick mentioned or on query activity (requires Flash)",
     isEnabled: function (session) {
@@ -247,37 +248,44 @@ qwebirc.config.UserOptions = [
     }
   },
   {
+    category: "ui",
     option: "dedicated_msg_window",
     label: "Send privmsgs to dedicated messages window"
   },
   {
+    category: "ui",
     option: "nick_ov_status",
     label: "Show status symbol before nicknames in nicklist"
   },
   {
-    position: 4,
+    category: "ui",
     option: "dedicated_notice_window",
     label: "Send notices to dedicated message window"
   },
   {
+    category: "ui",
     option: "flash_on_mention",
     label: "Flash titlebar when nick mentioned or on query activity",
     enabled: qwebirc.ui.supportsFocus
   },
   {
+    category: "ui",
     option: "lastpos_line",
     label: "Show a last position indicator for each window",
     enabled: qwebirc.ui.supportsFocus
   },
   {
+    category: "ui",
     option: "nick_colors",
     label: "Automatically colour nicknames"
   },
   {
+    category: "ui",
     option: "hide_joinparts",
     label: "Hide JOINS/PARTS/QUITS"
   },
   {
+    category: "ui",
     option: "hue",
     type: qwebirc.config.HueInput,
     label: "Adjust user interface hue",

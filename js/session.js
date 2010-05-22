@@ -30,43 +30,54 @@ qwebirc.session = new Class({
 		this.id = qwebirc.sessionCount++;
 
 		/* Load settings from passed Iris configuration. */
-		this.config = config
+		this.config = config;
+
+		/* Load user settings from cookie. */
+		this.loadCookieSettings();
 
 		/* Load query string parameters. */
 		var args = qwebirc.util.parseURI(String(document.location));
 		
 		/* Load nick from query string. */
 		if($defined(args["nick"])) {
-			this.config.ui.initial_nick = this.randSub(args["nick"]);
-			this.config.ui.random_nick = false
+			this.config.frontend.initial_nick = this.randSub(args["nick"]);
+			this.config.frontend.random_nick = false
 		}
 
 		/* Load channels from query string. */
 		if($defined(args["url"])) {
 			var urlchans = this.parseIRCURL(args["url"]);
 			if (urlchans)
-				this.config.ui.initial_chans = urlchans;
+				this.config.frontend.initial_chans = urlchans;
 		}
 		if ($defined(args["channels"]))
-			this.config.ui.initial_chans = args["channels"];
+			this.config.frontend.initial_chans = args["channels"];
 
 		/* Load random_nick option from query string, overriden by a
 		 * nick being specified in the query string. */
 		if($defined(args["randomnick"])) {
 			if (args["randomnick"] && !$defined(args["nick"])) {
-				this.config.ui.random_nick = true;
+				this.config.frontend.random_nick = true;
 			}
 			else {
-				this.config.ui.random_nick = false;
+				this.config.frontend.random_nick = false;
 			}
 		}
 
 		/* Load prompt option from query string. */
 		if ($defined(args["prompt"])) {
 			if (args["prompt"] == 1)
-				this.config.ui.prompt = true;
+				this.config.frontend.prompt = true;
 			else
-				this.config.ui.prompt = false;
+				this.config.frontend.prompt = false;
+		}
+
+		/* Load chan_prompt option from query string. */
+		if ($defined(args["chan_prompt"])) {
+			if (args["chan_prompt"] == 1)
+				this.config.frontend.chan_prompt = true;
+			else
+				this.config.frontend.chan_prompt = false;
 		}
 
 		/* Load hue from query string. */
@@ -75,18 +86,15 @@ qwebirc.session = new Class({
 			this.config.ui.hue = urlhue;
 		}
 
-		/* Load user settings from cookie. */
-		this.loadCookieSettings();
-
 		/* If random nick is on, apply it to generate a random nick. */
-		if (this.config.ui.random_nick) {
-			this.config.ui.initial_nick = "iris" +
+		if (this.config.frontend.random_nick) {
+			this.config.frontend.initial_nick = "iris" +
 					Math.ceil(Math.random() * 100000);
 		}
 
 		/* Insert any needed # symbols into channel names. */
-		if(this.config.ui.initial_chans) {
-			var cdata = this.config.ui.initial_chans.split(" ");
+		if(this.config.frontend.initial_chans) {
+			var cdata = this.config.frontend.initial_chans.split(" ");
 			var chans = cdata[0].split(" ")[0].split(",");
 
 			for(var i=0;i<chans.length;i++) {
@@ -95,7 +103,7 @@ qwebirc.session = new Class({
 			}
 
 			cdata[0] = chans.join(",");
-			this.config.ui.initial_chans = cdata.join(" ");
+			this.config.frontend.initial_chans = cdata.join(" ");
 		}
     
 		/* Check our Atheme login state. */
@@ -192,9 +200,11 @@ qwebirc.session = new Class({
         loadCookieSettings: function() {
           var cookie = new Hash.Cookie("iris-settings", {duration: 3650, autoSave: false});
           for (var i = 0; i < qwebirc.config.UserOptions.length; i++) {
+            var category = qwebirc.config.UserOptions[i].category;
             var option = qwebirc.config.UserOptions[i].option;
-            if ($defined(cookie.get(option)))
-              this.config.ui[option] = cookie.get(option);
+            var cookieName = category + "." + option;
+            if ($defined(cookie.get(cookieName)))
+              this.config[category][option] = cookie.get(cookieName);
           }
 
           cookie = new Hash.Cookie("iris-auth");
@@ -206,8 +216,10 @@ qwebirc.session = new Class({
         saveUserSettings: function() {
           var cookie = new Hash.Cookie("iris-settings", {duration: 3650, autoSave: false});
           for (var i = 0; i < qwebirc.config.UserOptions.length; i++) {
+            var category = qwebirc.config.UserOptions[i].category;
             var option = qwebirc.config.UserOptions[i].option;
-            cookie.set(option, this.config.ui[option]);
+            var cookieName = category + "." + option;
+            cookie.set(cookieName, this.config[category][option]);
           }
           cookie.save();
         }

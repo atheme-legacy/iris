@@ -10,7 +10,7 @@ qwebirc.ui.FeedbackPane = new Class({
     
     this.addEvent("select", this.onSelect);
     
-    var r = qwebirc.ui.RequestTransformHTML(session, {url: this.session.config.tunefront.static_base_url + "panes/feedback.html", update: parent, onSuccess: function() {
+    var r = qwebirc.ui.RequestTransformHTML(session, {url: this.session.config.frontend.static_base_url + "panes/feedback.html", update: parent, onSuccess: function() {
       $clear(cb);
       parent.getElement("input[class=close]").addEvent("click", function() {
         this.fireEvent("close");
@@ -62,7 +62,7 @@ qwebirc.ui.FeedbackPane = new Class({
     for(var i=0;i<text.length;i++)
       checksum = ((checksum + 1) % 256) ^ (text.charCodeAt(i) % 256);
 
-    var r = new Request({url: this.session.config.tunefront.dynamic_base_url + "feedback", onSuccess: function() {
+    var r = new Request({url: this.session.config.frontend.dynamic_base_url + "feedback", onSuccess: function() {
       messageText.set("text", "Submitted successfully, thanks for the feedback!");
       messageClose.setStyle("display", "");
     }, onFailure: function() {

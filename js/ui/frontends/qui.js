@@ -66,6 +66,8 @@ qwebirc.ui.QUI = new Class({
     this.parentElement.appendChild(dropdownMenu);
     
     this.UICommands.forEach(function(x) {
+      if (x[1] == "list" && !this.session.config.atheme.chan_list)
+        return;
       var text = x[0];
       var fn = this[x[1] + "Window"].bind(this);
       var e = new Element("a");
@@ -80,7 +82,7 @@ qwebirc.ui.QUI = new Class({
     
     var dropdown = new Element("div");
     dropdown.addClass("dropdown-tab");
-    dropdown.appendChild(new Element("img", {src: this.session.config.tunefront.static_base_url + "images/icon.png", title: "menu", alt: "menu"}));
+    dropdown.appendChild(new Element("img", {src: this.session.config.frontend.static_base_url + "images/icon.png", title: "menu", alt: "menu"}));
     dropdown.setStyle("opacity", 1);
 
     var dropdownEffect = new Fx.Tween(dropdown, {duration: "long", property: "opacity", link: "chain"});

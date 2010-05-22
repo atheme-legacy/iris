@@ -54,12 +54,12 @@ def producehtml(name, debug):
   ui = pages.UIs[name]
   js = jslist(name, debug)
   css = csslist(name, debug, gen=True)
-  csshtml = "\n".join("  <link rel=\"stylesheet\" href=\"%s%s\" type=\"text/css\"/>" % (config.tunefront["static_base_url"], x) for x in css)
-  jshtml = "\n".join("  <script type=\"text/javascript\" src=\"%s%s\"></script>" % (config.tunefront["static_base_url"], x) for x in js)
+  csshtml = "\n".join("  <link rel=\"stylesheet\" href=\"%s%s\" type=\"text/css\"/>" % (config.frontend["static_base_url"], x) for x in css)
+  jshtml = "\n".join("  <script type=\"text/javascript\" src=\"%s%s\"></script>" % (config.frontend["static_base_url"], x) for x in js)
 
   div = ui.get("div", "")
-  customcss = "\n".join("  <link rel=\"stylesheet\" href=\"%s%s\" type=\"text/css\"/>" % (config.tunefront["static_base_url"], x) for x in ui.get("customcss", []))
-  customjs = "\n".join("  <script type=\"text/javascript\" src=\"%s%s\"></script>" % (config.tunefront["static_base_url"], x) for x in ui.get("customjs", []))
+  customcss = "\n".join("  <link rel=\"stylesheet\" href=\"%s%s\" type=\"text/css\"/>" % (config.frontend["static_base_url"], x) for x in ui.get("customcss", []))
+  customjs = "\n".join("  <script type=\"text/javascript\" src=\"%s%s\"></script>" % (config.frontend["static_base_url"], x) for x in ui.get("customjs", []))
 
   return """%s
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
@@ -83,7 +83,7 @@ def producehtml(name, debug):
   </div>
 </body>
 </html>
-""" % (ui["doctype"], config.ui["app_title"], config.tunefront["static_base_url"], csshtml, customcss, jshtml, customjs, ui["class"], config.js_config(), div)
+""" % (ui["doctype"], config.frontend["app_title"], config.frontend["static_base_url"], csshtml, customcss, jshtml, customjs, ui["class"], config.js_config(), div)
 
 def main(outputdir=".", produce_debug=True):
   p = os.path.join(outputdir, "static")

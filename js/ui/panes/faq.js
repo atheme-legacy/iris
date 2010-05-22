@@ -7,7 +7,7 @@ qwebirc.ui.FAQPane = new Class({
     var delayfn = function() { parent.set("html", "<div class=\"loading\">Loading. . .</div>"); };
     var cb = delayfn.delay(500);
     
-    var r = qwebirc.ui.RequestTransformHTML(session, {url: this.session.config.tunefront.static_base_url + "panes/faq.html", update: parent, onSuccess: function() {
+    var r = qwebirc.ui.RequestTransformHTML(session, {url: this.session.config.frontend.static_base_url + "panes/faq.html", update: parent, onSuccess: function() {
       $clear(cb);
       parent.getElement("input[class=close]").addEvent("click", function() {
         this.fireEvent("close");

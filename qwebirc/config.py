@@ -23,12 +23,13 @@ def load_config():
 def check_config():
     required_sections = [
         "adminengine",
+        "atheme",
         "athemeengine",
         "execution",
         "feedbackengine",
+        "frontend",
         "irc",
         "proxy",
-        "tunefront",
         "tuneback",
         "ui",
     ]
@@ -76,8 +77,12 @@ def __interpret_config():
            section[option] = float(section[option])
 
     boolean_options = [
-        (ui, "random_nick"),
-        (ui, "prompt"),
+        (atheme, "enabled"),
+        (atheme, "nickserv_login"),
+        (atheme, "chan_list"),
+        (frontend, "random_nick"),
+        (frontend, "prompt"),
+        (frontend, "chan_prompt"),
         (ui, "dedicated_msg_window"),
         (ui, "dedicated_notice_window"),
         (ui, "hide_joinparts"),
@@ -90,14 +95,23 @@ def __interpret_config():
         else:
             section[option] = False
 
+
     # An initial nick being specified overrides random_nick.
-    if ui["initial_nick"] != "":
-        ui["random_nick"] = False
+    if frontend["initial_nick"] != "":
+        frontend["random_nick"] = False
+
+    # If atheme::enabled is false, force every other Atheme integration option
+    # off. Then, either way, remove "enabled"; it is only a meta-option.
+    if atheme["enabled"] == False:
+       for option in atheme:
+         atheme[option] = False
+    del atheme["enabled"]
 
 
 def js_config():
     options = {
-        'tunefront': tunefront,
+        'atheme': atheme,
+        'frontend': frontend,
         'ui': ui,
     }
     return json.dumps(options)

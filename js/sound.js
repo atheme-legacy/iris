@@ -31,8 +31,8 @@ qwebirc.sound.SoundPlayer = new Class({
     }
     
     var debugMode = false;
-    qwebirc.util.importJS(this.session.config.tunefront.statis_base_url + "js/" + (debugMode?"soundmanager2":"soundmanager2-nodebug-jsmin") + ".js", "soundManager", function() {
-      soundManager.url = this.session.config.tunefront.statis_base_url + "sound/";
+    qwebirc.util.importJS(this.session.config.frontend.statis_base_url + "js/" + (debugMode?"soundmanager2":"soundmanager2-nodebug-jsmin") + ".js", "soundManager", function() {
+      soundManager.url = this.session.config.frontend.statis_base_url + "sound/";
       
       soundManager.debugMode = debugMode;
       soundManager.useConsole = debugMode;
@@ -51,7 +51,7 @@ qwebirc.sound.SoundPlayer = new Class({
   },
   beep: function() {
     if(!this.beepLoaded) {
-      this.createSound("beep", this.session.config.tunefront.statis_base_url + "sound/beep3.mp3");
+      this.createSound("beep", this.session.config.frontend.statis_base_url + "sound/beep3.mp3");
       this.beepLoaded = true;
     }
     this.playSound("beep");

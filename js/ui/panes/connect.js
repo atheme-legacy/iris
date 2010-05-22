@@ -8,8 +8,8 @@ qwebirc.ui.LoginPane = new Class({
     this.parentElement = parentElement;
     this.createPane();
     
-    if (!this.session.config.ui.prompt && this.session.config.ui.initial_nick
-          && this.session.config.ui.initial_chans)
+    if (!this.session.config.frontend.prompt && this.session.config.frontend.initial_nick
+          && this.session.config.frontend.initial_chans)
       qwebirc.ui.ConfirmBox(this.session, this.parentElement, this);
     else
       qwebirc.ui.LoginBox(this.session, this.parentElement, this);
@@ -17,14 +17,14 @@ qwebirc.ui.LoginPane = new Class({
   createPane: function() {
   },
   setChannel: function(channel) {
-    this.session.config.ui.initial_chans = channel;
+    this.session.config.frontend.initial_chans = channel;
 
     while(this.parentElement.childNodes.length > 0)
       this.parentElement.removeChild(this.parentElement.firstChild);
 
-    if (!this.session.config.ui.prompt && this.session.config.ui.initial_nick
-          && this.session.config.ui.initial_chans) {
-      this.connectCallback({"nickname": this.session.config.ui.initial_nick, "autojoin": this.session.config.ui.initial_chans});
+    if (!this.session.config.frontend.prompt && this.session.config.frontend.initial_nick
+          && this.session.config.frontend.initial_chans) {
+      this.connectCallback({"nickname": this.session.config.frontend.initial_nick, "autojoin": this.session.config.frontend.initial_chans});
       return true;
     }
     else {
@@ -61,11 +61,11 @@ qwebirc.ui.ConfirmBox = function(session, parentElement, pane) {
   tr.appendChild(text);
   
   var nick = new Element("b");
-  nick.set("text", session.config.ui.initial_nick);
+  nick.set("text", session.config.frontend.initial_nick);
   
-  var c = session.config.ui.initial_chans.split(" ")[0].split(",");
+  var c = session.config.frontend.initial_chans.split(" ")[0].split(",");
   
-  text.appendChild(document.createTextNode("To connect to " + session.config.ui.network_name + " IRC and join channel" + ((c.length>1)?"s":"") + " "));
+  text.appendChild(document.createTextNode("To connect to " + session.config.frontend.network_name + " IRC and join channel" + ((c.length>1)?"s":"") + " "));
 
   for(var i=0;i<c.length;i++) {
     if((c.length > 1) && (i == c.length - 1)) {
@@ -77,7 +77,7 @@ qwebirc.ui.ConfirmBox = function(session, parentElement, pane) {
     
   }
   
-  if(!session.config.ui.random_nick) {
+  if(!session.config.frontend.random_nick) {
     text.appendChild(document.createTextNode(" as "));
     text.appendChild(nick);
   }
@@ -97,7 +97,7 @@ qwebirc.ui.ConfirmBox = function(session, parentElement, pane) {
   yes.focus();
   yes.addEvent("click", function(e) {
     parentElement.removeChild(outerbox);
-    pane.connectCallback({"nickname": session.config.ui.initial_nick, "autojoin": session.config.ui.initial_chans});
+    pane.connectCallback({"nickname": session.config.frontend.initial_nick, "autojoin": session.config.frontend.initial_chans});
   });
 }
 
@@ -126,7 +126,7 @@ qwebirc.ui.LoginBox = function(session, parentElement, pane) {
   
   var td = new Element("td");
   tr.appendChild(td);
-  td.set("html", "<h1>Connect to " + session.config.ui.network_name + " IRC</h1>");  
+  td.set("html", "<h1>Connect to " + session.config.frontend.network_name + " IRC</h1>");  
     
   var tr = new Element("tr");
   tbody.appendChild(tr);
@@ -168,26 +168,31 @@ qwebirc.ui.LoginBox = function(session, parentElement, pane) {
 
   var nick = new Element("input");
   createRow("Nickname:", nick);
-    
-  var srvbutton = new Element("input");
-  srvbutton.set("type", "checkbox");
-  srvbutton.set("checked", false);
-  createRow("Login to Services:", srvbutton);  
+  
+  if (session.config.atheme.nickserv_login) {
+    var srvbutton = new Element("input");
+    srvbutton.set("type", "checkbox");
+    srvbutton.set("checked", false);
+    createRow("Login to Services:", srvbutton);  
 
-  var pass = new Element("input");
-  pass.set("type", "password");
-  var passRow = createRow("Password:", pass, {})[0];
-  passRow.setStyle("display", "none");
-  passRow.visible = false;
+    var pass = new Element("input");
+    pass.set("type", "password");
+    var passRow = createRow("Password:", pass, {})[0];
+    passRow.setStyle("display", "none");
+    passRow.visible = false;
 
-  srvbutton.addEvent("click", function(e) {
-    passRow.visible = !passRow.visible;
-    passRow.setStyle("display", passRow.visible ? null : "none");
-  }.bind(this));
+    srvbutton.addEvent("click", function(e) {
+      passRow.visible = !passRow.visible;
+      passRow.setStyle("display", passRow.visible ? null : "none");
+    }.bind(this));
+  }
 
-  var chanStyle = null;
-  var chan = new Element("input");
-  createRow("Channels:", chan, chanStyle);
+  if (session.config.frontend.chan_prompt ||
+      !session.config.frontend.initial_chans) {
+    var chanStyle = null;
+    var chan = new Element("input");
+    createRow("Channels:", chan, chanStyle);
+  }
 
   var connbutton = new Element("input", {"type": "submit"});
   connbutton.set("value", "Connect");
@@ -196,8 +201,13 @@ qwebirc.ui.LoginBox = function(session, parentElement, pane) {
   form.addEvent("submit", function(e) {
     new Event(e).stop();
     var nickname = nick.value;
-    var chans = chan.value;
-    var password = pass.value;
+    var chans = "";
+    if (session.config.frontend.chan_prompt ||
+        !session.config.frontend.initial_chans)
+      chans = chan.value;
+    else
+      chans = session.config.frontend.initial_chans;
+
     if(chans == "#") /* sorry channel "#" :P */
       chans = "";
 
@@ -209,14 +219,17 @@ qwebirc.ui.LoginBox = function(session, parentElement, pane) {
 
     var data = {"nickname": nickname, "autojoin": chans};
 
-    if (password) {
+    if (session.config.atheme.nickserv_login && pass.value) {
+      var password = pass.value;
       qwebirc.irc.AthemeQuery.login(function(token) {
         if (token == null) {
           alert("Authentication failed");
         }
-        qwebirc.ui.Atheme.handleLogin(session, nick.value, token);
-        data["authUser"] = nick.value;
-        data["authToken"] = token;
+        else {
+          qwebirc.ui.Atheme.handleLogin(session, nick.value, token);
+          data["authUser"] = nick.value;
+          data["authToken"] = token;
+        }
         parentElement.removeChild(outerbox);
     
         pane.connectCallback(data);
@@ -228,10 +241,11 @@ qwebirc.ui.LoginBox = function(session, parentElement, pane) {
     }
   }.bind(this));
     
-  if (session.config.ui.initial_nick)
-    nick.set("value", session.config.ui.initial_nick);
-  if (session.config.ui.initial_chans)
-    chan.set("value", session.config.ui.initial_chans);
+  if (session.config.frontend.initial_nick)
+    nick.set("value", session.config.frontend.initial_nick);
+  if (session.config.frontend.initial_chans &&
+      session.config.frontend.chan_prompt)
+    chan.set("value", session.config.frontend.initial_chans);
 
   nick.focus();
 }

@@ -10,6 +10,8 @@
 # Be warned that some settings are, via inclusion in the frontend, exposed
 # to users. These blocks are labeled.
 
+
+
 # EXECUTION OPTIONS
 # These options set parameters to Iris startup and execution.
 # They require a backend restart to change.
@@ -76,7 +78,7 @@ ident_string: webchat
 #   the command used to set the ip/hostname, and set webirc_password
 #   to be the password used in the server's configuration file.
 #
-# Set empty: Disables WEBIRC.
+# Left empty: Disables WEBIRC.
 #   Sends the IP and hostname in the realname field, overriding
 #   the REALNAME option.
 webirc_mode:
@@ -91,72 +93,8 @@ cgiirc_string: CGIIRC
 
 
 
-# FRONTEND UI OPTIONS
-# These alter the behaviour or appearance of the JavaScript UI.
-# Many of these are overridable by query string or user set options, in which
-# case these settings serve as the default when they are not.
-# These are exposed to users.
-# These require a rerun of compile.py to change.
-[ui]
-
-# BASE URL: URL that this qwebirc instance will be available at, add
-# the port number if your instance runs on a port other than 80.
-base_url: http://foo.foo.org/
-
-# NETWORK NAME: The name of your IRC network, displayed throughout the
-# application.
-network_name: FooNet
-
-# APP TITLE: The title of the application in the web browser.
-# The title of the application in the web browser.
-app_title: %(network_name)s Web IRC
-
-# INITIAL NICK: An initial nickname for the user.
-# Leave blank for most uses.
-initial_nick:
-
-# INITIAL CHANS: Default channel list.
-# Comma-separate channels, and provide keys after, space-separated.
-# Leave blank if undesired.
-initial_chans:
-
-# RANDOM NICK: Whether a random nick for the user should be generated.
-random_nick: false
-
-# PROMPT: Whether the user should be prompted to edit their nick and channel
-# even if both are specified.
-prompt: false
-
-# DEDICATED MSG WINDOW: Whether PMs should be shown in a dedicated window.
-dedicated_msg_window: false
-
-# DEDICATED NOTICE WINDOW: Whether notices should be shown in a dedicated
-# window.
-dedicated_notice_window: false
-
-# HIDE JOINPARTS: Whether joins and parts should be hidden in channels.
-hide_joinparts: false
-
-# HUE: The default colour for the interface.
-hue: 210
-
-# LASTPOS LINE: Whether a "last position" marker should be displayed.
-lastpos_line: true
-
-# NICK COLORS: Whether nicks are coloured by default.
-nick_colors: false
-
-# FLASH ON MENTION: Whether to flash the title for attention when highlighted.
-flash_on_mention: false
-
-# BEEP ON MENTION: Whether to beep for attention when highlighted.
-# Requires Flash; does nothing if the user lacks it.
-beep_on_mention: false
-
-
-
 # ATHEME ENGINE OPTIONS
-# These options control integration with Atheme by the Atheme engine backend.
+# These options control communication with Atheme by the Atheme engine backend.
 # They require a backend restart to change.
 [athemeengine]
 
@@ -185,6 +123,118 @@ smtp_host: 127.0.0.1
 
 # SMTP PORT: Port of SMTP server feedback will be sent through.
 smtp_port: 25
+
+
+
+# FRONTEND OPTIONS
+# These alter the general settings and text used within the frontend.
+# Many of these are overridable by query string, in which case these settings
+# serve as the default when they are not.
+# These are exposed to users.
+# These require a rerun of compile.py to change.
+[frontend]
+
+# BASE URL: URL that this qwebirc instance will be available at, add
+# the port number if your instance runs on a port other than 80.
+base_url: http://foo.foo.org/
+
+# NETWORK NAME: The name of your IRC network, displayed throughout the
+# application.
+network_name: FooNet
+
+# APP TITLE: The title of the application in the web browser.
+# The title of the application in the web browser.
+app_title: %(network_name)s Web IRC
+
+# INITIAL NICK: An initial nickname for the user.
+# Leave blank for most uses.
+initial_nick:
+
+# INITIAL CHANS: Default channel list.
+# Comma-separate channels, and provide keys after, space-separated.
+# Leave blank if undesired.
+initial_chans:
+
+# RANDOM NICK: Whether a random nick for the user should be generated.
+random_nick: false
+
+# PROMPT: Whether the user should be prompted to edit their connection details
+# before connecting. Ignored if initial_nick and random_nick, OR initial_chans,
+# is empty, in which case a prompt is always shown.
+prompt: false
+
+# CHAN PROMPT: Whether the user should be prompted to edit the channel before
+# connecting if prompted for connection details. Otherwise, they are only
+# prompted for nick. Ignored if initial_chans is empty, in which case a channel
+# prompt is always shown.
+# Primarily useful as a query string parameter for embedded webclients.
+chan_prompt: true
+
+# STATIC BASE URL: This value is used to build the URL for all static
+# HTTP requests. You'd find this useful if you're running multiple
+# Iris instances on the same host.
+static_base_url: /
+
+# DYNAMIC BASE URL:This value is used to build the URL for all dynamic
+# HTTP requests. You'd find this useful if you're running multiple
+# Iris instances on the same host.
+dynamic_base_url: /
+
+
+
+# ATHEME INTEGRATION OPTIONS
+# These options control integration with Atheme in the frontend.
+# They require a rerun of compile.py to change.
+# These are exposed to end users.
+[atheme]
+
+# ENABLED: Enables Atheme integration.
+# Turn off to force all the following options off.
+enabled: true
+
+# NICKSERV LOGIN: Enable login to a NickServ account using Iris, before
+# connecting. Requires SASL with the AUTHCOOKIE method be loaded in Atheme.
+nickserv_login: true
+
+# CHANNEL LIST: Enables the channel listing.
+# Requires ALIS be loaded in Atheme.
+chan_list: true
+
+
+
+# UI OPTIONS
+# These alter the way the frontend looks and presents information to the user.
+# Many of these can be set by user in their options, in which case these
+# settings serve as the default.
+# These are exposed to users.
+# These require a rerun of compile.py to change.
+[ui]
+
+# DEDICATED MSG WINDOW: Whether PMs should be shown in a dedicated window.
+dedicated_msg_window: false
+
+# DEDICATED NOTICE WINDOW: Whether notices should be shown in a dedicated
+# window.
+dedicated_notice_window: false
+
+# HIDE JOINPARTS: Whether joins and parts should be hidden in channels.
+hide_joinparts: false
+
+# HUE: The default colour for the interface.
+hue: 210
+
+# LASTPOS LINE: Whether a "last position" marker should be displayed.
+lastpos_line: true
+
+# NICK COLORS: Whether nicks are coloured by default.
+nick_colors: false
+
+# FLASH ON MENTION: Whether to flash the title for attention when highlighted.
+flash_on_mention: false
+
+# BEEP ON MENTION: Whether to beep for attention when highlighted.
+# Requires Flash; does nothing if the user lacks it.
+beep_on_mention: false
 
 
 
@@ -257,22 +307,3 @@ http_ajax_request_timeout: 30
 # engine will be closed after this many seconds, including connections
 # that haven't started/completed an HTTP request.
 http_request_timeout: 5
-
-
-
-# FRONTEND TUNABLE SETTINGS
-# You probably don't want to fiddle with these unless you really know what
-# you're doing...
-# These options are exposed to the users.
-# They require a rerun of compile.py to change.
-[tunefront]
-
-# STATIC BASE URL: This value is used to build the URL for all static
-# HTTP requests. You'd find this useful if you're running multiple
-# Iris instances on the same host.
-static_base_url: /
-
-# DYNAMIC BASE URL:This value is used to build the URL for all dynamic
-# HTTP requests. You'd find this useful if you're running multiple
-# Iris instances on the same host.
-dynamic_base_url: /

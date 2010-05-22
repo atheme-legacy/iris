@@ -283,6 +283,6 @@ qwebirc.ui.EmbedWizard = new Class({
     else
       URL.push("prompt=0");
 
-    return this.session.config.ui.base_url + (URL.length>0?"?":"") + URL.join("&");
+    return this.session.config.frontend.base_url + (URL.length>0?"?":"") + URL.join("&");
   }
 });

@@ -63,7 +63,7 @@ qwebirc.ui.Flasher = new Class({
       this.favIconVisible = true;
       this.emptyFavIcon = new Element("link");
       this.emptyFavIcon.rel = "shortcut icon";
-      this.emptyFavIcon.href = this.session.config.tunefront.static_base_url + "images/empty_favicon.ico";
+      this.emptyFavIcon.href = this.session.config.frontend.static_base_url + "images/empty_favicon.ico";
       this.emptyFavIcon.type = "image/x-icon";
       this.flashing = false;
     
