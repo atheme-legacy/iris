@@ -146,27 +146,23 @@ network_name: FooNet
 # The title of the application in the web browser.
 app_title: %(network_name)s Web IRC
 
-# INITIAL NICK: An initial nickname for the user.
-# Leave blank for most uses.
-initial_nick:
+# INITIAL NICK: Default initial nickname for the user.
+# '.' characters will be replaced by random digits.
+# Leave blank to force the user to enter a nick before connecting.
+initial_nick: iris.....
 
-# INITIAL CHANS: Default channel list.
+# INITIAL CHANS: Default channels to join on connect.
 # Comma-separate channels, and provide keys after, space-separated.
-# Leave blank if undesired.
+# Leave blank for to join no channels by default.
 initial_chans:
 
-# RANDOM NICK: Whether a random nick for the user should be generated.
-random_nick: false
-
 # PROMPT: Whether the user should be prompted to edit their connection details
-# before connecting. Ignored if initial_nick and random_nick, OR initial_chans,
-# is empty, in which case a prompt is always shown.
-prompt: false
+# before connecting. Ignored if initial_nick or initial_chans are empty.
+prompt: true
 
 # CHAN PROMPT: Whether the user should be prompted to edit the channel before
 # connecting if prompted for connection details. Otherwise, they are only
-# prompted for nick. Ignored if initial_chans is empty, in which case a channel
-# prompt is always shown.
+# prompted for nick. Ignored if initial_chans is empty.
 # Primarily useful as a query string parameter for embedded webclients.
 chan_prompt: true
 

@@ -77,7 +77,7 @@ qwebirc.ui.ConfirmBox = function(session, parentElement, pane) {
     
   }
   
-  if(!session.config.frontend.random_nick) {
+  if(!session.config.frontend.initial_nick_rand) {
     text.appendChild(document.createTextNode(" as "));
     text.appendChild(nick);
   }

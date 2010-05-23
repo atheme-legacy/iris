@@ -113,8 +113,21 @@ qwebirc.ui.EmbedWizard = new Class({
       "first": "This wizard will help you create an embedded client by asking you questions then giving you the code to add to your website.<br/><br/>You can use the <b>Next</b> and <b>Back</b> buttons to navigate through the wizard; click <b>Next</b> to continue."
     });
     
+    var default_nick = this.session.config.frontend.initial_nick_default;
+    this.nicknameBox = new Element("input");
+    this.nicknameBox.addClass("text");
+    this.nicknameBox.set("value", default_nick);
+    this.nickname = this.newStep({
+      "title": "Set nickname",
+      "first": "Enter the nickname you would like the client to use by default. Leave it blank for users to be forced to enter a nick themselves:",
+      "hint": "You can use a random nick by ending the nick in a series of '.' characters, each of which will be replaced by a random digit.",
+      "middle": this.nicknameBox
+    }).addEvent("show", af.bind(this.nicknameBox));
+
+    var default_chans = this.session.config.frontend.initial_chans_default;
     this.chanBox = new Element("input");
     this.chanBox.addClass("text");
+    this.chanBox.set("value", default_chans);
     this.chans = this.newStep({
       "title": "Set channels",
       "first": "Enter the channels you would like the client to join on startup:",
@@ -123,45 +136,18 @@ qwebirc.ui.EmbedWizard = new Class({
       middle: this.chanBox
     }).addEvent("show", af.bind(this.chanBox));
     
-    var customnickDiv = new Element("div");
-    this.customnick = this.newStep({
-      "title": "Nickname mode",
-      "first": "At startup would you like the client to use a random nickname, a preset nickname or a nickname of the users choice?",
-      "hint": "It is recommended that you only use a preset nickname if the client is for your own personal use.",
-      middle: customnickDiv
-    });
-
-    this.choosenick = this.newRadio(customnickDiv, "Make the user choose a nickname.", "nick", true);
-    this.randnick = this.newRadio(customnickDiv, "Use a random nickname, e.g. qwebirc12883.", "nick");
-    this.presetnick = this.newRadio(customnickDiv, "Use a preset nickname of your choice.", "nick");
-    
+    var default_prompt = this.session.config.frontend.prompt_default;
     var promptdiv = new Element("form");
     this.connectdialog = this.newStep({
       "title": "Display connect dialog?",
       "first": "Do you want the user to be shown the connect dialog (with the values you have supplied pre-entered) or just a connect confirmation?",
       middle: promptdiv,
-      "hint": "You need to display the dialog if you want the user to be able to set their nickname before connecting."
+      "hint": "You need to display the dialog if you want the user to be able to edit their nickname before connecting."
     });
     
-    var autoconnect = this.newRadio(promptdiv, "Connect without displaying the dialog.", "prompt", true);
-    this.connectdialogr = this.newRadio(promptdiv, "Show the connect dialog.", "prompt");
+    this.connectdialogr = this.newRadio(promptdiv, "Show the connect dialog.", "prompt", default_prompt);
+    var autoconnect = this.newRadio(promptdiv, "Connect without displaying the dialog.", "prompt", !default_prompt);
     
-    this.nicknameBox = new Element("input");
-    this.nicknameBox.addClass("text");
-    this.nickname = this.newStep({
-      "title": "Set nickname",
-      "first": "Enter the nickname you would like the client to use by default (use a . for a random number):",
-      "premove": function() {
-        if(this.nicknameBox.value == "") {
-          alert("You must supply a nickname.");
-          this.nicknameBox.focus();
-          return false;
-        }
-        return true;
-      }.bind(this),
-      middle: this.nicknameBox
-    }).addEvent("show", af.bind(this.nicknameBox));
-
     var codeDiv = new Element("div");
     this.finish = this.newStep({
       "title": "Finished!",
@@ -205,14 +191,9 @@ qwebirc.ui.EmbedWizard = new Class({
     this.showStep();
   },
   updateSteps: function() {
-    this.steps = [this.welcome, this.customnick];
+    this.steps = [this.welcome, this.nickname, this.chans];
     
-    if(this.presetnick.checked)
-      this.steps.push(this.nickname);
-      
-    this.steps.push(this.chans);
-    
-    if(this.chanBox.value != "" && !this.choosenick.checked)
+    if(this.chanBox.value != "" && this.nicknameBox.value != "")
       this.steps.push(this.connectdialog);
     
     this.steps.push(this.finish);
@@ -251,16 +232,10 @@ qwebirc.ui.EmbedWizard = new Class({
   generateURL: function() {
     var chans = this.chanBox.value;
     var nick = this.nicknameBox.value;
-    var connectdialog = this.connectdialogr.checked && chans != "" && !this.choosenick.checked;
+    var prompt = this.connectdialogr.checked && chans != "" && nick != "";
 
     var URL = [];
-    if(this.presetnick.checked) {
-      URL.push("nick=" + escape(nick));
-    } else if(!this.choosenick.checked) {
-      URL.push("randomnick=1");
-    } else {
-      URL.push("nick=");
-    }
+    URL.push("nick=" + escape(nick));
     
     if(chans) {
       var d = chans.split(",");
@@ -278,9 +253,9 @@ qwebirc.ui.EmbedWizard = new Class({
     else
       URL.push("channels=");
     
-    if(connectdialog)
+    if(prompt)
       URL.push("prompt=1");
-    else
+    else if (chans != "" && nick != "")
       URL.push("prompt=0");
 
     return this.session.config.frontend.base_url + (URL.length>0?"?":"") + URL.join("&");

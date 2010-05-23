@@ -18,12 +18,12 @@ qwebirc.session = new Class({
 	/* The UI instance. */
 	ui: null,
 
-        /* Atheme state. */
-        atheme: {
-          state: null,
-          user: null,
-          token: null
-        },
+	/* Atheme state. */
+	atheme: {
+		state: null,
+		user: null,
+		token: null
+	},
 
 	initialize: function(config) {
 		/* Set our ID. */
@@ -32,16 +32,33 @@ qwebirc.session = new Class({
 		/* Load settings from passed Iris configuration. */
 		this.config = config;
 
+		/* Stow away some unmodified values from said configuration.
+		 * This allows them to be accessed as 'default' values for
+		 * query strings later. */
+		var default_nick = this.config.frontend.initial_nick;
+		var default_chans = this.config.frontend.initial_chans;
+		var default_prompt = this.config.frontend.prompt;
+		this.config.frontend.initial_nick_default = default_nick;
+		this.config.frontend.initial_chans_default = default_chans;
+		this.config.frontend.prompt_default = default_prompt;
+
 		/* Load user settings from cookie. */
 		this.loadCookieSettings();
 
 		/* Load query string parameters. */
 		var args = qwebirc.util.parseURI(String(document.location));
+
+		/* Map backwards compatiblity query string aliases to the
+		 * parameters they represent, unless they're already set. */
+		if($defined(args["nick"]) && !$defined(args["initial_nick"]))
+			args["initial_nick"] = args["nick"];
+		if($defined(args["channels"]) && !$defined(args["initial_chans"]))
+			args["initial_chans"] = args["channels"];
 		
 		/* Load nick from query string. */
-		if($defined(args["nick"])) {
-			this.config.frontend.initial_nick = this.randSub(args["nick"]);
-			this.config.frontend.random_nick = false
+		if($defined(args["initial_nick"])) {
+			var initial_nick = args["initial_nick"];
+			this.config.frontend.initial_nick = initial_nick;
 		}
 
 		/* Load channels from query string. */
@@ -50,18 +67,9 @@ qwebirc.session = new Class({
 			if (urlchans)
 				this.config.frontend.initial_chans = urlchans;
 		}
-		if ($defined(args["channels"]))
-			this.config.frontend.initial_chans = args["channels"];
-
-		/* Load random_nick option from query string, overriden by a
-		 * nick being specified in the query string. */
-		if($defined(args["randomnick"])) {
-			if (args["randomnick"] && !$defined(args["nick"])) {
-				this.config.frontend.random_nick = true;
-			}
-			else {
-				this.config.frontend.random_nick = false;
-			}
+		if ($defined(args["initial_chans"])) {
+			var initial_chans = args["initial_chans"];
+			this.config.frontend.initial_chans = initial_chans;
 		}
 
 		/* Load prompt option from query string. */
@@ -86,11 +94,14 @@ qwebirc.session = new Class({
 			this.config.ui.hue = urlhue;
 		}
 
-		/* If random nick is on, apply it to generate a random nick. */
-		if (this.config.frontend.random_nick) {
-			this.config.frontend.initial_nick = "iris" +
-					Math.ceil(Math.random() * 100000);
+		/* Subtitute '.' characters in the nick with random digits. */
+		if (this.config.frontend.initial_nick.indexOf(".") != -1) {
+			var nick = this.config.frontend.initial_nick;
+			this.config.frontend.initial_nick = this.randSub(nick);
+			this.config.frontend.initial_nick_rand = true;
 		}
+		else
+			this.config.frontend.initial_nick_rand = false;
 
 		/* Insert any needed # symbols into channel names. */
 		if(this.config.frontend.initial_chans) {
@@ -197,30 +208,30 @@ qwebirc.session = new Class({
 		
 		return channel;
 	},
-        loadCookieSettings: function() {
-          var cookie = new Hash.Cookie("iris-settings", {duration: 3650, autoSave: false});
-          for (var i = 0; i < qwebirc.config.UserOptions.length; i++) {
-            var category = qwebirc.config.UserOptions[i].category;
-            var option = qwebirc.config.UserOptions[i].option;
-            var cookieName = category + "." + option;
-            if ($defined(cookie.get(cookieName)))
-              this.config[category][option] = cookie.get(cookieName);
-          }
+	loadCookieSettings: function() {
+		var cookie = new Hash.Cookie("iris-settings", {duration: 3650, autoSave: false});
+		for (var i = 0; i < qwebirc.config.UserOptions.length; i++) {
+			var category = qwebirc.config.UserOptions[i].category;
+			var option = qwebirc.config.UserOptions[i].option;
+			var cookieName = category + "." + option;
+			if ($defined(cookie.get(cookieName)))
+				this.config[category][option] = cookie.get(cookieName);
+	 	}
 
-          cookie = new Hash.Cookie("iris-auth");
-          if ($defined(cookie.get("user"))) {
-            this.atheme.user = cookie.get("user");
-            this.atheme.token = cookie.get("token");
-          }
-        },
-        saveUserSettings: function() {
-          var cookie = new Hash.Cookie("iris-settings", {duration: 3650, autoSave: false});
-          for (var i = 0; i < qwebirc.config.UserOptions.length; i++) {
-            var category = qwebirc.config.UserOptions[i].category;
-            var option = qwebirc.config.UserOptions[i].option;
-            var cookieName = category + "." + option;
-            cookie.set(cookieName, this.config[category][option]);
-          }
-          cookie.save();
-        }
+		cookie = new Hash.Cookie("iris-auth");
+		if ($defined(cookie.get("user"))) {
+			this.atheme.user = cookie.get("user");
+			this.atheme.token = cookie.get("token");
+		}
+	},
+	saveUserSettings: function() {
+		var cookie = new Hash.Cookie("iris-settings", {duration: 3650, autoSave: false});
+		for (var i = 0; i < qwebirc.config.UserOptions.length; i++) {
+			var category = qwebirc.config.UserOptions[i].category;
+			var option = qwebirc.config.UserOptions[i].option;
+			var cookieName = category + "." + option;
+			cookie.set(cookieName, this.config[category][option]);
+		}
+		cookie.save();
+	}
 });
