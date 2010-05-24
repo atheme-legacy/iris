@@ -160,18 +160,26 @@ initial_chans:
 # before connecting. Ignored if initial_nick or initial_chans are empty.
 prompt: true
 
-# CHAN PROMPT: Whether the user should be prompted to edit the channel before
-# connecting if prompted for connection details. Otherwise, they are only
-# prompted for nick. Ignored if initial_chans is empty.
+# CHAN PROMPT: Whether the user should be prompted to edit the default channel
+# provided by settings before connecting if prompted for connection details.
+# Otherwise, they are only prompted for nick. Ignored if initial_chans is empty.
 # Primarily useful as a query string parameter for embedded webclients.
 chan_prompt: true
+
+# CHAN AUTOCONNECT: Whether on clicking a channel in the client prior to
+# connect, in a channel list or other URLified text, they should be
+# automatically connected and joined without any further confirmation if they
+# have a nick either provided by settings or typed into a connect window.
+# If set false, then the user is simply redirected to the connect window, with
+# the channel set in the channel box.
+chan_autoconnect: true
 
 # STATIC BASE URL: This value is used to build the URL for all static
 # HTTP requests. You'd find this useful if you're running multiple
 # Iris instances on the same host.
 static_base_url: /
 
-# DYNAMIC BASE URL:This value is used to build the URL for all dynamic
+# DYNAMIC BASE URL: This value is used to build the URL for all dynamic
 # HTTP requests. You'd find this useful if you're running multiple
 # Iris instances on the same host.
 dynamic_base_url: /
@@ -192,9 +200,13 @@ enabled: true
 # connecting. Requires SASL with the AUTHCOOKIE method be loaded in Atheme.
 nickserv_login: true
 
-# CHANNEL LIST: Enables the channel listing.
+# CHAN LIST: Enables the channel listing.
 # Requires ALIS be loaded in Atheme.
 chan_list: true
+
+# CHAN LIST ON START: Open the channel listing automatically when the
+# client starts. Requires the channel list be enabled, obviously.
+chan_list_on_start: false
 
 
 

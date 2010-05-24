@@ -30,6 +30,10 @@ qwebirc.ui.Interface = new Class({
 
       /* Create login window. */ 
       this.session.ui.connectWindow(callback);
+
+      /* If enabled, open channel list. */
+      if (this.session.config.atheme.chan_list_on_start)
+        this.session.ui.listWindow();
     }.bind(this));
   }
 });

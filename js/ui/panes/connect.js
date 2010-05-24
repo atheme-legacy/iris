@@ -19,9 +19,9 @@ qwebirc.ui.ConnectPane = new Class({
   },
 
   connectChannel: function(channel) {
-    if (!this.session.config.frontend.prompt
-        && this.session.config.frontend.initial_nick
-        && this.session.config.frontend.initial_chans) {
+    if (this.session.config.frontend.chan_autoconnect 
+        && (this.session.config.frontend.initial_nick
+         || (this.nickBox && this.nickBox.value))) {
       this.connect(channel);
       return true;
     }

@@ -80,8 +80,10 @@ def __interpret_config():
         (atheme, "enabled"),
         (atheme, "nickserv_login"),
         (atheme, "chan_list"),
+        (atheme, "chan_list_on_start"),
         (frontend, "prompt"),
         (frontend, "chan_prompt"),
+        (frontend, "chan_autoconnect"),
         (ui, "dedicated_msg_window"),
         (ui, "dedicated_notice_window"),
         (ui, "hide_joinparts"),
@@ -98,9 +100,13 @@ def __interpret_config():
     # If atheme::enabled is false, force every other Atheme integration option
     # off. Then, either way, remove "enabled"; it is only a meta-option.
     if atheme["enabled"] == False:
-       for option in atheme:
-         atheme[option] = False
+        for option in atheme:
+            atheme[option] = False
     del atheme["enabled"]
+
+    # If atheme::chan_list is off, force atheme::chan_list_on_start off.
+    if atheme["chan_list"] == False:
+        atheme["chan_list_on_start"] = False
 
 
 def js_config():
