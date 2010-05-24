@@ -29,8 +29,19 @@ def jmerge_files(prefix, suffix, output, files, *args, **kwargs):
   merge_files(o, files, *args)
   
   # cough hack
+  skipjar = False
+  for arg in sys.argv:
+    if arg == "debug":
+      skipjar = True
   try:
-    compiled = jarit(o)
+    if not skipjar:
+      compiled = jarit(o)
+    else:
+      try:
+        f = open(o, "rb")
+        compiled = f.read()
+      finally:
+        f.close()
   except MinifyException, e:
     global JAVA_WARNING_SURPRESSED
     if not JAVA_WARNING_SURPRESSED:
