@@ -265,7 +265,7 @@ qwebirc.ui.StandardUI = new Class({
     return d;
   },
   connectWindow: function(callbackfn) {
-    var w = this.addCustomWindow("Connect", qwebirc.ui.LoginPane, "connect");
+    var w = this.addCustomWindow("Connect", qwebirc.ui.ConnectPane, "connect");
     w.subWindow.connectCallback = function(args) {
       w.close();
       callbackfn(args);

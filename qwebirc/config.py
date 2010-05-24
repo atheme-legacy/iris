@@ -80,7 +80,6 @@ def __interpret_config():
         (atheme, "enabled"),
         (atheme, "nickserv_login"),
         (atheme, "chan_list"),
-        (frontend, "random_nick"),
         (frontend, "prompt"),
         (frontend, "chan_prompt"),
         (ui, "dedicated_msg_window"),
@@ -95,10 +94,6 @@ def __interpret_config():
         else:
             section[option] = False
 
-
-    # An initial nick being specified overrides random_nick.
-    if frontend["initial_nick"] != "":
-        frontend["random_nick"] = False
 
     # If atheme::enabled is false, force every other Atheme integration option
     # off. Then, either way, remove "enabled"; it is only a meta-option.

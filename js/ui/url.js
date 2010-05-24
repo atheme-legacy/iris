@@ -43,7 +43,7 @@ qwebirc.ui.urlificate = function(session, element, text) {
       else {
         var connect = session.ui.getWindow(qwebirc.ui.WINDOW_CUSTOM, "Connect");
         if (connect) {
-          var connected = connect.subWindow.setChannel(newtext);
+          var connected = connect.subWindow.connectChannel(newtext);
           if (!connected)
             session.ui.selectWindow(connect);
         }
