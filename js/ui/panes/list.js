@@ -8,7 +8,7 @@ qwebirc.ui.ListPane = new Class({
   /* Store the list's current state. */
   loading: null,
   timestamp: 0,
-  page: 0,
+  page: 1,
   pagetext: null,
   prev: null,
   next: null,
@@ -24,7 +24,7 @@ qwebirc.ui.ListPane = new Class({
 
     /* Add back/forward buttons and page number. */
     this.prev = new Element("input", {"type": "submit", "value": "<- Prev Page", disabled: true});
-    this.pagetext = document.createTextNode("Page 1");
+    this.pagetext = document.createTextNode("Page 1 of 1");
     this.next = new Element("input", {"type": "submit", "value": "Next Page ->", disabled: true});
     parent.appendChild(this.prev);
     parent.appendChild(this.pagetext);
@@ -37,7 +37,7 @@ qwebirc.ui.ListPane = new Class({
       if (nameinput.value != this.namefilter || topicinput.value != this.topicfilter) {
         this.namefilter = nameinput.value;
         this.topicfilter = topicinput.value;
-        this.page = 0;
+        this.page = 1;
       }
       this.timestamp = 0;
       this.update();
@@ -72,13 +72,14 @@ qwebirc.ui.ListPane = new Class({
    * Update the channel list.
    */
   update: function() {
-    qwebirc.irc.AthemeQuery.channelList(function(channels, timestamp, more) {
+    qwebirc.irc.AthemeQuery.channelList(function(channels, timestamp, total) {
 
       /* Update our timestamp to the timestamp of this list. */
       this.timestamp = timestamp;
 
       /* Update the page number. */
-      this.pagetext.nodeValue = "Page " + (this.page+1);
+      var pages = Math.ceil(total/30);
+      this.pagetext.nodeValue = "Page " + (this.page) + " of " + pages;
 
       /* Cancel any timeout. */
       if (this.loading != null) {
@@ -92,14 +93,8 @@ qwebirc.ui.ListPane = new Class({
           this.chanbox.removeChild(this.chanbox.firstChild);
       }
 
-      /* If the connection failed, display that and return. */
-      if (channels == null) {
-        this.chanbox.set("html", "<tr><td class=\"loading\">Unable to load channel list, please try again later.</td></tr>");
-        return;
-      }
-  
       /* If we have a previous page, enable prev button. */
-      if (this.page > 0) {
+      if (this.page > 1) {
         this.prev.addEvent("click", function(e) {
           (new Event(e)).stop();
           this.page--;
@@ -114,7 +109,7 @@ qwebirc.ui.ListPane = new Class({
       }
 
       /* If we have a next page, enable next button. */
-      if (more) {
+      if (this.page < pages) {
         this.next.addEvent("click", function(e) {
           (new Event(e)).stop();
           this.page++;
@@ -128,6 +123,13 @@ qwebirc.ui.ListPane = new Class({
         this.next.removeEvents();
       }
 
+      /* If the connection failed, display that and return. */
+      if (channels == null) {
+        this.chanbox.set("html", "<tr><td class=\"loading\">Unable to load channel list, please try again later.</td></tr>");
+        return;
+      }
+
+      /* Otherwise, print the channels. */ 
       for (var i = 0; i < channels.length; i++) {
         var channel = new Element("tr");
 

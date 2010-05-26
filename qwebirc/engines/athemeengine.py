@@ -1,6 +1,6 @@
 from twisted.web import resource, server, static, error as http_error
 from xmlrpclib import ServerProxy
-import md5, sys, os, time, traceback, socket, xmlrpclib
+import fnmatch, md5, sys, os, time, traceback, socket, xmlrpclib
 import qwebirc.util.qjson as json
 import qwebirc.config as config
 from adminengine import AdminEngineAction
@@ -23,6 +23,7 @@ class AthemeEngine(resource.Resource):
   isLeaf = True
   
   def __init__(self, prefix):
+    self.chanlists = {}
     self.prefix = prefix
     self.__total_hit = HitCounter()
     self.get_xmlrpc_conn()
@@ -53,6 +54,46 @@ class AthemeEngine(resource.Resource):
         self.get_xmlrpc_conn() 
     return None
   
+  def do_list(self):
+   """Request a channel list.
+
+   Returns a list, or None for failure to retrieve the list (meaning a
+   connection error or programming/configuration bug).
+
+   """
+   output = None
+   try:
+     output = self.do_xmlrpc(self.conn.atheme.command, ("", "", "0.0.0.0", "ALIS", "LIST", "*", "-maxmatches", "-1"))
+   except xmlrpclib.Fault, e:
+     output = None
+   if output is None:
+     return None
+
+   chanlist = []
+
+   for line in output.splitlines():
+     lineitems = line.split(None, 2)
+
+     # Ignore Atheme's textual lines.
+     if lineitems[0] == "Returning" or lineitems[0] == "End":
+       continue
+
+     channel = { "name": lineitems[0], "users": int(lineitems[1]) }
+     if len(lineitems) > 2:
+       channel["topic"] = lineitems[2][1:]
+     else:
+       channel["topic"] = ""
+     chanlist.append(channel)
+
+   def chancmp(a, b):
+     if a["users"] != b["users"]:
+       return cmp(b["users"], a["users"])
+     else:
+       return cmp(a["name"].lower(), b["name"].lower())
+   chanlist.sort(chancmp)
+
+   return chanlist
+
   def render_POST(self, request):
     path = request.path[len(self.prefix):]
     if path[0] == "/":
@@ -169,6 +210,115 @@ class AthemeEngine(resource.Resource):
     request.write(response)
     request.finish()
     return True
+
+  def list(self, request):
+    """Request a channel list, with a start point, length, masks, and ts.
+
+    Optionally permits a timestamp to be provided. Replies with a dict
+    containing channel info for success, a result dict for failure, and
+    None to indicate connection failure.
+
+    """
+    if config.athemeengine["chan_list_enabled"] is False:
+      response = json.dumps(None)
+      request.write(response)
+      request.finish()
+      return True
+
+    start = request.args.get("s")
+    if start is None:
+      raise AJAXException, "No start point specified."
+    start = int(start[0])
+    if start < 0:
+      start = 0
+
+    length = request.args.get("l")
+    if length is None:
+      raise AJAXException, "No length specified."
+    length = int(length[0])
+
+    chanmask = request.args.get("cm")
+    if chanmask is not None:
+      chanmask = chanmask[0].lower()
+    else:
+      chanmask = "*"
+
+    topicmask = request.args.get("tm")
+    if topicmask is not None:
+      topicmask = topicmask[0].lower()
+    else:
+      topicmask = "*"
+
+    listtime = request.args.get("t")
+    if listtime is not None:
+      listtime = int(listtime[0])
+    else:
+      listtime = 0
+    
+    self.__total_hit()
+    
+    result = { "success": True, "list": None, "total": 0, "ts": 0 }
+
+    if listtime != 0 and listtime in self.chanlists:
+      chanlist = self.chanlists[listtime]
+    else:
+      most_recent = None
+      if (len(self.chanlists) > 0):
+        most_recent = max(self.chanlists.keys())
+      now = int(time.time())
+      if (most_recent is not None and
+          now - most_recent <= config.athemeengine["chan_list_max_age"]):
+        chanlist = self.chanlists[most_recent]
+        listtime = most_recent
+      else:
+        if (len(self.chanlists) >= config.athemeengine["chan_list_count"]):
+          del self.chanlists[min(self.chanlists.keys())]
+        chanlist = self.do_list()
+        if chanlist is None:
+          response = json.dumps(None)
+          request.write(response)
+          request.finish()
+          return True
+        listtime = int(time.time())
+        self.chanlists[listtime] = chanlist
+      
+    if chanmask == "*" and topicmask == "*":
+      if start > len(chanlist):
+        start = len(chanlist)
+      if start+length > len(chanlist):
+        length = len(chanlist) - start
+      if length > 0:
+        result["list"] = chanlist[start:start+length]
+      else:
+        result["list"] = []
+      result["total"] = len(chanlist)
+
+    else:
+      skipped = 0
+      total = 0
+      filtered_chanlist = []
+
+      for channel in chanlist:
+        if not fnmatch.fnmatchcase(channel["name"].lower(), chanmask):
+          continue
+        if not fnmatch.fnmatchcase(channel["topic"].lower(), topicmask):
+          continue
+        total += 1
+        if (skipped < start):
+          skipped += 1
+          continue
+        if (total - skipped < length):
+          filtered_chanlist.append(channel)
+
+      result["list"] = filtered_chanlist
+      result["total"] = total
+
+    result["ts"] = listtime
+    response = json.dumps(result)
+    request.write(response)
+    request.finish()
+    return True
+
   
   @property
   def adminEngine(self):
@@ -176,4 +326,4 @@ class AthemeEngine(resource.Resource):
       "Total hits": [(self.__total_hit,)],
     }
     
-  COMMANDS = dict(l=login, o=logout, c=command)
+  COMMANDS = dict(l=login, o=logout, c=command, li=list)

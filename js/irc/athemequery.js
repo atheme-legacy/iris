@@ -149,63 +149,32 @@ qwebirc.irc.AthemeQuery.checkLogin = function(callback, user, token) {
  * \param topicmask A topic mask to filter on.
  */
 qwebirc.irc.AthemeQuery.channelList = function(callback, timestamp, limit, page, chanmask, topicmask) {
-	r = qwebirc.irc.AthemeQuery.newRequest("c");
+	r = qwebirc.irc.AthemeQuery.newRequest("li");
 
 	r.addEvent("failure", function(xhr) {
-		callback(null);
+		callback(null, 1, 1);
 	});
 	r.addEvent("success", function(json, string) {
 		if (json != null && json["success"]) {
-			var channels = [];
-			var more = false;
-			var chanlines = json["output"].split("\n");
-			for (var i = 1; i < chanlines.length-1; i++) {
-				if (chanlines[i] == "Maximum channel output reached") {
-					more = true;
-					break;
-				}
-				var channel = {};
-
-				var chanitems = chanlines[i].splitMax(" ", 2);
-				channel.name = chanitems[0];
-				chanitems[1] = chanitems[1].replace(/^ */, "");
-				
-				chanitems = chanitems[1].splitMax(" ", 2);
-				channel.users = chanitems[0];
-				if (chanitems.length > 1)
-					channel.topic = chanitems[1].slice(1);
-				else
-					channel.topic = "";
-
-				channels.push(channel);
-			}
-
-			callback(channels, (new Date()).getTime()/1000, more);
+			callback(json["list"], json["ts"],
+					json["total"]);
 		} else {
-			if (json != null)
-			callback(null, 0, false);
+			callback(null, 1, 1);
 		}
 	}.bind(this));
 
-	var pattern;
 	if (chanmask == "")
-		pattern = "*";
-	else
-		pattern = chanmask;
+		chanmask = "*";
+	if (topicmask == "")
+		topicmask = "*";
 
-	var postdata = "s=" + encodeURIComponent("ALIS");
-	postdata += "&c=" + encodeURIComponent("LIST");
-	postdata += "&p=" + encodeURIComponent(pattern);
-	postdata += "&p=" + encodeURIComponent("-maxmatches");
-	postdata += "&p=" + encodeURIComponent(limit);
-	if (page != 0) {
-		postdata += "&p=" + encodeURIComponent("-skip");
-		postdata += "&p=" + encodeURIComponent(limit*page);
-	}
-	if (topicmask != "") {
-		postdata += "&p=" + encodeURIComponent("-topic");
-		postdata += "&p=" + encodeURIComponent(topicmask);
-	}
+	var postdata = "s=" + encodeURIComponent(limit*(page-1));
+	postdata += "&l=" + encodeURIComponent(limit);
+	postdata += "&t=" + encodeURIComponent(timestamp);
+        if (chanmask != "*")
+	  postdata += "&cm=" + encodeURIComponent(chanmask);
+        if (topicmask != "*")
+	postdata += "&tm=" + encodeURIComponent(topicmask);
 
 	r.send(postdata);
 }

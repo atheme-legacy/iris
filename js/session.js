@@ -88,6 +88,14 @@ qwebirc.session = new Class({
 				this.config.frontend.chan_prompt = false;
 		}
 
+		/* Load chan_list_on_start option from query string. */
+		if ($defined(args["chan_list_on_start"])) {
+			if (args["chan_list_on_start"] == 1)
+				this.config.atheme.chan_list_on_start = true;
+			else
+				this.config.atheme.chan_list_on_start = false;
+		}
+
 		/* Load hue from query string. */
 		var urlhue = this.getHueArg(args);
 		if (urlhue) {

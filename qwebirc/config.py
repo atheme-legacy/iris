@@ -52,6 +52,8 @@ def __interpret_config():
            section[option] = section[option].split(' ')
 
     integer_options = [
+        (athemeengine, "chan_list_count"),
+        (athemeengine, "chan_list_max_age"),
         (execution, "syslog_port"),
         (feedbackengine, "smtp_port"),
         (irc, "port"),
@@ -81,6 +83,7 @@ def __interpret_config():
         (atheme, "nickserv_login"),
         (atheme, "chan_list"),
         (atheme, "chan_list_on_start"),
+        (athemeengine, "chan_list_enabled"),
         (frontend, "prompt"),
         (frontend, "chan_prompt"),
         (frontend, "chan_autoconnect"),

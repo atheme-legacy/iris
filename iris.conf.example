@@ -103,6 +103,21 @@ cgiirc_string: CGIIRC
 # If you don't have an Atheme directory instance, leave unset.
 xmlrpc_path: http://127.0.0.1:8080/xmlrpc
 
+# CHAN LIST ENABLED: Whether to permit channel lists to be requested.
+# These could be a memory usage concern (at least if the below are set badly).
+chan_list_enabled: true
+
+# CHAN LIST MAX AGE: Maximum age of a channel list before a new list will be
+# requested and used for all future requests. This is how potentially outdated
+# the displayed channel list can be for clients requesting a new list.
+# Measured in seconds.
+chan_list_max_age: 120
+
+# CHAN LIST COUNT: Number of old channel lists to keep. These permit clients
+# showing part of a previous list to explicitly request more of the same list
+# until it is expired.
+chan_list_count: 3
+
 
 
 # FEEDBACK ENGINE OPTIONS
@@ -206,6 +221,7 @@ chan_list: true
 
 # CHAN LIST ON START: Open the channel listing automatically when the
 # client starts. Requires the channel list be enabled, obviously.
+# Primarily useful as a query string option for network websites.
 chan_list_on_start: false
 
 

@@ -93,6 +93,9 @@ qwebirc.irc.Commands = new Class({
   cmd_LOGOUT: [false, undefined, undefined, function(args) {
     this.session.irc.ui.logout();
   }],
+  cmd_LIST: [false, undefined, undefined, function(args) {
+    this.newUIWindow("listWindow");
+  }],
   cmd_OPTIONS: [false, undefined, undefined, function(args) {
     this.newUIWindow("optionsWindow");
   }],
