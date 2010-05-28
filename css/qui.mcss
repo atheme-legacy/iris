@@ -15,6 +15,10 @@ nicklist_border=c8d2dc
 nicklist_background=f2f0ff
 nicklist_text=000000
 nicklist_selected_border=c8d2dc
+chanlist_border=c8d2dc
+chanlist_background_header=d8e0e6
+chanlist_background_1=e8f1f4
+chanlist_background_2=e0e7ee
 menu_border=c8d2dc
 menu_background=f2f0ff
 menu_hover_background=FFFFFE
@@ -287,4 +291,33 @@ div#noscript {
   border-top: 1px solid $(lastpositionbar);
   margin-left: 3em;
   margin-right: 3em;
+}
+
+.qwebirc-listpane .chanbox {
+  border-color: $(chanlist_border);
+}
+
+.qwebirc-listpane .chanbox th {
+  border-color: $(chanlist_border);
+  background-color: $(chanlist_background_header);
+}
+
+.qwebirc-listpane .chanbox td {
+  border-color: $(chanlist_border);
+}
+
+.qwebirc-listpane .chanbox td.chan1 {
+  background-color: $(chanlist_background_1);
+}
+
+.qwebirc-listpane .chanbox td.chan2 {
+  background-color: $(chanlist_background_2);
+}
+
+.qwebirc-listpane .chanbox tr:hover td.chan1 {
+  background-color: $(chanlist_background_header);
+}
+
+.qwebirc-listpane .chanbox tr:hover td.chan2 {
+  background-color: $(chanlist_background_header);
 }

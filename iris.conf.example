@@ -187,7 +187,7 @@ chan_prompt: true
 # have a nick either provided by settings or typed into a connect window.
 # If set false, then the user is simply redirected to the connect window, with
 # the channel set in the channel box.
-chan_autoconnect: true
+chan_autoconnect: false
 
 # STATIC BASE URL: This value is used to build the URL for all static
 # HTTP requests. You'd find this useful if you're running multiple

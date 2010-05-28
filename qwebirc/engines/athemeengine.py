@@ -294,6 +294,8 @@ class AthemeEngine(resource.Resource):
       result["total"] = len(chanlist)
 
     else:
+      chanmask = "*" + chanmask + "*"
+      topicmask = "*" + topicmask + "*"
       skipped = 0
       total = 0
       filtered_chanlist = []

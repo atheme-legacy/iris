@@ -1,27 +1,3 @@
-/* Account box. */
-
-#qwebirc-accbox {
-  height: 3.5em;
-  padding-left: 0.5em;
-  font-size: 0.9em;
-}
-
-#qwebirc-accuser {
-  width: 8em;
-}
-#qwebirc-accpass {
-  width: 8em;
-  margin: 0 0.5em;
-}
-
-.qwebirc-acctextbox {
-  padding-top: 0.5em;
-}
-
-.qwebirc-acclink {
-  text-decoration: none;
-}
-
 /**************** LOGIN BOX *******************/
 
 .qwebirc-centrebox {
@@ -282,3 +258,76 @@
   border: 1px solid black;
 }
 
+/************* LIST *****************/
+
+.qwebirc-listpane .filterbox {
+  padding: 0.3em;
+  text-align: center;
+}
+
+.qwebirc-listpane .filterbox .inputbox {
+  padding: 0 0.3em;
+}
+
+.qwebirc-listpane .pagebox {
+  padding: 0.3em;
+  text-align: center;
+}
+
+.qwebirc-listpane .chanbox {
+  width: 100%;
+  clear: both;
+  border-style: solid;
+  border-width: 0 0 1px 0;
+}
+
+.qwebirc-listpane .chanbox .name {
+  width: 11em;
+}
+
+.qwebirc-listpane .chanbox .users {
+  text-align: center;
+  width: 4em;
+}
+
+.qwebirc-listpane .chanbox th {
+  padding: 0.3em;
+  text-align: center;
+  font-weight: bold;
+  border-width: 1px 1px 1px 0;
+  border-style: solid;
+}
+
+.qwebirc-listpane .chanbox th.chantopic {
+  border-width: 1px 0 1px 0;
+}
+
+.qwebirc-listpane .chanbox td {
+  padding: 0.3em;
+  border-width: 0 1px 0 0;
+  border-style: solid;
+}
+
+.qwebirc-listpane .chanbox td.loading {
+  padding: 0.3em;
+  border-width: 1px 0 0 0;
+  border-style: solid;
+}
+
+.qwebirc-listpane .chanbox td.chantopic {
+  border-width: 0;
+}
+
+.qwebirc-listpane .chanbox tr:hover td.chan1 {
+  cursor: pointer;
+  cursor: hand;
+}
+
+.qwebirc-listpane .chanbox tr:hover td.chan2 {
+  cursor: pointer;
+  cursor: hand;
+}
+
+.qwebirc-listpane .chanbox tr:hover td.name {
+  text-decoration: underline;
+}

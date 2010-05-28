@@ -44,8 +44,10 @@ qwebirc.ui.urlificate = function(session, element, text) {
         var connect = session.ui.getWindow(qwebirc.ui.WINDOW_CUSTOM, "Connect");
         if (connect) {
           var connected = connect.subWindow.connectChannel(newtext);
-          if (!connected)
+          if (!connected) {
             session.ui.selectWindow(connect);
+            connect.subWindow.nickBox.focus();
+          }
         }
       }
     });
@@ -113,6 +115,8 @@ qwebirc.ui.urlificate = function(session, element, text) {
     element.appendChild(a);
     if($defined(fn))
       a.addEvent("click", function(e) { new Event(e).stop(); fn(disptext); });
+    else
+      a.addEvent("click", function(e) { new Event(e).stopPropagation(); });
     
     return punct;
   };
