@@ -163,13 +163,8 @@ class QWebIRCClient(basic.LineReceiver):
     self.authUser = f.get("authUser")
     self.authToken = f.get("authToken")
 
-    if config.irc["webirc_mode"] == "":
-      self.write("USER %s bleh bleh %s :%s" % (ident, ip, realname))
-    elif config.irc["webirc_mode"] == "webirc":
+    if config.irc["webirc_mode"] == "webirc":
       self.write("WEBIRC %s qwebirc %s %s" % (config.irc["webirc_password"], hostname, ip))
-      self.write("USER %s bleh %s :%s" % (ident, ip, realname))
-    elif config.irc["webirc_mode"] == "cgiirc":
-      self.write("PASS %s_%s_%s" % (config.irc["cgiirc_string"], ip, hostname))
       self.write("USER %s bleh %s :%s" % (ident, ip, realname))
     elif config.irc["webirc_mode"] == "realname":
       if ip == hostname:
@@ -178,6 +173,8 @@ class QWebIRCClient(basic.LineReceiver):
         dispip = "%s/%s" % (hostname, ip)
 
       self.write("USER %s bleh bleh :%s - %s" % (ident, dispip, realname))
+    else:
+      self.write("USER %s bleh bleh %s" % (ident, ip))
 
     if pass_ is not None:
       self.write("PASS :%s" % pass_)

@@ -63,7 +63,7 @@ ident_string: webchat
 # be able to transparently display users of Iris as from their
 # original hosts, rather than as coming from the webclient's IP.
 # Possible values include:
-# - webirc: Use WEBIRC type blocks, with an IRCD configuration of
+# - "webirc": Use WEBIRC type blocks, with an IRCD configuration of
 #   the following style:
 #
 #   cgiirc: {
@@ -74,22 +74,17 @@ ident_string: webchat
 #
 #   You must set webirc_password to be the same as <password>.
 #
-# - cgiirc: Use an old style CGIIRC command, set cgiirc_string to be
-#   the command used to set the ip/hostname, and set webirc_password
-#   to be the password used in the server's configuration file.
+# - "realname": Disables WEBIRC.
+#   Sends the IP and hostname in the realname field in the format
+#   <hostname>/<ip> - <normal realname>, convenient for human reading.
 #
-# Left empty: Disables WEBIRC.
-#   Sends the IP and hostname in the realname field, overriding
-#   the REALNAME option.
+# - <left empty>: Disables WEBIRC.
+#   Sends the IP in the realname field, overriding the REALNAME option.
 webirc_mode:
 
-# WEBIRC PASSWORD: Used for webirc modes webirc and cgiirc, see
-# webirc_mode option documentation.
+# WEBIRC PASSWORD: Used for webirc mode "webirc", see webirc_mode option
+# documentation.
 webirc_password: fish
-
-# CGIIRC STRING: Command sent to IRC server in for cgiirc webirc
-# mode. See webirc_mode option documentation.
-cgiirc_string: CGIIRC
 
 
 
