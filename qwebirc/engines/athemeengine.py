@@ -27,6 +27,13 @@ class AthemeEngine(resource.Resource):
     self.prefix = prefix
     self.__total_hit = HitCounter()
     self.get_xmlrpc_conn()
+    
+    # Get an initial list.
+    if config.athemeengine["chan_list_enabled"]:
+      chanlist = self.do_list()
+      if chanlist is not None:
+        listtime = int(time.time())
+        self.chanlists[listtime] = chanlist
 
   def get_xmlrpc_conn(self):
     """Get an XMLRPC connection to Atheme, replacing any previous connection."""
@@ -219,7 +226,7 @@ class AthemeEngine(resource.Resource):
     None to indicate connection failure.
 
     """
-    if config.athemeengine["chan_list_enabled"] is False:
+    if not config.athemeengine["chan_list_enabled"]:
       response = json.dumps(None)
       request.write(response)
       request.finish()
@@ -274,14 +281,19 @@ class AthemeEngine(resource.Resource):
         if (len(self.chanlists) >= config.athemeengine["chan_list_count"]):
           del self.chanlists[min(self.chanlists.keys())]
         chanlist = self.do_list()
-        if chanlist is None:
-          response = json.dumps(None)
-          request.write(response)
-          request.finish()
-          return True
-        listtime = int(time.time())
-        self.chanlists[listtime] = chanlist
-      
+        if chanlist is not None:
+          listtime = int(time.time())
+          self.chanlists[listtime] = chanlist
+        else:
+          if most_recent in self.chanlists:
+            chanlist = self.chanlists[most_recent]
+            listtime = most_recent
+          else:
+            response = json.dumps(None)
+            request.write(response)
+            request.finish()
+            return True
+
     if chanmask == "*" and topicmask == "*":
       if start > len(chanlist):
         start = len(chanlist)
