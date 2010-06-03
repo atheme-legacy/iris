@@ -254,11 +254,6 @@ qwebirc.config.UserOptions = [
   },
   {
     category: "ui",
-    option: "nick_ov_status",
-    label: "Show status symbol before nicknames in nicklist"
-  },
-  {
-    category: "ui",
     option: "dedicated_notice_window",
     label: "Send notices to dedicated message window"
   },
