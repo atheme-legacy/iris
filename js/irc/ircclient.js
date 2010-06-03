@@ -534,6 +534,17 @@ qwebirc.irc.IRCClient = new Class({
       mtype = "ACTUALLY";
       ndata.m = data.hostname;
       ndata.x = data.ip;
+    } else if(type == "availhelp") {
+      mtype = "AVAILHELP";
+    } else if(type == "regged") {
+      mtype = "REGGED";
+    } else if(type == "modes") {
+      mtype = "MODES";
+      ndata.m = data.modes;
+    } else if(type == "realhost") {
+      mtype = "REALHOST";
+      ndata.m = data.hostname;
+      ndata.x = data.ip;
     } else if(type == "generictext") {
       mtype = "GENERICTEXT";
       ndata.m = data.text;

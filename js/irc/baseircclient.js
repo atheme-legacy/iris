@@ -431,6 +431,28 @@ qwebirc.irc.BaseIRCClient = new Class({
 
     return this.whois(nick, "opername", {opername: params[2]});
   },
+  irc_RPL_WHOISAVAILHELP: function(prefix, params) {
+    var nick = params[1];
+    return this.whois(nick, "availhelp", {});
+  },
+  irc_RPL_WHOISREGGED: function(prefix, params) {
+    var nick = params[1];
+    return this.whois(nick, "regged", {});
+  },
+  irc_RPL_WHOISMODES: function(prefix, params) {
+    var nick = params[1];
+    var text = params.indexFromEnd(-1);
+    var modes = text.split(" ").slice(3).join(" ");
+
+    return this.whois(nick, "modes", {modes: modes});
+  },
+  irc_RPL_WHOISREALHOST: function(prefix, params) {
+    var nick = params[1];
+    var text = params.indexFromEnd(-1);
+    var hostname = text.split(" ")[3];
+    var ip = text.split(" ")[4];
+    return this.whois(nick, "realhost", {hostname: hostname, ip: ip});
+  },
   irc_RPL_WHOISGENERICTEXT: function(prefix, params) {
     var nick = params[1];
     var text = params.indexFromEnd(-1);
