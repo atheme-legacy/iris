@@ -258,18 +258,24 @@ qwebirc.irc.BaseIRCClient = new Class({
     var user = prefix;
     var target = params[0];
     var message = params.indexFromEnd(-1);
-    
-    if((user == "") || (user.indexOf("!") == -1)) {
+
+    /* Handle globals, channel notices, server notices, and other notices. */
+    if (target[0] == "$") {
+      if (user != "")
+        this.userNotice(user, message);
+      else
+        this.serverNotice(user, message);
+    } else if (target != this.nickname) {    
+      this.channelNotice(user, target, message);
+    } else if((user == "") || (user.indexOf("!") == -1)) {
       this.serverNotice(user, message);
-    } else if(target == this.nickname) {
+    } else {
       var ctcp = this.processCTCP(message);
       if(ctcp) {
         this.userCTCPReply(user, ctcp[0], ctcp[1]);
       } else {
         this.userNotice(user, message);
       }
-    } else {
-      this.channelNotice(user, target, message);
     }
     
     return true;
