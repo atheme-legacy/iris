@@ -159,7 +159,7 @@ app_title: %(network_name)s Web IRC
 # INITIAL NICK: Default initial nickname for the user.
 # '.' characters will be replaced by random digits.
 # Leave blank to force the user to enter a nick before connecting.
-initial_nick: iris.....
+initial_nick:
 
 # INITIAL CHANS: Default channels to join on connect.
 # Comma-separate channels, and provide keys after, space-separated.
@@ -182,7 +182,7 @@ chan_prompt: true
 # have a nick either provided by settings or typed into a connect window.
 # If set false, then the user is simply redirected to the connect window, with
 # the channel set in the channel box.
-chan_autoconnect: false
+chan_autoconnect: true
 
 # STATIC BASE URL: This value is used to build the URL for all static
 # HTTP requests. You'd find this useful if you're running multiple
