@@ -217,7 +217,7 @@ qwebirc.ui.ConnectPane = new Class({
         passRow.setStyle("display", passRow.visible ? null : "none");
       }.bind(this));
     }
-
+    
     if (channel || this.session.config.frontend.chan_prompt ||
         !this.session.config.frontend.initial_chans) {
       this.chanBox = new Element("input");
@@ -234,6 +234,17 @@ qwebirc.ui.ConnectPane = new Class({
       if(!this.nickBox.value) {
         alert("You must supply a nickname.");
         this.nickBox.focus();
+        return;
+      }
+
+      if(!this.nickBox.value.match(/^[a-zA-Z0-9`^\-_\[\]{}|\\]+$/)) {
+        alert("Invalid nickname entered; only characters in the list \"A-Z a-z 0-9 ` ^ - \\ [ ] { } |\" are allowed.");
+        nick.focus();
+        return;
+      }
+      if(this.nickBox.value.match(/^\d/) || this.nickBox.value[0] == '-') {
+        alert("Invalid nickname entered; nicknames may not start with - or a number.");
+        nick.focus();
         return;
       }
       Cookie.write("iris-nick", this.nickBox.value);
