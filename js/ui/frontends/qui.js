@@ -442,7 +442,7 @@ qwebirc.ui.QUI.Window = new Class({
     this.nicksColoured = this.session.config.ui.nick_colors;
   },
   editTopic: function() {
-    if(!this.session.irc.nickOnChanHasPrefix(this.session.irc.nickname, this.name, "@")) {
+    if(!this.session.irc.nickOnChanHasAtLeastPrefix(this.session.irc.nickname, this.name, "+", true)) {
 /*      var cmodes = this.session.irc.getChannelModes(channel);
       if(cmodes.indexOf("t")) {*/
         alert("Sorry, you need to be a channel operator to change the topic!");

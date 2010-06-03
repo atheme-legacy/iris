@@ -468,6 +468,33 @@ qwebirc.irc.IRCClient = new Class({
    
     return entry.prefixes.indexOf(prefix) != -1;
   },
+  nickOnChanHasAtLeastPrefix: function(nick, channel, prefix, betterThan) {
+    var entry = this.tracker.getNickOnChannel(nick, channel);
+    if(!$defined(entry))
+      return false; /* shouldn't happen */
+   
+    /* this array is sorted */
+    var pos = this.prefixes.indexOf(prefix);
+    if(pos == -1)
+      return false;  /* shouldn't happen */
+
+    /* If we're looking for prefixes better than the given prefix, don't
+     * include it itself. Otherwise, do. */
+    if (!betterThan)
+      pos = pos + 1;
+
+    var modehash = {};
+    this.prefixes.slice(0, pos).split("").each(function(x) {
+      modehash[x] = true;
+    });
+    
+    var prefixes = entry.prefixes;
+    for(var i=0;i<prefixes.length;i++)
+      if(modehash[prefixes.charAt(i)])
+        return true;
+        
+    return false;
+  },
   supported: function(key, value) {
     if(key == "PREFIX") {
       var l = (value.length - 2) / 2;

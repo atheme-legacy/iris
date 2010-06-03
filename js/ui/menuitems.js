@@ -9,11 +9,18 @@ qwebirc.ui.UI_COMMANDS = [
 ];
 
 qwebirc.ui.MENU_ITEMS = function() {
+  var maybeOpped = function(nick) {
+    var channel = this.name; /* window name */
+    var myNick = this.session.irc.nickname;
+
+    return this.session.irc.nickOnChanHasAtLeastPrefix(myNick, channel, "+", true);
+  };
+
   var isOpped = function(nick) {
     var channel = this.name; /* window name */
     var myNick = this.session.irc.nickname;
 
-    return this.session.irc.nickOnChanHasPrefix(myNick, channel, "@");
+    return this.session.irc.nickOnChanHasAtLeastPrefix(myNick, channel, "@", false);
   };
 
   var isVoiced = function(nick) {
@@ -58,7 +65,7 @@ qwebirc.ui.MENU_ITEMS = function() {
     {
       text: "kick", /* TODO: disappear when we're deopped */
       fn: function(nick) { this.session.irc.exec("/KICK " + nick + " wibble"); },
-      predicate: isOpped
+      predicate: maybeOpped
     },
     {
       text: "op",
@@ -73,12 +80,12 @@ qwebirc.ui.MENU_ITEMS = function() {
     {
       text: "voice",
       fn: command("voice"),
-      predicate: compose(isOpped, invert(targetVoiced))
+      predicate: compose(maybeOpped, invert(targetVoiced))
     },
     {
       text: "devoice",
       fn: command("devoice"),
-      predicate: compose(isOpped, targetVoiced)
+      predicate: compose(maybeOpped, targetVoiced)
     }
   ];
 }();
