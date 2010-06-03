@@ -276,6 +276,11 @@ qwebirc.config.UserOptions = [
   },
   {
     category: "ui",
+    option: "nick_status",
+    label: "Show status symbol before nicknames in channel lines"
+  },
+  {
+    category: "ui",
     option: "hide_joinparts",
     label: "Hide JOINS/PARTS/QUITS"
   },

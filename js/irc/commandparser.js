@@ -21,7 +21,8 @@ qwebirc.irc.BaseCommandParser = new Class({
       this.session.irc.newActiveLine("OUR" + type, extra);
       return;
     } else if(window.type == qwebirc.ui.WINDOW_CHANNEL) {
-      type = "CHAN" + type;
+      this.session.irc.newChanLine(target, "OURCHAN" + type, null, extra);
+      return;
     } else {
       type = "PRIV" + type;
     }

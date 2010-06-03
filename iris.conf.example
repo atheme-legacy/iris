@@ -248,6 +248,9 @@ lastpos_line: true
 # NICK COLORS: Whether nicks are coloured by default.
 nick_colors: false
 
+# NICK STATUS: Whether to show status symbols before nicknames in channel lines.
+nick_status: false
+
 # FLASH ON MENTION: Whether to flash the title for attention when highlighted.
 flash_on_mention: false
 

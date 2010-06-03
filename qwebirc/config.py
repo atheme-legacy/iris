@@ -92,6 +92,7 @@ def __interpret_config():
         (ui, "hide_joinparts"),
         (ui, "lastpos_line"),
         (ui, "nick_colors"),
+        (ui, "nick_status"),
     ]
     for section, option in boolean_options:
         if section[option] == "true" or section[option] == "yes":
