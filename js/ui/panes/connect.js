@@ -236,6 +236,7 @@ qwebirc.ui.ConnectPane = new Class({
         this.nickBox.focus();
         return;
       }
+      Cookie.write("iris-nick", this.nickBox.value);
 
       if (this.session.config.atheme.nickserv_login && pass.value) {
         qwebirc.irc.AthemeQuery.login(function(token) {
@@ -253,7 +254,9 @@ qwebirc.ui.ConnectPane = new Class({
 
     }.bind(this));
 
-    if (this.session.config.frontend.initial_nick)
+    if (Cookie.read("iris-nick") != null)
+      this.nickBox.set("value", Cookie.read("iris-nick"));
+    else if (this.session.config.frontend.initial_nick)
       this.nickBox.set("value", this.session.config.frontend.initial_nick);
 
     if (this.chanBox != null && channel)
