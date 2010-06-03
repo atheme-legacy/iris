@@ -265,7 +265,7 @@ qwebirc.irc.BaseIRCClient = new Class({
         this.userNotice(user, message);
       else
         this.serverNotice(user, message);
-    } else if (target != this.nickname) {    
+    } else if (target != this.nickname && this.__signedOn) {
       this.channelNotice(user, target, message);
     } else if((user == "") || (user.indexOf("!") == -1)) {
       this.serverNotice(user, message);

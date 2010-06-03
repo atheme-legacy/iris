@@ -41,13 +41,13 @@ qwebirc.ui.MENU_ITEMS = function() {
   
   return [
     {
-      text: "whois", 
-      fn: command("whois"),
+      text: "PM",
+      fn: command("query"),
       predicate: true
     },
     {
-      text: "query",
-      fn: command("query"),
+      text: "whois", 
+      fn: command("whois"),
       predicate: true
     },
     {

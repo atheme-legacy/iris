@@ -21,7 +21,7 @@ qwebirc.ui.Interface = new Class({
         this.session.irc.connect();
         window.onbeforeunload = qwebirc_ui_onbeforeunload;
         window.addEvent("unload", function() {
-          this.session.irc.quit("Page closed");
+          this.session.irc.quit("Web client closed");
         }.bind(this));
       }.bind(this);
 
