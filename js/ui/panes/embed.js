@@ -113,7 +113,7 @@ qwebirc.ui.EmbedWizard = new Class({
     };
   
     this.welcome = this.newStep({
-      "title": "Welcome!",
+      "title": "Add webchat to your site!",
       "first": "This wizard will help you create an embedded client by asking you questions then giving you the code to add to your website.<br/><br/>You can use the <b>Next</b> and <b>Back</b> buttons to navigate through the wizard; click <b>Next</b> to continue."
     });
     
