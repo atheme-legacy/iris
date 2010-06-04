@@ -247,7 +247,7 @@ qwebirc.ui.ConnectPane = new Class({
         nick.focus();
         return;
       }
-      Cookie.write("iris-nick", this.nickBox.value);
+      Cookie.write("iris-nick", this.nickBox.value, {"duration": 3650});
 
       if (this.session.config.atheme.nickserv_login && pass.value) {
         qwebirc.irc.AthemeQuery.login(function(token) {
