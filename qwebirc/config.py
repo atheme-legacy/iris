@@ -91,6 +91,7 @@ def __interpret_config():
         (ui, "dedicated_notice_window"),
         (ui, "hide_joinparts"),
         (ui, "lastpos_line"),
+        (ui, "nick_click_query"),
         (ui, "nick_colors"),
         (ui, "nick_status"),
     ]

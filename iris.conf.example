@@ -245,6 +245,10 @@ hue: 210
 # LASTPOS LINE: Whether a "last position" marker should be displayed.
 lastpos_line: true
 
+# NICK CLICK QUERY: Whether clicking on a nick in channel queries them.
+# If off, it whoises instead.
+nick_click_query: false
+
 # NICK COLORS: Whether nicks are coloured by default.
 nick_colors: false
 

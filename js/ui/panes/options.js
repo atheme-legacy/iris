@@ -287,6 +287,11 @@ qwebirc.config.UserOptions = [
   },
   {
     category: "ui",
+    option: "nick_click_query",
+    label: "Open a PM window on clicking a nickname in channel"
+  },
+  {
+    category: "ui",
     option: "hide_joinparts",
     label: "Hide JOINS/PARTS/QUITS"
   },

@@ -305,7 +305,10 @@ qwebirc.ui.StandardUI = new Class({
     /* doesn't really belong here */
     if(name == "whois") {
       return ["span", function(nick) {
-        this.session.irc.exec("/WHOIS " + nick);
+        if (this.session.config.ui.nick_click_query)
+          this.session.irc.exec("/QUERY " + nick);
+        else
+          this.session.irc.exec("/WHOIS " + nick);
       }.bind(this)];
     }
     if(name == "accinfo") {
