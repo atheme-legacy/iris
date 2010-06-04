@@ -272,7 +272,7 @@ qwebirc.ui.StandardUI = new Class({
     };
   },
   embeddedWindow: function() {
-    this.addCustomWindow("Embedding wizard", qwebirc.ui.EmbedWizard, "embeddedwizard");
+    this.addCustomWindow("Webchat Wizard", qwebirc.ui.EmbedWizard, "embeddedwizard");
   },
   optionsWindow: function() {
     this.addCustomWindow("Options", qwebirc.ui.OptionsPane, "optionspane");
@@ -281,7 +281,7 @@ qwebirc.ui.StandardUI = new Class({
     this.addCustomWindow("About", qwebirc.ui.AboutPane, "aboutpane");
   },
   privacyWindow: function() {
-    this.addCustomWindow("Privacy policy", qwebirc.ui.PrivacyPolicyPane, "privacypolicypane");
+    this.addCustomWindow("Privacy Policy", qwebirc.ui.PrivacyPolicyPane, "privacypolicypane");
   },
   feedbackWindow: function() {
     this.addCustomWindow("Feedback", qwebirc.ui.FeedbackPane, "feedbackpane");

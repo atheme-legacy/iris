@@ -17,6 +17,7 @@ qwebirc.config.Input = new Class({
     this.enabled = true;
     this.position = position;
     this.parentElement = parent;
+    this.id = qwebirc.util.generateID();
     
     if ($defined(this.option.isEnabled))
       this.enabled = this.option.isEnabled(session);
@@ -27,7 +28,7 @@ qwebirc.config.Input = new Class({
     if(!$defined(parent))
       parent = this.parentElement;
 
-    return qwebirc.util.createInput(type, parent, name, selected);
+    return qwebirc.util.createInput(type, parent, name, selected, this.id);
   },
   FE: function(element, parent) {
     var n = new Element(element);
@@ -185,13 +186,18 @@ qwebirc.ui.OptionsPane = new Class({
       var type = qwebirc.config.CheckInput;
       if ($defined(x.type))
         type = x.type;
-      
+
       var row = FE("tr", tb);
       var cella = FE("td", row);
-      cella.set("text", x.label + ":");
-
       var cellb = FE("td", row);
-      this.boxList.push([x, new type(this.session, cellb, x, i)]);
+
+      var input = new type(this.session, cellb, x, i);
+
+      var label = new Element("label", {"for": input.id});
+      label.set("text", x.label + ":");
+      cella.appendChild(label);
+
+      this.boxList.push([x, input]);
     }
     
     var r = FE("tr", tb);

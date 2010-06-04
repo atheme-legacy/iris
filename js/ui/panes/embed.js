@@ -88,8 +88,12 @@ qwebirc.ui.EmbedWizard = new Class({
     var p = new Element("div");
     parent.appendChild(p);
 
-    var r = qwebirc.util.createInput("radio", p, name, selected);
-    p.appendChild(document.createTextNode(text));
+    var id = qwebirc.util.generateID();
+    var r = qwebirc.util.createInput("radio", p, name, selected, id);
+    
+    var label = new Element("label", {"for": id});
+    label.appendChild(document.createTextNode(text));
+    p.appendChild(label);
       
     return r;
   },
