@@ -239,12 +239,12 @@ qwebirc.ui.ConnectPane = new Class({
 
       if(!this.nickBox.value.match(/^[a-zA-Z0-9`^\-_\[\]{}|\\]+$/)) {
         alert("Invalid nickname entered; only characters in the list \"A-Z a-z 0-9 ` ^ - \\ [ ] { } |\" are allowed.");
-        nick.focus();
+        this.nickBox.focus();
         return;
       }
       if(this.nickBox.value.match(/^\d/) || this.nickBox.value[0] == '-') {
         alert("Invalid nickname entered; nicknames may not start with - or a number.");
-        nick.focus();
+        this.nickBox.focus();
         return;
       }
       Cookie.write("iris-nick", this.nickBox.value, {"duration": 3650});
