@@ -40,7 +40,7 @@ class FeedbackEngine(resource.Resource):
       raise FeedbackException("Bad checksum: %d vs. %d" % (sentchecksum, checksum))
       
     msg = MIMEText(text.encode("utf-8"), _charset="utf-8")
-    msg["Subject"] = "qwebirc feedback from %s" % (request.client[1])
+    msg["Subject"] = "qwebirc feedback from %s" % request.getclientIP()
     msg["From"] = config.feedbackengine["from"]
     msg["To"] = config.feedbackengine["to"]
     email = StringIO(msg.as_string())
