@@ -5,12 +5,12 @@ bin.compile.vcheck()
 
 DEFAULT_PORT = 9090
 
-from twisted.scripts.twistd import run
 from optparse import OptionParser
 import sys, os
 import qwebirc.config as config
 
 def run_twistd(args1=None, args2=None):
+  from twisted.scripts.twistd import run
   args = [sys.argv[0]]
   if args1 is not None:
     args.extend(args1)
@@ -58,7 +58,8 @@ if options.debug:
   args1.append("-b")
 
 if options.reactor != DEFAULT_REACTOR:
-  args1+=["--reactor", options.reactor]
+  rn = options.reactor + "reactor"
+  getattr(__import__("twisted.internet", fromlist=[rn]), rn).install()
 if options.logfile:
   args1+=["--logfile", options.logfile]
 if options.pidfile:
