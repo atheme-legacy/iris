@@ -63,7 +63,7 @@ qwebirc.ui.urlificate = function(session, element, text) {
     
     var href = "";
     var fn = null;
-    var target = "new";
+    var target = "_blank";
     var disptext = url;
     var elementType = "a";
     var addClass;
