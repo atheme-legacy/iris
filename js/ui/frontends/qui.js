@@ -351,7 +351,8 @@ qwebirc.ui.QUI.Window = new Class({
     this.tab = new Element("a", {"href": "#"});
     this.tab.addClass("tab");
     this.tab.addEvent("focus", function() { this.blur() }.bind(this.tab));;
-  
+    this.spaceNode = document.createTextNode(" ");
+ 
     /* Always put the connect/status windows in front. */
     if (session.ui.tabs.hasChildNodes()) { 
       if (type == qwebirc.ui.WINDOW_STATUS)
@@ -363,6 +364,7 @@ qwebirc.ui.QUI.Window = new Class({
     } 
     else
       session.ui.tabs.appendChild(this.tab);
+    session.ui.tabs.appendChild(this.spaceNode);
     
     this.tab.appendText(name);
     this.tab.addEvent("click", function(e) {
@@ -433,13 +435,11 @@ qwebirc.ui.QUI.Window = new Class({
       this.session.ui.qjsui.applyClasses("nicklist", this.nicklist);
     }
     
-    if(type == qwebirc.ui.WINDOW_CHANNEL) {
+    if(type == qwebirc.ui.WINDOW_CHANNEL)
       this.updateTopic("");
-    } else {
-      this.reflow();
-    }
     
     this.nicksColoured = this.session.config.ui.nick_colors;
+    this.reflow();
   },
   editTopic: function() {
     if(!this.session.irc.nickOnChanHasAtLeastPrefix(this.session.irc.nickname, this.name, "+", true)) {
@@ -626,6 +626,8 @@ qwebirc.ui.QUI.Window = new Class({
     this.parent();
     
     this.session.ui.tabs.removeChild(this.tab);
+    this.session.ui.tabs.removeChild(this.spaceNode);
+    this.reflow();
   },
   addLine: function(type, line, colourClass) {
     var e = new Element("div");
