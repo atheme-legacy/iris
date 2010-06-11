@@ -10,8 +10,9 @@ qwebirc.ui.supportsFocus = function(session) {
 }
 
 qwebirc.config.Input = new Class({
-  initialize: function(session, parent, option, position) {
+  initialize: function(session, options, parent, option, position) {
     this.session = session;
+    this.options = options;
     this.option = option;
     this.value = session.config[option.category][option.option];
     this.enabled = true;
@@ -43,7 +44,7 @@ qwebirc.config.Input = new Class({
   },
   onChange: function() {
     if ($defined(this.option.onChange))
-      this.option.onChange(this.session, this.get());
+      this.option.onChange(this.session, this.options, this.get());
   }
 });
 
@@ -65,35 +66,107 @@ qwebirc.config.TextInput = new Class({
   }
 });
 
-qwebirc.config.HueInput = new Class({
+qwebirc.config.ColorInput = new Class({
   Extends: qwebirc.config.Input,
   render: function() {
-    var i = new Element("div");
-    i.addClass("qwebirc-optionspane");
-    i.addClass("hue-slider");
-    this.parentElement.appendChild(i);
+    this.hexbox = null;
+
+    if (this.value[0] != "#")
+      this.value = "#" + this.value;
+
+    var hue = new Element("div");
+    hue.addClass("qwebirc-optionspane");
+    hue.addClass("hue-slider");
+    this.parentElement.appendChild(hue);
     
+    var sat = new Element("div");
+    sat.addClass("qwebirc-optionspane");
+    sat.addClass("sat-slider");
+    this.parentElement.appendChild(sat);
+
+    var light = new Element("div");
+    light.addClass("qwebirc-optionspane");
+    light.addClass("light-slider");
+    this.parentElement.appendChild(light);
+
+    var hexform = new Element("form", {"class": "hexform"});
+    this.hexbox = new Element("input", {value: this.value});
+    hexform.appendChild(this.hexbox);
+    this.parentElement.appendChild(hexform);
+
+    var reset = new Element("input", {type: "button", value: "Reset to Default"});
+    this.parentElement.appendChild(reset);
+
+    var color = new Color(this.value);
+
     var k = new Element("div");
     k.addClass("knob");
     if(Browser.Engine.trident) {
       k.setStyle("top", "0px");
       k.setStyle("background-color", "black");
-    }
+    } 
+    hue.appendChild(k);
+    var hue_slider = new Slider(hue, k, {steps: 36, range: [0, 369], wheel: true});
+    hue_slider.set(color.hsb[0]);
     
-    i.appendChild(k);
+    k = new Element("div");
+    k.addClass("knob");
+    if(Browser.Engine.trident) {
+      k.setStyle("top", "0px");
+      k.setStyle("background-color", "black");
+    } 
+    sat.appendChild(k);
+    var sat_slider = new Slider(sat, k, {steps: 50, range: [0, 100], wheel: true});
+    sat_slider.set(color.hsb[1]);
     
-    var slider = new Slider(i, k, {steps: 36, range: [0, 369], wheel: true});
-    slider.set(this.value);
+    k = new Element("div");
+    k.addClass("knob");
+    if(Browser.Engine.trident) {
+      k.setStyle("top", "0px");
+      k.setStyle("background-color", "black");
+    } 
+    light.appendChild(k);
+    var light_slider = new Slider(light, k, {steps: 50, range: [0, 100], wheel: true});
+    light_slider.set(color.hsb[2]);
+    
+    var change_func = function(step) {
+      var color = $HSB(hue_slider.step, sat_slider.step, light_slider.step);
+      this.value = color.rgb.rgbToHex();
+      this.onChange();
+    }.bind(this);
+    hue_slider.addEvent("change", change_func);
+    sat_slider.addEvent("change", change_func);
+    light_slider.addEvent("change", change_func);
+    
+    hexform.addEvent("submit", function(e) {
+      (new Event(e)).stop();
+      var color = new Color(this.hexbox.value)
+      hue_slider.set(color.hsb[0]);
+      sat_slider.set(color.hsb[1]);
+      light_slider.set(color.hsb[2]);
+    }.bind(this));
+    reset.addEvent("click", function(e) {
+      (new Event(e)).stop();
+      this.value = this.session.config[this.option.category][this.option.option + "_default"];
+      var color = new Color(this.value)
+      hue_slider.set(color.hsb[0]);
+      sat_slider.set(color.hsb[1]);
+      light_slider.set(color.hsb[2]);
+    }.bind(this));
+
+    this.mainElement = hue;
     this.startValue = this.value;
     
-    slider.addEvent("change", function(step) {
-      this.value = step;
-      this.onChange();
-    }.bind(this));
-    this.mainElement = i;
-    
-    if(!this.enabled)
-      slider.detach();
+    if(!this.enabled) {
+      hue_slider.detach();
+      sat_slider.detach();
+      light_slider.detach();
+    }
+  },
+  onChange: function() {
+    this.hexbox.value = this.get();
+    if ($defined(this.option.onChange))
+      this.option.onChange(this.session, this.options, this.get());
   },
   get: function() {
     return this.value;
@@ -180,6 +253,7 @@ qwebirc.ui.OptionsPane = new Class({
     var tb = FE("tbody", t);
     
     this.boxList = [];
+    this.options = {};
     
     for(var i=0;i<qwebirc.config.UserOptions.length;i++) {
       var x = qwebirc.config.UserOptions[i];
@@ -191,13 +265,14 @@ qwebirc.ui.OptionsPane = new Class({
       var cella = FE("td", row);
       var cellb = FE("td", row);
 
-      var input = new type(this.session, cellb, x, i);
+      var input = new type(this.session, this.options, cellb, x, i);
 
       var label = new Element("label", {"for": input.id});
       label.set("text", x.label + ":");
       cella.appendChild(label);
 
       this.boxList.push([x, input]);
+      this.options[x.category + "." + x.option] = input;
     }
     
     var r = FE("tr", tb);
@@ -297,17 +372,35 @@ qwebirc.config.UserOptions = [
   },
   {
     category: "ui",
-    option: "hue",
-    type: qwebirc.config.HueInput,
-    label: "Adjust user interface hue",
-    onChange: function (session, value) {
-      session.ui.setModifiableStylesheetValues(value, 0, 0);
+    option: "fg_color",
+    type: qwebirc.config.ColorInput,
+    label: "Adjust main foreground color",
+    onChange: function (session, options, value) {
+      session.ui.setModifiableStylesheetValues(value, options["ui.fg_sec_color"].get(), options["ui.bg_color"].get());
+    }
+  },
+  {
+    category: "ui",
+    option: "fg_sec_color",
+    type: qwebirc.config.ColorInput,
+    label: "Adjust title/link foreground color",
+    onChange: function (session, options, value) {
+      session.ui.setModifiableStylesheetValues(options["ui.fg_color"].get(), value, options["ui.bg_color"].get());
+    }
+  },
+  {
+    category: "ui",
+    option: "bg_color",
+    type: qwebirc.config.ColorInput,
+    label: "Adjust background color",
+    onChange: function (session, options, value) {
+      session.ui.setModifiableStylesheetValues(options["ui.fg_color"].get(), options["ui.fg_sec_color"].get(), value);
     },
     onSave: function (session) {
-      session.ui.setModifiableStylesheetValues(session.config.ui.hue, 0, 0);
+      session.ui.setModifiableStylesheetValues(session.config.ui.fg_color, session.config.ui.fg_sec_color, session.config.ui.bg_color);
     },
     onCancel: function (session) {
-      session.ui.setModifiableStylesheetValues(session.config.ui.hue, 0, 0);
+      session.ui.setModifiableStylesheetValues(session.config.ui.fg_color, session.config.ui.fg_sec_color, session.config.ui.bg_color);
     }
   }
 ];

@@ -38,9 +38,15 @@ qwebirc.session = new Class({
 		var default_nick = this.config.frontend.initial_nick;
 		var default_chans = this.config.frontend.initial_chans;
 		var default_prompt = this.config.frontend.prompt;
+		var default_fg_color = this.config.ui.fg_color;
+		var default_fg_sec_color = this.config.ui.fg_sec_color;
+		var default_bg_color = this.config.ui.bg_color;
 		this.config.frontend.initial_nick_default = default_nick;
 		this.config.frontend.initial_chans_default = default_chans;
 		this.config.frontend.prompt_default = default_prompt;
+		this.config.ui.fg_color_default = default_fg_color;
+		this.config.ui.fg_sec_color_default = default_fg_sec_color;
+		this.config.ui.bg_color_default = default_bg_color;
 
 		/* Load user settings from cookie. */
 		this.loadCookieSettings();
@@ -96,11 +102,21 @@ qwebirc.session = new Class({
 				this.config.atheme.chan_list_on_start = false;
 		}
 
-		/* Load hue from query string. */
-		var urlhue = this.getHueArg(args);
-		if (urlhue) {
-			this.config.ui.hue = urlhue;
+		/* Load colours from query string. */
+		if ($defined(args["fg_color"]) || $defined(args["bg_color"]) ||
+                    $defined(args["fg_sec_color"])) {
+			this.config.ui.fg_color = default_fg_color;
+			this.config.ui.fg_sec_color = default_fg_sec_color;
+			this.config.ui.bg_color = default_bg_color;
 		}
+		if ($defined(args["fg_color"])) {
+			this.config.ui.fg_color = args["fg_color"];
+			this.config.ui.fg_sec_color = args["fg_color"];
+		}
+		if ($defined(args["fg_sec_color"]))
+			this.config.ui.fg_sec_color = args["fg_sec_color"];
+		if ($defined(args["bg_color"]))
+			this.config.ui.bg_color = args["bg_color"];
 
 		/* Subtitute '.' characters in the nick with random digits. */
 		if (this.config.frontend.initial_nick.indexOf(".") != -1) {
@@ -127,15 +143,6 @@ qwebirc.session = new Class({
     
 		/* Check our Atheme login state. */
 		qwebirc.ui.Atheme.check(this);
-	},
-	getHueArg: function(args) {
-		var hue = args["hue"];
-		if(!$defined(hue))
-			return null;
-		hue = parseInt(hue);
-		if(hue > 360 || hue < 0)
-			return null;
-		return hue;
 	},
 	randSub: function(nick) {
 		var getDigit = function() { return Math.floor(Math.random() * 10); }
@@ -234,6 +241,8 @@ qwebirc.session = new Class({
 	},
 	saveUserSettings: function() {
 		var cookie = new Hash.Cookie("iris-settings", {duration: 3650, autoSave: false});
+		cookie.erase();
+		cookie = new Hash.Cookie("iris-settings", {duration: 3650, autoSave: false});
 		for (var i = 0; i < qwebirc.config.UserOptions.length; i++) {
 			var category = qwebirc.config.UserOptions[i].category;
 			var option = qwebirc.config.UserOptions[i].option;

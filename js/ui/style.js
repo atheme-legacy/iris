@@ -60,13 +60,23 @@ qwebirc.ui.style.ModifiableStylesheet = new Class({
       
     return {cssText: cssLines.join("\n"), rules: rules};
   },
-  set: function(mutator) {
-    if(!$defined(mutator))
-	  mutator = function(x) { return x; };
+  set: function(fg_mutator, fg_sec_mutator, bg_mutator) {
+    if(!fg_mutator)
+	  fg_mutator = function(x) { return x; };
+    if(!fg_sec_mutator)
+	  fg_sec_mutator = fg_mutator;
+    if(!bg_mutator)
+	  bg_mutator = function(x) { return x; };
 	  
     var text = this.__cssText;
     for(var key in this.rules) {
-      var value = mutator(new Color(this.rules[key]));
+      var value;
+      if (key.substring(7, 0) == "fg_sec_")
+        value = fg_sec_mutator(new Color(this.rules[key]));
+      else if (key.substring(3, 0) == "fg_")
+        value = fg_mutator(new Color(this.rules[key]));
+      else
+        value = bg_mutator(new Color(this.rules[key]));
       
       if(value == "255,255,255") /* IE confuses white with transparent... */
         value = "255,255,254";

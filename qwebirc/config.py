@@ -101,7 +101,6 @@ def __interpret_config():
         else:
             section[option] = False
 
-
     # If atheme::enabled is false, force every other Atheme integration option
     # off. Then, either way, remove "enabled"; it is only a meta-option.
     if atheme["enabled"] == False:
@@ -112,6 +111,10 @@ def __interpret_config():
     # If atheme::chan_list is off, force atheme::chan_list_on_start off.
     if atheme["chan_list"] == False:
         atheme["chan_list_on_start"] = False
+
+    # If no secondary foreground colour was specified, use the primary.
+    if not "fg_sec_color" in ui:
+        ui["fg_sec_color"] = ui["fg_color"]
 
 
 def js_config():

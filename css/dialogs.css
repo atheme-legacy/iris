@@ -240,19 +240,42 @@
 /************* OPTIONS *****************/
 
 .qwebirc-optionspane div.hue-slider {
+  margin-top: 5px;
   border: 0px solid black;
   width: 360px;
   height: 8px;
   background-image: url(../images/hue.png);
 }
 
-.qwebirc-optionspane div.hue-slider .knob {
+.qwebirc-optionspane div.sat-slider {
+  margin-top: 5px;
+  border: 0px solid black;
+  width: 360px;
+  height: 8px;
+  background-image: url(../images/saturation.png);
+}
+
+.qwebirc-optionspane div.light-slider {
+  margin-top: 5px;
+  margin-bottom: 3px;
+  border: 0px solid black;
+  width: 360px;
+  height: 8px;
+  background-image: url(../images/lightness.png);
+}
+
+.qwebirc-optionspane div .knob {
   width: 8px;
   height: 16px;
   top: -5px;
   opacity: 0.75;
   background: grey;
   border: 1px solid black;
+}
+
+.qwebirc-optionspane .hexform {
+  display: inline;
+  margin-right: 3px;
 }
 
 /************* LIST *****************/

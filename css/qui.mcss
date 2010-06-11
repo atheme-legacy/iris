@@ -1,38 +1,59 @@
-topic_background=f2f0ff
-lines_background=f2f0ff
-topic_border=c8d2dc
-tabbar_border=c3cee0
-tabbar_background=e2ecf9
-tabbar_text=000000
-tab_border=c8d2dc
-tab_text=000000
-tab_hover=ffffff
-tab_selected=ffffff
-tab_selected_border=c8d2dc
-tab_selected_text=333333
-input_border=c3cee0
-nicklist_border=c8d2dc
-nicklist_background=f2f0ff
-nicklist_text=000000
-nicklist_selected_border=c8d2dc
-chanlist_border=c8d2dc
-chanlist_background_header=d8e0e6
-chanlist_background_1=e8f1f4
-chanlist_background_2=e0e7ee
-menu_border=c8d2dc
-menu_background=f2f0ff
-menu_hover_background=FFFFFE
-lastpositionbar=C8D2DC
+bg_topic_background=408080
+bg_lines_background=408080
+bg_tabbar_background=3C7878
+bg_tab_hover=408080
+bg_tab_selected=408080
+bg_menu_background=408080
+bg_menu_hover_background=397373
+bg_nicklist_background=408080
+bg_chanlist_background_header=397373
+bg_chanlist_background_1=408080
+bg_chanlist_background_2=3C7878
+bg_input_background=397373
+bg_topic_border=336666
+bg_tabbar_border=336666
+bg_tab_border=336666
+bg_tab_hover_border=264D4D
+bg_tab_selected_border=264D4D
+bg_input_border=336666
+bg_nicklist_border=336666
+bg_nicklist_selected_border=336666
+bg_menu_border=336666
+bg_chanlist_border=336666
+bg_lastpositionbar=336666
+fg_default_text=408080
+fg_topic_text=59B3B3
+fg_tabbar_hilight_text=408080
+fg_sec_title_text=408080
+fg_sec_link_text=408080
+fg_sec_tab_text=408080
+fg_sec_tabbar_text=408080
+fg_sec_event_text=1A3333
 
 body {
   margin: 0;
   height: 100%;
   overflow: hidden;
   font-family: Verdana, sans-serif;
+  color: $(fg_default_text);
 }
 
 html {
   overflow: hidden;
+}
+
+h1,h2,h3,h4,h5 {
+  color: $(fg_sec_title_text);
+}
+
+a {
+  color: $(fg_sec_link_text);
+}
+
+input:not([type]),input[type="text"],input[type="password"] {
+  background: $(bg_input_background);
+  border: 1px solid $(bg_input_border);
+  color: $(fg_default_text);
 }
 
 #ircui {
@@ -65,10 +86,9 @@ html {
 }
 
 .qwebirc-qui .lines {
-  color: black;
   overflow: auto;
   font-size: 0.8em;
-  background: $(lines_background);
+  background: $(bg_lines_background);
 }
 
 .qwebirc-qui .ircwindow {
@@ -80,13 +100,14 @@ html {
 }
 
 .qwebirc-qui .input input.keyboard-input {
-  border: 0px;
-  margin: 2px 0px 0px 0px;
-  width: 99%;
+  border: 0;
+  width: 100%;
+  margin: 0;
+  padding: 2px 0;
 }
 
 .qwebirc-qui .input input.mobile-input {
-  border: 0px;
+  border: 0;
   margin: 2px 0px 0px 0px;
 }
 
@@ -105,35 +126,35 @@ html {
   left: 0px;
   top: 0px;
   right: 0px;
-  background-color: $(topic_background);
-  border-bottom: 1px dashed $(topic_border);
+  background-color: $(bg_topic_background);
+  border-bottom: 1px dashed $(bg_topic_border);
 }
 
 .qwebirc-qui .topic .emptytopic {
-  color: gray;
+  color: $(fg_topic_text);
 }
 
 .qwebirc-qui .topic {
-  color: gray;
+  color: $(fg_topic_text);
   padding-left: 5px;
   font-size: 0.7em;
   cursor: default;
 }
 
 .qwebirc-qui .outertabbar {
-  border-bottom: 1px solid $(tabbar_border);
-  background: $(tabbar_background);
+  border-bottom: 1px solid $(bg_tabbar_border);
+  background: $(bg_tabbar_background);
 }
 
 .qwebirc-qui .tabbar {
   font-size: 0.8em;
-  color: $(tabbar_text);
+  color: $(fg_sec_tabbar_text);
   margin-left: 38px;
   line-height: 24px;
 }
 
-.qwebirc-qui a.tab {
-  border: 1px solid $(tab_border);
+.qwebirc-qui .tab {
+  border: 1px solid $(bg_tab_border);
   padding: 2px;
   cursor: default;
   -moz-border-radius: 4px;
@@ -141,28 +162,26 @@ html {
   margin-right: -2px;
   white-space: nowrap;
   text-decoration: none;
-  color: $(tab_text);
+  color: $(fg_sec_tab_text);
 }
 
 .qwebirc-qui .tab:hover {
-  background: $(tab_hover);
-  border: 1px solid #c8d2dc;
+  background: $(bg_tab_hover);
+  border: 1px solid $(bg_tab_hover_border);
   -moz-border-radius: 4px;
   -webkit-border-radius: 4px;
 }
 
 .qwebirc-qui .tab-selected {
-  background: $(tab_selected);
-  border: 1px solid $(tab_selected_border);
+  background: $(bg_tab_selected);
+  border: 1px solid $(bg_tab_selected_border);
   -moz-border-radius: 4px;
   -webkit-border-radius: 4px;
-  color: $(tab_selected_text);
 }
 
 .qwebirc-qui div.input {
-  border-top: 1px solid $(input_border);
-  padding-left: 3px;
-  padding-right: 3px;
+  background: $(bg_input_background);
+  border-top: 1px solid $(bg_input_border);
 }
 
 .qwebirc-qui .tabclose {
@@ -176,50 +195,53 @@ html {
 }
 
 .qwebirc-qui a.tab-hilight-activity {
-  color: #009900;
+  color: $(fg_sec_event_text);
 }
 
 .qwebirc-qui a.tab-hilight-speech {
-  color: #0000ff;
+  font-weight: bold;
+  color: $(fg_sec_event_text);
 }
 
 .qwebirc-qui a.tab-hilight-us {
-  color: #ff0000;
+  font-weight: bold;
+  color: $(fg_tabbar_hilight_text);
 }
 
 .qwebirc-qui .nicklist {
-  border-left: 1px solid $(nicklist_border);
+  border-left: 1px solid $(bg_nicklist_border);
   position: absolute;
   top: 0px;
   right: 0px;
   width: 140px;
   overflow: auto;
-  background: $(nicklist_background);
-  color: $(nicklist_text);
+  background: $(bg_nicklist_background);
   font-size: 0.7em;
 }
 
 .qwebirc-qui .nicklist a {
   display: block;
-  color: black;
   text-decoration: none;
   cursor: default;
-  border-top: 1px solid $(nicklist_background);
-  border-bottom: 1px solid $(nicklist_background);
+  border-top: 1px solid $(bg_nicklist_background);
+  border-bottom: 1px solid $(bg_nicklist_background);
   padding-left: 1px;
 }
 
 .qwebirc-qui .nicklist a.selected {
+  font-weight: bold;
   display: block;
-  color: black;
-  background: white;
   text-decoration: none;
-  border-bottom: $(nicklist_selected_border) 1px solid;
+  border-bottom: $(bg_nicklist_selected_border) 1px solid;
   cursor: default;
 }
 
 .qwebirc-qui .nicklist a.selected-middle {
-  border-top: $(nicklist_selected_border) 1px solid;
+  border-top: $(bg_nicklist_selected_border) 1px solid;
+}
+
+.qwebirc-qui .nicklist a.selected .menu {
+  font-weight: normal;
 }
 
 div#noscript {
@@ -255,17 +277,16 @@ div#noscript {
 
 .qwebirc-qui .dropdownmenu {
   z-index: 100;
-  border: 1px solid $(menu_border);
+  border: 1px solid $(bg_menu_border);
   position: relative;
   top: 10px;
   left: 10px;
-  background: $(menu_background);
+  background: $(bg_menu_background);
 }
 
 .qwebirc-qui .dropdownmenu a {
   display: block;
   font-size: 0.7em;
-  color: black;
   cursor: pointer;
   cursor: hand;  
   padding-top: 1px;
@@ -275,7 +296,7 @@ div#noscript {
 }
 
 .qwebirc-qui .dropdownmenu a:hover {
-  background: $(menu_hover_background); /* IE is rubbish and doesn't like #FFFFFF or white */
+  background: $(bg_menu_hover_background); /* IE is rubbish and doesn't like #FFFFFF or white */
 }
 
 .qwebirc-qui .dropdownhint {
@@ -288,36 +309,36 @@ div#noscript {
 
 .qwebirc-qui hr.lastpos {
   border: none;
-  border-top: 1px solid $(lastpositionbar);
+  border-top: 1px solid $(bg_lastpositionbar);
   margin-left: 3em;
   margin-right: 3em;
 }
 
 .qwebirc-listpane .chanbox {
-  border-color: $(chanlist_border);
+  border-color: $(bg_chanlist_border);
 }
 
 .qwebirc-listpane .chanbox th {
-  border-color: $(chanlist_border);
-  background-color: $(chanlist_background_header);
+  border-color: $(bg_chanlist_border);
+  background-color: $(bg_chanlist_background_header);
 }
 
 .qwebirc-listpane .chanbox td {
-  border-color: $(chanlist_border);
+  border-color: $(bg_chanlist_border);
 }
 
 .qwebirc-listpane .chanbox td.chan1 {
-  background-color: $(chanlist_background_1);
+  background-color: $(bg_chanlist_background_1);
 }
 
 .qwebirc-listpane .chanbox td.chan2 {
-  background-color: $(chanlist_background_2);
+  background-color: $(bg_chanlist_background_2);
 }
 
 .qwebirc-listpane .chanbox tr:hover td.chan1 {
-  background-color: $(chanlist_background_header);
+  background-color: $(bg_chanlist_background_header);
 }
 
 .qwebirc-listpane .chanbox tr:hover td.chan2 {
-  background-color: $(chanlist_background_header);
+  background-color: $(bg_chanlist_background_header);
 }

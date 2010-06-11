@@ -328,14 +328,31 @@ qwebirc.ui.StandardUI = new Class({
   setModifiableStylesheet: function(name) {
     this.__styleSheet = new qwebirc.ui.style.ModifiableStylesheet(this.session.config.frontend.static_base_url + "css/" + name + qwebirc.FILE_SUFFIX + ".mcss");
     
-    this.setModifiableStylesheetValues(this.session.config.ui.hue, 0, 0);
+    this.setModifiableStylesheetValues(this.session.config.ui.fg_color, this.session.config.ui.fg_sec_color, this.session.config.ui.bg_color);
   },
-  setModifiableStylesheetValues: function(hue, saturation, lightness) {
+  setModifiableStylesheetValues: function(fg_color, fg_sec_color, bg_color) {
+
+    var fg = new Color(fg_color);
+    var fg_sec = new Color(fg_sec_color);
+    var bg = new Color(bg_color);
+
+    var multiplier = 1;
+    if (fg.hsb[2] > bg.hsb[2])
+      multiplier = -1;
+
     if(!$defined(this.__styleSheet))
       return;
-    this.__styleSheet.set(function(x) {
-      return x.setHue(hue).setSaturation(x.hsb[1] + saturation).setBrightness(x.hsb[2] + lightness);
-    });
+    this.__styleSheet.set(
+        function(x) {
+          return x.setHue(-180 + x.hsb[0] + fg.hsb[0]).setSaturation(fg.hsb[1] + (x.hsb[1]-50)*multiplier).setBrightness(fg.hsb[2] + (x.hsb[2]-50)*multiplier);
+        },
+        function(x) {
+          return x.setHue(-180 + x.hsb[0] + fg_sec.hsb[0]).setSaturation(fg_sec.hsb[1] + (x.hsb[1]-50)*multiplier).setBrightness(fg_sec.hsb[2] + (x.hsb[2]-50)*multiplier);
+        },
+        function(x) {
+          return x.setHue(-180 + x.hsb[0] + bg.hsb[0]).setSaturation(bg.hsb[1] + (x.hsb[1]-50)*multiplier).setBrightness(bg.hsb[2] + (x.hsb[2]-50)*multiplier);
+        }
+    );
   }
 });
 

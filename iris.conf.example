@@ -239,8 +239,19 @@ dedicated_notice_window: false
 # HIDE JOINPARTS: Whether joins and parts should be hidden in channels.
 hide_joinparts: false
 
-# HUE: The default colour for the interface.
-hue: 210
+# PRIMARY FOREGROUND COLOR: The base foreground colour for the UI.
+# Used for the bulk of the text.
+# Provide as a hexadecimal RGB value, without a # at the start.
+fg_color: DDDDDD
+
+# SECONDARY FOREGROUND COLOR: The secondary foreground colour for the UI.
+# Used for titles and links. If left empty, the same as the primary.
+# Provide as a hexadecimal RGB value, without a # at the start.
+fg_sec_color: 999999
+
+# BACKGROUND COLOR: The base background colour for the UI.
+# Provide as a hexadecimal RGB value, without a # at the start.
+bg_color: 111111
 
 # LASTPOS LINE: Whether a "last position" marker should be displayed.
 lastpos_line: true
