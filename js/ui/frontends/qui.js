@@ -355,16 +355,23 @@ qwebirc.ui.QUI.Window = new Class({
  
     /* Always put the connect/status windows in front. */
     if (session.ui.tabs.hasChildNodes()) { 
-      if (type == qwebirc.ui.WINDOW_STATUS)
+      if (type == qwebirc.ui.WINDOW_STATUS) {
         session.ui.tabs.insertBefore(this.tab, session.ui.tabs.firstChild);
-      else if (type == qwebirc.ui.WINDOW_CUSTOM && name == "Connect")
+        session.ui.tabs.insertBefore(this.spaceNode, this.tab.nextSibling);
+      }
+      else if (type == qwebirc.ui.WINDOW_CUSTOM && name == "Connect") {
         session.ui.tabs.insertBefore(this.tab, session.ui.tabs.firstChild);
-      else
+        session.ui.tabs.insertBefore(this.spaceNode, this.tab.nextSibling);
+      }
+      else {
         session.ui.tabs.appendChild(this.tab);
+        session.ui.tabs.appendChild(this.spaceNode);
+      }
     } 
-    else
+    else {
       session.ui.tabs.appendChild(this.tab);
-    session.ui.tabs.appendChild(this.spaceNode);
+      session.ui.tabs.appendChild(this.spaceNode);
+    }
     
     this.tab.appendText(name);
     this.tab.addEvent("click", function(e) {
