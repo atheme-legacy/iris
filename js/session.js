@@ -52,7 +52,7 @@ qwebirc.session = new Class({
 		this.loadCookieSettings();
 
 		/* Load query string parameters. */
-		var uri = document.location;
+		var uri = String(document.location);
 		var args = qwebirc.util.parseURI(uri);
 
 		/* Map backwards compatiblity query string aliases to the
