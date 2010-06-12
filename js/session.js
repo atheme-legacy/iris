@@ -52,7 +52,8 @@ qwebirc.session = new Class({
 		this.loadCookieSettings();
 
 		/* Load query string parameters. */
-		var args = qwebirc.util.parseURI(String(document.location));
+		var uri = document.location;
+		var args = qwebirc.util.parseURI(uri);
 
 		/* Map backwards compatiblity query string aliases to the
 		 * parameters they represent, unless they're already set. */
@@ -61,6 +62,10 @@ qwebirc.session = new Class({
 		if($defined(args["channels"]) && !$defined(args["initial_chans"]))
 			args["initial_chans"] = args["channels"];
 		
+		/* If we had any arguments, default chan_list_on_start off. */
+		if (uri.splitMax("/", 4)[3].indexOf("?") != -1)
+			args["chan_list_on_start"] = "0";
+
 		/* Load nick from query string. */
 		if($defined(args["initial_nick"])) {
 			var initial_nick = args["initial_nick"];

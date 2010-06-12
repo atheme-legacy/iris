@@ -216,8 +216,9 @@ chan_list: true
 
 # CHAN LIST ON START: Open the channel listing automatically when the
 # client starts. Requires the channel list be enabled, obviously.
-# Primarily useful as a query string option for network websites.
-chan_list_on_start: false
+# Always defaults off if any query string parameters are specified; must be
+# explicitly set on in the query string to enable.
+chan_list_on_start: true
 
 
 
