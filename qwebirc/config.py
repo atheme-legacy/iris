@@ -1,8 +1,11 @@
 import ConfigParser
 import qwebirc.util.qjson as json
+import config_options as options
+
 
 class ConfigException(Exception):
     pass
+
 
 def load_config():
     config = ConfigParser.SafeConfigParser()
@@ -16,90 +19,67 @@ def load_config():
         for k, v in config.items(section):
             globals()[section][k] = v
     
-    check_config()
-    __interpret_config()
+    check_config(True)
 
 
-def check_config():
-    required_sections = [
-        "adminengine",
-        "atheme",
-        "athemeengine",
-        "execution",
-        "feedbackengine",
-        "frontend",
-        "irc",
-        "proxy",
-        "tuneback",
-        "ui",
-    ]
-
-    for section in required_sections:
-        if not section in globals():
+def check_config(interpret):
+    sections = globals()
+    for section in options.sections:
+        if not section in sections:
             raise ConfigParser.NoSectionError(section)
+
+        for opt_section, option in options.booleans:
+            if opt_section == section and option not in sections[section]:
+                raise ConfigParser.NoOptionError(section + "::" + option)
+
+        for opt_section, option in options.floats:
+            if opt_section == section and option not in sections[section]:
+                raise ConfigParser.NoOptionError(section + "::" + option)
+
+        for opt_section, option in options.integers:
+            if opt_section == section and option not in sections[section]:
+                raise ConfigParser.NoOptionError(section + "::" + option)
+
+        for opt_section, option in options.lists:
+            if opt_section == section and option not in sections[section]:
+                raise ConfigParser.NoOptionError(section + "::" + option)
+
+        for opt_section, option in options.strings:
+            if opt_section == section and option not in sections[section]:
+                raise ConfigParser.NoOptionError(section + "::" + option)
+
+    if interpret:
+        __interpret_config()
 
 
 def __interpret_config():
-    list_options = [
-        (adminengine, "hosts"),
-        (execution, "syslog_addr"),
-        (proxy, "forwarded_for_ips"),
-    ]
-    for section, option in list_options:
-        if section[option] == "":
-           section[option] = []
-        else:
-           section[option] = section[option].split(' ')
 
-    integer_options = [
-        (athemeengine, "chan_list_count"),
-        (athemeengine, "chan_list_max_age"),
-        (execution, "syslog_port"),
-        (feedbackengine, "smtp_port"),
-        (irc, "port"),
-        (tuneback, "dns_timeout"),
-        (tuneback, "http_ajax_request_timeout"),
-        (tuneback, "http_request_timeout"),
-        (tuneback, "maxbuflen"),
-        (tuneback, "maxsubscriptions"),
-    ]
-    for section, option in integer_options:
-        if section[option] == "":
-           section[option] = 0
+    sections = globals()
+
+    for section, option in options.booleans:
+        if sections[section][option] == "true" or \
+                sections[section][option] == "yes":
+            sections[section][option] = True
         else:
-           section[option] = int(section[option])
+            sections[section][option] = False
+
+    for section, option in options.floats:
+        if sections[section][option] == "":
+            sections[section][option] = 0.0
+        else:
+            sections[section][option] = float(sections[section][option])
+
+    for section, option in options.integers:
+        if sections[section][option] == "":
+            sections[section][option] = 0
+        else:
+            sections[section][option] = int(sections[section][option])
     
-    float_options = [
-        (tuneback, "update_freq"),
-    ]
-    for section, option in float_options:
-        if section[option] == "":
-           section[option] = 0.0
+    for section, option in options.lists:
+        if sections[section][option] == "":
+            sections[section][option] = []
         else:
-           section[option] = float(section[option])
-
-    boolean_options = [
-        (atheme, "enabled"),
-        (atheme, "nickserv_login"),
-        (atheme, "chan_list"),
-        (atheme, "chan_list_on_start"),
-        (athemeengine, "chan_list_enabled"),
-        (frontend, "prompt"),
-        (frontend, "chan_prompt"),
-        (frontend, "chan_autoconnect"),
-        (ui, "dedicated_msg_window"),
-        (ui, "dedicated_notice_window"),
-        (ui, "hide_joinparts"),
-        (ui, "lastpos_line"),
-        (ui, "nick_click_query"),
-        (ui, "nick_colors"),
-        (ui, "nick_status"),
-    ]
-    for section, option in boolean_options:
-        if section[option] == "true" or section[option] == "yes":
-            section[option] = True
-        else:
-            section[option] = False
+            sections[section][option] = sections[section][option].split(' ')
 
     # If atheme::enabled is false, force every other Atheme integration option
     # off. Then, either way, remove "enabled"; it is only a meta-option.
