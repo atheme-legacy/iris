@@ -50,7 +50,7 @@ realname: http://moo.com/
 
 # IDENT: Type of ident to use on IRC, possible values include:
 # - string: Use a fixed string specified by ident_string.
-# - identhex: Use the user's IP, in hexadecimal.
+# - hex: Use the user's IP, in hexadecimal.
 # - nickname: Use the user's specified nickname.
 ident: string
 
