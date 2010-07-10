@@ -495,7 +495,7 @@ qwebirc.ui.QUI.Window = new Class({
     e.addClass("menu");
     
     var nickArray = [nick];
-    qwebirc.ui.MENU_ITEMS.forEach(function(x) {
+    qwebirc.ui.MENU_ITEMS().forEach(function(x) {
       if(!x.predicate || x.predicate !== true && !x.predicate.apply(this, nickArray))
         return;
       

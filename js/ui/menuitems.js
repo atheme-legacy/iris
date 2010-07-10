@@ -78,4 +78,4 @@ qwebirc.ui.MENU_ITEMS = function() {
       predicate: compose(maybeOpped, targetVoiced)
     }
   ];
-}();
+};

@@ -1,11 +1,14 @@
 #!/usr/bin/env python
 import os
 
-DEBUG_BASE = []
+DEBUG_BASE = ["js/qwebirc.js"]
 
 def addfrom(path, list):
     files = os.listdir(path)
+    files.sort()
     for file in files:
+        if path == "js" and file == "qwebirc.js":
+            continue
         if file.endswith(".js"):
             list.append(os.path.join(path, file))
 
