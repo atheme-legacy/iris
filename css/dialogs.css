@@ -52,150 +52,150 @@
 }
 
 /**************** ABOUT PANE *******************/
-.qwebirc-aboutpane {
+.qwebirc-paneAbout {
   font-size: 1em !important;
 }
 
-.qwebirc-aboutpane .mainbody {
+.qwebirc-paneAbout .mainbody {
   font-size: 0.8em;
   text-align: center;
   padding: 5px;
 }
 
-.qwebirc-aboutpane table {
+.qwebirc-paneAbout table {
   display: inline-block;
 }
 
-.qwebirc-aboutpane div.header {
+.qwebirc-paneAbout div.header {
   padding-top: 5px;
 }
 
-.qwebirc-aboutpane .header {
+.qwebirc-paneAbout .header {
   background: white;
   text-align: center;
   border-bottom: 1px solid gray;
   padding-bottom: 5px;
 }
 
-.qwebirc-aboutpane .header .title {
+.qwebirc-paneAbout .header .title {
   font-size: 3em;
 }
 
-.qwebirc-aboutpane .header .subtitle {
+.qwebirc-paneAbout .header .subtitle {
   text-align: center;
   margin-top: 10px;
 }
 
-.qwebirc-aboutpane .skipmargin {
+.qwebirc-paneAbout .skipmargin {
   margin-top: 0px;
 }
 
 /**************** EMBEDDED WIZARD *******************/
- div.qwebirc-embeddedwizard {
+ div.qwebirc-paneEmbed {
   padding-left: 5px;
   padding-top: 2px;
 }
 
-.qwebirc-embeddedwizard input.text {
+.qwebirc-paneEmbed input.text {
   width: 300px;
 }
 
-.qwebirc-embeddedwizard input.iframetext {
+.qwebirc-paneEmbed input.iframetext {
   width: 95%;
 }
 
-.qwebirc-embeddedwizard div.wizardcontrols {
+.qwebirc-paneEmbed div.wizardcontrols {
 }
 
-.qwebirc-embeddedwizard .wizardcontrols input {
+.qwebirc-paneEmbed .wizardcontrols input {
   width: 70px;
 }
 
 /**************** PRIVACY POLICY PANE *******************/
-.qwebirc-privacypolicypane {
+.qwebirc-panePrivacyPolicy {
   font-size: 1em !important;
 }
 
-.qwebirc-privacypolicypane .mainbody {
+.qwebirc-panePrivacyPolicy .mainbody {
   font-size: 0.8em;
   text-align: center;
   padding: 5px;
 }
 
-.qwebirc-privacypolicypane table {
+.qwebirc-panePrivacyPolicy table {
   display: inline-block;
 }
 
-.qwebirc-privacypolicypane div.header {
+.qwebirc-panePrivacyPolicy div.header {
   padding-top: 5px;
 }
 
-.qwebirc-privacypolicypane .header {
+.qwebirc-panePrivacyPolicy .header {
   background: white;
   text-align: center;
   border-bottom: 1px solid gray;
   padding-bottom: 5px;
 }
 
-.qwebirc-privacypolicypane .header .title {
+.qwebirc-panePrivacyPolicy .header .title {
   font-size: 3em;
 }
 
-.qwebirc-privacypolicypane .header .subtitle {
+.qwebirc-panePrivacyPolicy .header .subtitle {
   text-align: center;
   margin-top: 10px;
 }
 
-.qwebirc-privacypolicypane .monospace {
+.qwebirc-panePrivacyPolicy .monospace {
   font-family: Consolas, "Lucida Console", monospace;
 }
 
 /****** FEEDBACK ***********/
-.qwebirc-feedbackpane {
+.qwebirc-paneFeedback {
   font-size: 1em !important;
 }
 
-.qwebirc-feedbackpane .mainbody {
+.qwebirc-paneFeedback .mainbody {
   font-size: 0.8em;
   text-align: center;
   padding: 5px;
 }
 
-.qwebirc-feedbackpane table {
+.qwebirc-paneFeedback table {
   display: inline-block;
 }
 
-.qwebirc-feedbackpane div.header {
+.qwebirc-paneFeedback div.header {
   padding-top: 5px;
 }
 
-.qwebirc-feedbackpane .header {
+.qwebirc-paneFeedback .header {
   background: white;
   text-align: center;
   border-bottom: 1px solid gray;
   padding-bottom: 5px;
 }
 
-.qwebirc-feedbackpane .header .title {
+.qwebirc-paneFeedback .header .title {
   font-size: 3em;
 }
 
-.qwebirc-feedbackpane .header .subtitle {
+.qwebirc-paneFeedback .header .subtitle {
   text-align: center;
   margin-top: 10px;
 }
 
-.qwebirc-feedbackpane .monospace {
+.qwebirc-paneFeedback .monospace {
   font-family: Consolas, "Lucida Console", monospace;
 }
 
 /************* FAQ *****************/
 
-.qwebirc-faqpane {
+.qwebirc-paneFAQ {
   font-size: 1em !important;
 }
 
-.qwebirc-faqpane .mainbody {
+.qwebirc-paneFAQ .mainbody {
   font-size: 0.8em;
   text-align: center;
   padding: 5px;
@@ -203,31 +203,31 @@
   margin-right: 20px;
 }
 
-.qwebirc-faqpane table {
+.qwebirc-paneFAQ table {
   display: inline-block;
 }
 
-.qwebirc-faqpane div.header {
+.qwebirc-paneFAQ div.header {
   padding-top: 5px;
 }
 
-.qwebirc-faqpane .header {
+.qwebirc-paneFAQ .header {
   background: white;
   text-align: center;
   border-bottom: 1px solid gray;
   padding-bottom: 5px;
 }
 
-.qwebirc-faqpane .header .title {
+.qwebirc-paneFAQ .header .title {
   font-size: 3em;
 }
 
-.qwebirc-faqpane .header .subtitle {
+.qwebirc-paneFAQ .header .subtitle {
   text-align: center;
   margin-top: 10px;
 }
 
-.qwebirc-faqpane .monospace {
+.qwebirc-paneFAQ .monospace {
   font-family: Consolas, "Lucida Console", monospace;
 }
 
@@ -239,7 +239,7 @@
 
 /************* OPTIONS *****************/
 
-.qwebirc-optionspane div.hue-slider {
+.qwebirc-paneOptions div.hue-slider {
   margin-top: 5px;
   border: 0px solid black;
   width: 360px;
@@ -247,7 +247,7 @@
   background-image: url(../images/hue.png);
 }
 
-.qwebirc-optionspane div.sat-slider {
+.qwebirc-paneOptions div.sat-slider {
   margin-top: 5px;
   border: 0px solid black;
   width: 360px;
@@ -255,7 +255,7 @@
   background-image: url(../images/saturation.png);
 }
 
-.qwebirc-optionspane div.light-slider {
+.qwebirc-paneOptions div.light-slider {
   margin-top: 5px;
   margin-bottom: 3px;
   border: 0px solid black;
@@ -264,7 +264,7 @@
   background-image: url(../images/lightness.png);
 }
 
-.qwebirc-optionspane div .knob {
+.qwebirc-paneOptions div .knob {
   width: 8px;
   height: 16px;
   top: -5px;
@@ -273,44 +273,44 @@
   border: 1px solid black;
 }
 
-.qwebirc-optionspane .hexform {
+.qwebirc-paneOptions .hexform {
   display: inline;
   margin-right: 3px;
 }
 
 /************* LIST *****************/
 
-.qwebirc-listpane .filterbox {
+.qwebirc-paneList .filterbox {
   padding: 0.3em;
   text-align: center;
 }
 
-.qwebirc-listpane .filterbox .inputbox {
+.qwebirc-paneList .filterbox .inputbox {
   padding: 0 0.3em;
 }
 
-.qwebirc-listpane .pagebox {
+.qwebirc-paneList .pagebox {
   padding: 0.3em;
   text-align: center;
 }
 
-.qwebirc-listpane .chanbox {
+.qwebirc-paneList .chanbox {
   width: 100%;
   clear: both;
   border-style: solid;
   border-width: 0 0 1px 0;
 }
 
-.qwebirc-listpane .chanbox .name {
+.qwebirc-paneList .chanbox .name {
   width: 11em;
 }
 
-.qwebirc-listpane .chanbox .users {
+.qwebirc-paneList .chanbox .users {
   text-align: center;
   width: 4em;
 }
 
-.qwebirc-listpane .chanbox th {
+.qwebirc-paneList .chanbox th {
   padding: 0.3em;
   text-align: center;
   font-weight: bold;
@@ -318,36 +318,36 @@
   border-style: solid;
 }
 
-.qwebirc-listpane .chanbox th.chantopic {
+.qwebirc-paneList .chanbox th.chantopic {
   border-width: 1px 0 1px 0;
 }
 
-.qwebirc-listpane .chanbox td {
+.qwebirc-paneList .chanbox td {
   padding: 0.3em;
   border-width: 0 1px 0 0;
   border-style: solid;
 }
 
-.qwebirc-listpane .chanbox td.loading {
+.qwebirc-paneList .chanbox td.loading {
   padding: 0.3em;
   border-width: 1px 0 0 0;
   border-style: solid;
 }
 
-.qwebirc-listpane .chanbox td.chantopic {
+.qwebirc-paneList .chanbox td.chantopic {
   border-width: 0;
 }
 
-.qwebirc-listpane .chanbox tr:hover td.chan1 {
+.qwebirc-paneList .chanbox tr:hover td.chan1 {
   cursor: pointer;
   cursor: hand;
 }
 
-.qwebirc-listpane .chanbox tr:hover td.chan2 {
+.qwebirc-paneList .chanbox tr:hover td.chan2 {
   cursor: pointer;
   cursor: hand;
 }
 
-.qwebirc-listpane .chanbox tr:hover td.name {
+.qwebirc-paneList .chanbox tr:hover td.name {
   text-decoration: underline;
 }

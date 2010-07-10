@@ -1,3 +1,10 @@
+qwebirc.ui.Panes.PrivacyPolicy = {
+  title: "Privacy Policy",
+  command: function(session) { return "PRIVACYPOLICY"; },
+  menuitem: function(session) { return "Privacy policy"; },
+  menupos: 700
+};
+
 qwebirc.ui.PrivacyPolicyPane = new Class({
   Implements: [Events],
   session: null,

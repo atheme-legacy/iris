@@ -314,31 +314,31 @@ div#noscript {
   margin-right: 3em;
 }
 
-.qwebirc-listpane .chanbox {
+.qwebirc-paneList .chanbox {
   border-color: $(bg_chanlist_border);
 }
 
-.qwebirc-listpane .chanbox th {
+.qwebirc-paneList .chanbox th {
   border-color: $(bg_chanlist_border);
   background-color: $(bg_chanlist_background_header);
 }
 
-.qwebirc-listpane .chanbox td {
+.qwebirc-paneList .chanbox td {
   border-color: $(bg_chanlist_border);
 }
 
-.qwebirc-listpane .chanbox td.chan1 {
+.qwebirc-paneList .chanbox td.chan1 {
   background-color: $(bg_chanlist_background_1);
 }
 
-.qwebirc-listpane .chanbox td.chan2 {
+.qwebirc-paneList .chanbox td.chan2 {
   background-color: $(bg_chanlist_background_2);
 }
 
-.qwebirc-listpane .chanbox tr:hover td.chan1 {
+.qwebirc-paneList .chanbox tr:hover td.chan1 {
   background-color: $(bg_chanlist_background_header);
 }
 
-.qwebirc-listpane .chanbox tr:hover td.chan2 {
+.qwebirc-paneList .chanbox tr:hover td.chan2 {
   background-color: $(bg_chanlist_background_header);
 }

@@ -1,4 +1,11 @@
-qwebirc.ui.FeedbackPane = new Class({
+qwebirc.ui.Panes.Feedback = {
+  title: "Feedback",
+  command: function(session) { return "FEEDBACK"; },
+  menuitem: function(session) { return "Feedback"; },
+  menupos: 500
+};
+
+qwebirc.ui.Panes.Feedback.pclass = new Class({
   Implements: [Events],
   session: null,
   initialize: function(session, parent) {

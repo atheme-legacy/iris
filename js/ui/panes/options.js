@@ -1,3 +1,10 @@
+qwebirc.ui.Panes.Options = {
+  title: "Options",
+  command: function(session) { return "OPTIONS"; },
+  menuitem: function(session) { return "Options"; },
+  menupos: 300
+};
+
 qwebirc.ui.supportsFocus = function(session) {
   var ua = navigator.userAgent;
   if(!$defined(ua))
@@ -233,7 +240,7 @@ qwebirc.config.RadioInput = new Class({
   }
 });
 
-qwebirc.ui.OptionsPane = new Class({
+qwebirc.ui.Panes.Options.pclass = new Class({
   Implements: [Events],
   session: null,
   initialize: function(session, parentElement) {

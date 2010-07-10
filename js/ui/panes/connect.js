@@ -1,4 +1,10 @@
-qwebirc.ui.ConnectPane = new Class({
+qwebirc.ui.Panes.Connect = {
+  title: "Connect",
+  command: function(session) { return null; },
+  menuitem: function(session) { return null; }
+};
+
+qwebirc.ui.Panes.Connect.pclass = new Class({
   Implements: [Events],
   session: null,
   parentElement: null,

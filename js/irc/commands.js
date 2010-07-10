@@ -9,18 +9,18 @@ qwebirc.irc.Commands = new Class({
       "MSG": "PRIVMSG",
       "Q": "QUERY",
       "BACK": "AWAY",
-      "PRIVACY": "PRIVACYPOLICY",
       "HOP": "CYCLE"
     };
-  },
-  
-  newUIWindow: function(property) {
-    var p = this.session.ui[property];
-    if(!$defined(p)) {
-      this.getActiveWindow().errorMessage("Current UI does not support that command.");
-    } else {
-      p.bind(this.session.ui)();
-    }
+
+   // Add UI pane commands.
+   $each(qewbirc.ui.Panes, function(pane, name, object) {
+     command = pane.command(session);
+     if (command) {
+       this["cmd_" + command] = [false, undefined, undefined,function(args) {
+         session.ui.addPane(name);
+       }];
+     }
+   });
   },
   
   /* [require_active_window, splitintoXargs, minargs, function] */
@@ -92,21 +92,6 @@ qwebirc.irc.Commands = new Class({
   }],
   cmd_LOGOUT: [false, undefined, undefined, function(args) {
     this.session.irc.ui.logout();
-  }],
-  cmd_LIST: [false, undefined, undefined, function(args) {
-    this.newUIWindow("listWindow");
-  }],
-  cmd_OPTIONS: [false, undefined, undefined, function(args) {
-    this.newUIWindow("optionsWindow");
-  }],
-  cmd_EMBED: [false, undefined, undefined, function(args) {
-    this.newUIWindow("embeddedWindow");
-  }],
-  cmd_PRIVACYPOLICY: [false, undefined, undefined, function(args) {
-    this.newUIWindow("privacyWindow");
-  }],
-  cmd_ABOUT: [false, undefined, undefined, function(args) {
-    this.newUIWindow("aboutWindow");
   }],
   cmd_QUOTE: [false, 1, 1, function(args) {
     this.send(args[0]);

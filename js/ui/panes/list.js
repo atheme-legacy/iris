@@ -1,7 +1,20 @@
 /**
  * Display a list of channels on the network.
  */
-qwebirc.ui.ListPane = new Class({
+qwebirc.ui.Panes.List = {
+  title: "Channels",
+  command: function(session) {
+    if (session.config.atheme.chan_list)
+      return "LIST";
+  },
+  menuitem: function(session) {
+    if (session.config.atheme.chan_list)
+      return "Channel list";
+  },
+  menupos: 100
+};
+
+qwebirc.ui.Panes.List.pclass = new Class({
   Implements: [Events],
   session: null,
 

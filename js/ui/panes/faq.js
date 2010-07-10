@@ -1,4 +1,11 @@
-qwebirc.ui.FAQPane = new Class({
+qwebirc.ui.Panes.FAQ = {
+  title: "FAQ",
+  command: function(session) { return "FAQ"; },
+  menuitem: function(session) { return "Frequently asked questions"; },
+  menupos: 400
+};
+
+qwebirc.ui.Panes.FAQ.pclass = new Class({
   Implements: [Events],
   session: null,
   initialize: function(session, parent) {

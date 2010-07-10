@@ -1,10 +1,19 @@
 #!/usr/bin/env python
-IRC_BASE = ["athemequery", "ircconnection", "irclib", "numerics", "baseircclient", "irctracker", "commandparser", "commands", "ircclient", "commandhistory"]
-PANES = ["connect", "embed", "options", "about", "privacypolicy", "feedback", "faq", "list"]
-UI_BASE = ["atheme", "menuitems", "baseui", "baseuiwindow", "colour", "url", "theme", "notifications", "tabcompleter", "style"]
-UI_BASE.extend(["panes/%s" % x for x in PANES])
+import os
 
-DEBUG_BASE = ["qwebirc", "version", "jslib", "crypto", "md5", ["irc/%s" % x for x in IRC_BASE], ["ui/%s" % x for x in UI_BASE], "qwebircinterface", "session", "sound"]
+DEBUG_BASE = []
+
+def addfrom(path, list):
+    files = os.listdir(path)
+    for file in files:
+        if file.endswith(".js"):
+            list.append(os.path.join(path, file))
+
+addfrom("js", DEBUG_BASE)
+addfrom("js/irc", DEBUG_BASE)
+addfrom("js/ui", DEBUG_BASE)
+addfrom("js/ui/panes", DEBUG_BASE)
+    
 BUILD_BASE = ["qwebirc"]
 JS_BASE = ["mootools-1.2.1-core", "mootools-1.2-more"]
 JS_EXTRA = ["soundmanager2"]
@@ -36,5 +45,4 @@ def flatten(y):
     else:
       yield x
 
-DEBUG_BASE = list(flatten(DEBUG_BASE))
 DEBUG = ["debug/%s" % x for x in DEBUG_BASE]

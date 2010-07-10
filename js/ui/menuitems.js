@@ -1,13 +1,3 @@
-qwebirc.ui.UI_COMMANDS = [
-  ["Channel list", "list"],
-  ["Options", "options"],
-  ["Add webchat to your site", "embedded"],
-  ["Privacy policy", "privacy"],
-  ["Feedback", "feedback"],
-  ["Frequently asked questions", "faq"],
-  ["About qwebirc", "about"]
-];
-
 qwebirc.ui.MENU_ITEMS = function() {
   var maybeOpped = function(nick) {
     var channel = this.name; /* window name */

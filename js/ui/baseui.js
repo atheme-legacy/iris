@@ -159,12 +159,10 @@ qwebirc.ui.BaseUI = new Class({
 
 qwebirc.ui.StandardUI = new Class({
   Extends: qwebirc.ui.BaseUI,
-  UICommands: qwebirc.ui.UI_COMMANDS,
   initialize: function(session, parentElement, windowClass, uiName) {
     this.parent(session, parentElement, windowClass, uiName);
 
     this.tabCompleter = new qwebirc.ui.TabCompleterFactory(this);
-    this.customWindows = {};
     
     var ev;
     if(Browser.Engine.trident) {
@@ -239,24 +237,20 @@ qwebirc.ui.StandardUI = new Class({
 
     return w;
   },
-  addCustomWindow: function(windowName, class_, cssClass) {
+  addPane: function(name) {
 
-    if(this.customWindows[windowName]) {
-      this.selectWindow(this.customWindows[windowName]);
+    var title = qwebirc.ui.Panes[name].title;
+
+    var id = this.getWindowIdentifier(qwebirc.ui.WINDOW_CUSTOM, title)
+    if(this.windows[this.session.id][id]) {
+      this.selectWindow(this.windows[this.session.id][id]);
       return;
     }
     
-    var d = this.newCustomWindow(windowName, true);
-    this.customWindows[windowName] = d;
-    
-    d.addEvent("close", function() {
-      this.customWindows[windowName] = null;
-    }.bind(this));
-        
-    if(cssClass)
-      d.lines.addClass("qwebirc-" + cssClass);
+    var d = this.newCustomWindow(title, true);
+    d.lines.addClass("qwebirc-pane" + name);
       
-    var ew = new class_(this.session, d.lines);
+    var ew = new qwebirc.ui.Panes[name].pclass(this.session, d.lines);
     ew.addEvent("close", function() {
       d.close();
     }.bind(this));
@@ -265,35 +259,12 @@ qwebirc.ui.StandardUI = new Class({
     return d;
   },
   connectWindow: function(callbackfn) {
-    var w = this.addCustomWindow("Connect", qwebirc.ui.ConnectPane, "connect");
+    var pane = qwebirc.ui.Panes.Connect;
+    var w = this.addPane("Connect");
     w.subWindow.connectCallback = function(args) {
       w.close();
       callbackfn(args);
     };
-  },
-  embeddedWindow: function() {
-    this.addCustomWindow("Webchat Wizard", qwebirc.ui.EmbedWizard, "embeddedwizard");
-  },
-  optionsWindow: function() {
-    this.addCustomWindow("Options", qwebirc.ui.OptionsPane, "optionspane");
-  },
-  aboutWindow: function() {
-    this.addCustomWindow("About", qwebirc.ui.AboutPane, "aboutpane");
-  },
-  privacyWindow: function() {
-    this.addCustomWindow("Privacy Policy", qwebirc.ui.PrivacyPolicyPane, "privacypolicypane");
-  },
-  feedbackWindow: function() {
-    this.addCustomWindow("Feedback", qwebirc.ui.FeedbackPane, "feedbackpane");
-  },
-  faqWindow: function() {
-    this.addCustomWindow("FAQ", qwebirc.ui.FAQPane, "faqpane");
-  },
-  listWindow: function() {
-    if (!this.session.config.atheme.chan_list)
-      return;
-
-    this.addCustomWindow("Channels", qwebirc.ui.ListPane, "listpane");
   },
   urlDispatcher: function(name) {
     if(name == "embedded")

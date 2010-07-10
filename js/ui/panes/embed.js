@@ -1,35 +1,11 @@
-/* NEEDS converting to plain HTML! */
-qwebirc.ui.EmbedWizardStep = new Class({
-  Implements: [Options, Events],
-  options: {
-    "title": "",
-    "first": "",
-    "hint": "",
-    "middle": null,
-    "premove": null,
-    "example": ""
-  },
-  initialize: function(parent, options) {
-    this.setOptions(options);
-    this.parent = parent;
-  },
-  show: function() {
-    this.parent.title.set("html", this.options.title);
-    this.parent.firstRow.set("html", this.options.first);
-    this.parent.hint.set("html", this.options.hint);
-    this.parent.example.set("text", this.options.example);
-    
-    while(this.parent.middleRow.childNodes.length > 0)
-      this.parent.middleRow.removeChild(this.parent.middleRow.childNodes[0]);
-      
-    if($defined(this.options.middle))
-      this.parent.middleRow.appendChild(this.options.middle);
-    
-    this.fireEvent("show");
-  }
-});
+qwebirc.ui.Panes.Embed = {
+  title: "Webchat Wizard",
+  command: function(session) { return "EMBED"; },
+  menuitem: function(session) { return "Add webchat to your site"; },
+  menupos: 200
+};
 
-qwebirc.ui.EmbedWizard = new Class({
+qwebirc.ui.Panes.Embed.pclass = new Class({
   Implements: [Events],
   parent: null,
   session: null,
@@ -82,7 +58,7 @@ qwebirc.ui.EmbedWizard = new Class({
     return cell;
   },
   newStep: function(options) {
-    return new qwebirc.ui.EmbedWizardStep(this, options);
+    return new qwebirc.ui.Panes.Embed.Step(this, options);
   },
   newRadio: function(parent, text, name, selected) {
     var p = new Element("div");
@@ -263,5 +239,36 @@ qwebirc.ui.EmbedWizard = new Class({
       URL.push("prompt=0");
 
     return this.session.config.frontend.base_url + (URL.length>0?"?":"") + URL.join("&");
+  }
+});
+
+/* NEEDS converting to plain HTML! */
+qwebirc.ui.Panes.Embed.Step = new Class({
+  Implements: [Options, Events],
+  options: {
+    "title": "",
+    "first": "",
+    "hint": "",
+    "middle": null,
+    "premove": null,
+    "example": ""
+  },
+  initialize: function(parent, options) {
+    this.setOptions(options);
+    this.parent = parent;
+  },
+  show: function() {
+    this.parent.title.set("html", this.options.title);
+    this.parent.firstRow.set("html", this.options.first);
+    this.parent.hint.set("html", this.options.hint);
+    this.parent.example.set("text", this.options.example);
+    
+    while(this.parent.middleRow.childNodes.length > 0)
+      this.parent.middleRow.removeChild(this.parent.middleRow.childNodes[0]);
+      
+    if($defined(this.options.middle))
+      this.parent.middleRow.appendChild(this.options.middle);
+    
+    this.fireEvent("show");
   }
 });

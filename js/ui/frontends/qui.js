@@ -65,18 +65,27 @@ qwebirc.ui.QUI = new Class({
     dropdownMenu.hide();
     this.parentElement.appendChild(dropdownMenu);
     
-    this.UICommands.forEach(function(x) {
-      if (x[1] == "list" && !this.session.config.atheme.chan_list)
-        return;
-      var text = x[0];
-      var fn = this[x[1] + "Window"].bind(this);
+    var menuitems = [];
+    var i = 0;
+    $each(qwebirc.ui.Panes, function(pane, name, object) {
+      var text = pane.menuitem(this.session);
+      if (text) {
+        menuitems[i] = {};
+        menuitems[i].text = text;
+        menuitems[i].name = name;
+        menuitems[i].pos = pane.menupos;
+        i++;
+      }
+    }.bind(this));
+    menuitems.sort(function(a, b) { return a.pos - b.pos }); 
+    menuitems.forEach(function(x) {
       var e = new Element("a");
       e.addEvent("mousedown", function(e) { new Event(e).stop(); });
       e.addEvent("click", function() {
         dropdownMenu.hide();
-        fn();
-      });
-      e.set("text", text);
+        this.session.ui.addPane(x.name);
+      }.bind(this));
+      e.set("text", x.text);
       dropdownMenu.appendChild(e);
     }.bind(this));
     

@@ -1,4 +1,11 @@
-qwebirc.ui.AboutPane = new Class({
+qwebirc.ui.Panes.About = {
+  title: "About",
+  command: function(session) { return "ABOUT"; },
+  menuitem: function(session) { return "About Iris"; },
+  menupos: 600
+};
+
+qwebirc.ui.Panes.About.pclass = new Class({
   Implements: [Events],
   session: null,
   initialize: function(session, parent) {
