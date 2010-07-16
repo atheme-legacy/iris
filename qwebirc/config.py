@@ -1,3 +1,4 @@
+import os
 import ConfigParser
 import qwebirc.util.qjson as json
 import config_options as options
@@ -95,6 +96,13 @@ def __interpret_config():
     # If no secondary foreground colour was specified, use the primary.
     if not "fg_sec_color" in ui:
         ui["fg_sec_color"] = ui["fg_color"]
+
+    # If there is no privacy policy, set a setting to indicate this to the
+    # frontend.
+    if not os.access("static/panes/privacypolicy.html", os.F_OK):
+        ui["privacy"] = False
+    else:
+        ui["privacy"] = True
 
 
 def js_config():
