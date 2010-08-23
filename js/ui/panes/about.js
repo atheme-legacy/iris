@@ -19,7 +19,7 @@ qwebirc.ui.Panes.About.pclass = new Class({
       parent.getElement("input[class=close]").addEvent("click", function() {
         this.fireEvent("close");
       }.bind(this));
-      parent.getElement("div[class=version]").set("text", "v" + qwebirc.VERSION);
+      parent.getElement("span[class=version]").set("text", "v" + qwebirc.VERSION);
     }.bind(this)});
     r.get();
   }
