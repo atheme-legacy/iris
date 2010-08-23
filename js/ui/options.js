@@ -82,20 +82,23 @@ qwebirc.options.ColorInput = new Class({
     var sat = new Element("div");
     sat.addClass("qwebirc-optionspane");
     sat.addClass("sat-slider");
-    this.parentElement.appendChild(sat);
 
     var light = new Element("div");
     light.addClass("qwebirc-optionspane");
     light.addClass("light-slider");
-    this.parentElement.appendChild(light);
 
     var hexform = new Element("form", {"class": "hexform"});
     this.hexbox = new Element("input", {value: this.value});
     hexform.appendChild(this.hexbox);
-    this.parentElement.appendChild(hexform);
 
     var reset = new Element("input", {type: "button", value: "Reset to Default"});
-    this.parentElement.appendChild(reset);
+
+    if (!this.session.config.ui.simple_color) {
+      this.parentElement.appendChild(sat);
+      this.parentElement.appendChild(light);
+      this.parentElement.appendChild(hexform);
+      this.parentElement.appendChild(reset);
+    }
 
     var color = new Color(this.value);
 
@@ -108,7 +111,7 @@ qwebirc.options.ColorInput = new Class({
     hue.appendChild(k);
     var hue_slider = new Slider(hue, k, {steps: 36, range: [0, 369], wheel: true});
     hue_slider.set(color.hsb[0]);
-    
+
     k = new Element("div");
     k.addClass("knob");
     if(Browser.Engine.trident) {
@@ -130,38 +133,36 @@ qwebirc.options.ColorInput = new Class({
     light_slider.set(color.hsb[2]);
     
     var change_func = function(step) {
-      var color = $HSB(hue_slider.step, sat_slider.step, light_slider.step);
-      this.value = color.rgb.rgbToHex();
+      var newcolor = $HSB(hue_slider.step, sat_slider.step, light_slider.step);
+      this.value = newcolor.rgb.rgbToHex();
       this.onChange();
     }.bind(this);
-    hue_slider.addEvent("change", change_func);
-    sat_slider.addEvent("change", change_func);
-    light_slider.addEvent("change", change_func);
+
+    if (this.enabled) {
+      hue_slider.addEvent("change", change_func);
+      sat_slider.addEvent("change", change_func);
+      light_slider.addEvent("change", change_func);
     
-    hexform.addEvent("submit", function(e) {
-      (new Event(e)).stop();
-      var color = new Color(this.hexbox.value)
-      hue_slider.set(color.hsb[0]);
-      sat_slider.set(color.hsb[1]);
-      light_slider.set(color.hsb[2]);
-    }.bind(this));
-    reset.addEvent("click", function(e) {
-      (new Event(e)).stop();
-      this.value = this.session.config[this.option.category][this.option.option + "_default"];
-      var color = new Color(this.value)
-      hue_slider.set(color.hsb[0]);
-      sat_slider.set(color.hsb[1]);
-      light_slider.set(color.hsb[2]);
-    }.bind(this));
+      hexform.addEvent("submit", function(e) {
+        (new Event(e)).stop();
+        var color = new Color(this.hexbox.value)
+       hue_slider.set(color.hsb[0]);
+        sat_slider.set(color.hsb[1]);
+        light_slider.set(color.hsb[2]);
+      }.bind(this));
+
+      reset.addEvent("click", function(e) {
+        (new Event(e)).stop();
+        this.value = this.session.config[this.option.category][this.option.option + "_default"];
+       var color = new Color(this.value)
+       hue_slider.set(color.hsb[0]);
+       sat_slider.set(color.hsb[1]);
+        light_slider.set(color.hsb[2]);
+      }.bind(this));
+    }
 
     this.mainElement = hue;
     this.startValue = this.value;
-    
-    if(!this.enabled) {
-      hue_slider.detach();
-      sat_slider.detach();
-      light_slider.detach();
-    }
   },
   onChange: function() {
     this.hexbox.value = this.get();
@@ -297,6 +298,9 @@ qwebirc.options.Options = [
     label: "Adjust main foreground color",
     onChange: function (session, options, value) {
       session.ui.setModifiableStylesheetValues(value, options["ui.fg_sec_color"].get(), options["ui.bg_color"].get());
+    },
+    isEnabled: function (session) {
+      return !session.config.ui.simple_color;
     }
   },
   {
@@ -306,6 +310,9 @@ qwebirc.options.Options = [
     label: "Adjust title/link foreground color",
     onChange: function (session, options, value) {
       session.ui.setModifiableStylesheetValues(options["ui.fg_color"].get(), value, options["ui.bg_color"].get());
+    },
+    isEnabled: function (session) {
+      return !session.config.ui.simple_color;
     }
   },
   {
@@ -314,7 +321,10 @@ qwebirc.options.Options = [
     type: qwebirc.options.ColorInput,
     label: "Adjust background color",
     onChange: function (session, options, value) {
-      session.ui.setModifiableStylesheetValues(options["ui.fg_color"].get(), options["ui.fg_sec_color"].get(), value);
+      if ($defined(options["ui.fg_color"]))
+        session.ui.setModifiableStylesheetValues(options["ui.fg_color"].get(), options["ui.fg_sec_color"].get(), value);
+      else
+        session.ui.setModifiableStylesheetValues(session.config.ui.fg_color, session.config.ui.fg_sec_color, value);
     },
     onSave: function (session) {
       session.ui.setModifiableStylesheetValues(session.config.ui.fg_color, session.config.ui.fg_sec_color, session.config.ui.bg_color);

@@ -240,6 +240,12 @@ dedicated_notice_window: false
 # HIDE JOINPARTS: Whether joins and parts should be hidden in channels.
 hide_joinparts: false
 
+# SIMPLE COLOR: If enabled, hides most colour options, only showing the
+# background hue slider. This may be desirable if you consider the colour
+# options too complicated. Note that how useful the results of moving this
+# single slider are depends on the colour you have set.
+simple_color: false
+
 # PRIMARY FOREGROUND COLOR: The base foreground colour for the UI.
 # Used for the bulk of the text.
 # Provide as a hexadecimal RGB value, without a # at the start.

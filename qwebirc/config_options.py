@@ -29,6 +29,7 @@ booleans = [
     ("ui", "nick_click_query"),
     ("ui", "nick_colors"),
     ("ui", "nick_status"),
+    ("ui", "simple_color"),
 ]
     
 floats = [

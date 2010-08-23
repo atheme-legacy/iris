@@ -29,9 +29,14 @@ qwebirc.ui.Panes.Options.pclass = new Class({
     
     for(var i=0;i<qwebirc.options.Options.length;i++) {
       var x = qwebirc.options.Options[i];
+
       var type = qwebirc.options.CheckInput;
       if ($defined(x.type))
         type = x.type;
+      if (type == qwebirc.options.ColorInput && $defined(x.isEnabled)) {
+        if (!x.isEnabled(this.session))
+          continue
+      }
 
       var row = FE("tr", tb);
       var cella = FE("td", row);
