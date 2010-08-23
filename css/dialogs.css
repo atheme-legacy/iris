@@ -52,42 +52,40 @@
 }
 
 /**************** ABOUT PANE *******************/
+
 .qwebirc-paneAbout {
   font-size: 1em !important;
+  text-align: center;
 }
 
-.qwebirc-paneAbout .mainbody {
+.qwebirc-paneAbout p {
   font-size: 0.8em;
-  text-align: center;
-  padding: 5px;
+  margin: 0.5em 2em 0 2em;
 }
 
 .qwebirc-paneAbout table {
   display: inline-block;
 }
 
-.qwebirc-paneAbout div.header {
-  padding-top: 5px;
+.qwebirc-paneAbout ul {
+  text-align: left;
+  font-size: 0.8em;
+  margin-top: 0;
+  margin-bottom: 0;
 }
 
-.qwebirc-paneAbout .header {
-  background: white;
-  text-align: center;
-  border-bottom: 1px solid gray;
-  padding-bottom: 5px;
+.qwebirc-paneAbout h1 {
+  font-weight: normal;
+  font-size: 2em;
+  padding: 0.2em 0 0 0;
+  margin: 0;
 }
 
-.qwebirc-paneAbout .header .title {
-  font-size: 3em;
-}
-
-.qwebirc-paneAbout .header .subtitle {
-  text-align: center;
-  margin-top: 10px;
-}
-
-.qwebirc-paneAbout .skipmargin {
-  margin-top: 0px;
+.qwebirc-paneAbout h2 {
+  font-weight: normal;
+  font-size: 0.8em;
+  padding: 0 0 0.2em 0;
+  margin: 0;
 }
 
 /**************** EMBEDDED WIZARD *******************/
@@ -112,38 +110,29 @@
 }
 
 /**************** PRIVACY POLICY PANE *******************/
+
 .qwebirc-panePrivacyPolicy {
   font-size: 1em !important;
+  text-align: center;
 }
 
-.qwebirc-panePrivacyPolicy .mainbody {
+.qwebirc-panePrivacyPolicy p {
   font-size: 0.8em;
-  text-align: center;
-  padding: 5px;
+  margin: 0 2em;
 }
 
-.qwebirc-panePrivacyPolicy table {
-  display: inline-block;
+.qwebirc-panePrivacyPolicy h1 {
+  font-weight: normal;
+  font-size: 2em;
+  padding: 0.2em 0;
+  margin: 0 0 0.5em 0;
 }
 
-.qwebirc-panePrivacyPolicy div.header {
-  padding-top: 5px;
-}
-
-.qwebirc-panePrivacyPolicy .header {
-  background: white;
-  text-align: center;
-  border-bottom: 1px solid gray;
-  padding-bottom: 5px;
-}
-
-.qwebirc-panePrivacyPolicy .header .title {
-  font-size: 3em;
-}
-
-.qwebirc-panePrivacyPolicy .header .subtitle {
-  text-align: center;
-  margin-top: 10px;
+.qwebirc-panePrivacyPolicy h2 {
+  font-weight: normal;
+  font-size: 1.2em;
+  margin: 0;
+  padding: 0.1em 0;
 }
 
 .qwebirc-panePrivacyPolicy .monospace {
@@ -151,38 +140,22 @@
 }
 
 /****** FEEDBACK ***********/
+
 .qwebirc-paneFeedback {
   font-size: 1em !important;
+  text-align: center;
 }
 
-.qwebirc-paneFeedback .mainbody {
+.qwebirc-paneFeedback .enterarea {
   font-size: 0.8em;
-  text-align: center;
-  padding: 5px;
+  margin: 0 2em;
 }
 
-.qwebirc-paneFeedback table {
-  display: inline-block;
-}
-
-.qwebirc-paneFeedback div.header {
-  padding-top: 5px;
-}
-
-.qwebirc-paneFeedback .header {
-  background: white;
-  text-align: center;
-  border-bottom: 1px solid gray;
-  padding-bottom: 5px;
-}
-
-.qwebirc-paneFeedback .header .title {
-  font-size: 3em;
-}
-
-.qwebirc-paneFeedback .header .subtitle {
-  text-align: center;
-  margin-top: 10px;
+.qwebirc-paneFeedback h1 {
+  font-weight: normal;
+  font-size: 2em;
+  padding: 0.2em 0;
+  margin: 0 0 0.5em 0;
 }
 
 .qwebirc-paneFeedback .monospace {
@@ -193,38 +166,26 @@
 
 .qwebirc-paneFAQ {
   font-size: 1em !important;
+  text-align: center;
 }
 
-.qwebirc-paneFAQ .mainbody {
+.qwebirc-paneFAQ p {
   font-size: 0.8em;
-  text-align: center;
-  padding: 5px;
-  margin-left: 20px;
-  margin-right: 20px;
+  margin: 0 2em;
 }
 
-.qwebirc-paneFAQ table {
-  display: inline-block;
+.qwebirc-paneFAQ h1 {
+  font-weight: normal;
+  font-size: 2em;
+  padding: 0.2em 0;
+  margin: 0 0 0.5em 0;
 }
 
-.qwebirc-paneFAQ div.header {
-  padding-top: 5px;
-}
-
-.qwebirc-paneFAQ .header {
-  background: white;
-  text-align: center;
-  border-bottom: 1px solid gray;
-  padding-bottom: 5px;
-}
-
-.qwebirc-paneFAQ .header .title {
-  font-size: 3em;
-}
-
-.qwebirc-paneFAQ .header .subtitle {
-  text-align: center;
-  margin-top: 10px;
+.qwebirc-paneFAQ h2 {
+  font-weight: normal;
+  font-size: 1.2em;
+  margin: 0;
+  padding: 0.1em 0;
 }
 
 .qwebirc-paneFAQ .monospace {

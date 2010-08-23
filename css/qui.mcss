@@ -5,8 +5,9 @@ bg_tab_hover=408080
 bg_tab_selected=408080
 bg_menu_background=408080
 bg_menu_hover_background=397373
+bg_header=#418282
 bg_nicklist_background=408080
-bg_chanlist_background_header=397373
+bg_chanlist_header=397373
 bg_chanlist_background_1=408080
 bg_chanlist_background_2=3C7878
 bg_input_background=397373
@@ -314,13 +315,30 @@ div#noscript {
   margin-right: 3em;
 }
 
+.qwebirc-paneAbout .header {
+  background-color: $(bg_header);
+}
+
+.qwebirc-paneFAQ h1 {
+  background-color: $(bg_header);
+}
+
+.qwebirc-paneFeedback h1 {
+  background-color: $(bg_header);
+}
+
+.qwebirc-panePrivacyPolicy h1 {
+  background-color: $(bg_header);
+}
+
+
 .qwebirc-paneList .chanbox {
   border-color: $(bg_chanlist_border);
 }
 
 .qwebirc-paneList .chanbox th {
   border-color: $(bg_chanlist_border);
-  background-color: $(bg_chanlist_background_header);
+  background-color: $(bg_chanlist_header);
 }
 
 .qwebirc-paneList .chanbox td {
