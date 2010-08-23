@@ -82,12 +82,15 @@ def __interpret_config():
         else:
             sections[section][option] = sections[section][option].split(' ')
 
-    # If atheme::enabled is false, force every other Atheme integration option
-    # off. Then, either way, remove "enabled"; it is only a meta-option.
-    if atheme["enabled"] == False:
+    # If athemeengine::xmlrpc_path is unset, force all Atheme integration
+    # options off in the frontend.
+    if athemeengine["xmlrpc_path"] == "":
         for option in atheme:
             atheme[option] = False
-    del atheme["enabled"]
+
+    # Set atheme::chan_list so the frontend is aware of whether channel lists
+    # are enabled.
+    atheme["chan_list"] = athemeengine["chan_list_enabled"]
 
     # If atheme::chan_list is off, force atheme::chan_list_on_start off.
     if atheme["chan_list"] == False:
@@ -98,7 +101,7 @@ def __interpret_config():
         ui["fg_sec_color"] = ui["fg_color"]
 
     # If there is no privacy policy, set a setting to indicate this to the
-    # frontend.
+    # frontend, disabling the privacy policy pane.
     if not os.access("static/panes/privacypolicy.html", os.F_OK):
         ui["privacy"] = False
     else:

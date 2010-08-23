@@ -89,17 +89,20 @@ webirc_password: fish
 
 
 # ATHEME ENGINE OPTIONS
-# These options control communication with Atheme by the Atheme engine backend.
-# They require a backend restart to change.
+# These options control communication with Atheme by the Atheme engine backend,
+# and in some cases, features enabled in the Atheme frontend.
+# They require a backend restart and a rerun of compile.py to update.
 [athemeengine]
 
 # XMLRPC PATH: Address of your Atheme directory instance.  Allows
 # authentication to NickServ ala SASL AUTHCOOKIE.
 # If you don't have an Atheme directory instance, leave unset.
+# Leave this unset to disable all Atheme integration.
 xmlrpc_path: http://127.0.0.1:8080/xmlrpc
 
 # CHAN LIST ENABLED: Whether to permit channel lists to be requested.
-# These could be a memory usage concern (at least if the below are set badly).
+# These could be a memory usage concern on large networks (at least if the
+# below are set badly). Enables the channel list in the frontend if true.
 chan_list_enabled: true
 
 # CHAN LIST MAX AGE: Maximum age of a channel list before a new list will be
@@ -202,17 +205,9 @@ dynamic_base_url: /
 # These are exposed to end users.
 [atheme]
 
-# ENABLED: Enables Atheme integration.
-# Turn off to force all the following options off.
-enabled: true
-
 # NICKSERV LOGIN: Enable login to a NickServ account using Iris, before
 # connecting. Requires SASL with the AUTHCOOKIE method be loaded in Atheme.
 nickserv_login: true
-
-# CHAN LIST: Enables the channel listing.
-# Requires ALIS be loaded in Atheme.
-chan_list: true
 
 # CHAN LIST ON START: Open the channel listing automatically when the
 # client starts. Requires the channel list be enabled, obviously.
