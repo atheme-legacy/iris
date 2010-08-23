@@ -1,16 +1,16 @@
-bg_topic_background=408080
-bg_lines_background=408080
-bg_tabbar_background=3C7878
+bg_topic=408080
+bg_lines=408080
+bg_tabbar=3C7878
 bg_tab_hover=408080
 bg_tab_selected=408080
-bg_menu_background=408080
-bg_menu_hover_background=397373
+bg_menu=408080
+bg_menu_hover=397373
 bg_header=#418282
-bg_nicklist_background=408080
+bg_nicklist=408080
 bg_chanlist_header=397373
-bg_chanlist_background_1=408080
-bg_chanlist_background_2=3C7878
-bg_input_background=397373
+bg_chanlist_1=408080
+bg_chanlist_2=3C7878
+bg_input=397373
 bg_topic_border=336666
 bg_tabbar_border=336666
 bg_tab_border=336666
@@ -52,7 +52,7 @@ a {
 }
 
 input:not([type]),input[type="text"],input[type="password"] {
-  background: $(bg_input_background);
+  background: $(bg_input);
   border: 1px solid $(bg_input_border);
   color: $(fg_default_text);
 }
@@ -89,7 +89,7 @@ input:not([type]),input[type="text"],input[type="password"] {
 .qwebirc-qui .lines {
   overflow: auto;
   font-size: 0.8em;
-  background: $(bg_lines_background);
+  background: $(bg_lines);
 }
 
 .qwebirc-qui .ircwindow {
@@ -127,7 +127,7 @@ input:not([type]),input[type="text"],input[type="password"] {
   left: 0px;
   top: 0px;
   right: 0px;
-  background-color: $(bg_topic_background);
+  background-color: $(bg_topic);
   border-bottom: 1px dashed $(bg_topic_border);
 }
 
@@ -144,7 +144,7 @@ input:not([type]),input[type="text"],input[type="password"] {
 
 .qwebirc-qui .outertabbar {
   border-bottom: 1px solid $(bg_tabbar_border);
-  background: $(bg_tabbar_background);
+  background: $(bg_tabbar);
 }
 
 .qwebirc-qui .tabbar {
@@ -181,7 +181,7 @@ input:not([type]),input[type="text"],input[type="password"] {
 }
 
 .qwebirc-qui div.input {
-  background: $(bg_input_background);
+  background: $(bg_input);
   border-top: 1px solid $(bg_input_border);
 }
 
@@ -216,7 +216,7 @@ input:not([type]),input[type="text"],input[type="password"] {
   right: 0px;
   width: 140px;
   overflow: auto;
-  background: $(bg_nicklist_background);
+  background: $(bg_nicklist);
   font-size: 0.7em;
 }
 
@@ -224,8 +224,8 @@ input:not([type]),input[type="text"],input[type="password"] {
   display: block;
   text-decoration: none;
   cursor: default;
-  border-top: 1px solid $(bg_nicklist_background);
-  border-bottom: 1px solid $(bg_nicklist_background);
+  border-top: 1px solid $(bg_nicklist);
+  border-bottom: 1px solid $(bg_nicklist);
   padding-left: 1px;
 }
 
@@ -282,7 +282,7 @@ div#noscript {
   position: relative;
   top: 10px;
   left: 10px;
-  background: $(bg_menu_background);
+  background: $(bg_menu);
 }
 
 .qwebirc-qui .dropdownmenu a {
@@ -297,7 +297,7 @@ div#noscript {
 }
 
 .qwebirc-qui .dropdownmenu a:hover {
-  background: $(bg_menu_hover_background); /* IE is rubbish and doesn't like #FFFFFF or white */
+  background: $(bg_menu_hover); /* IE is rubbish and doesn't like #FFFFFF or white */
 }
 
 .qwebirc-qui .dropdownhint {
@@ -346,17 +346,17 @@ div#noscript {
 }
 
 .qwebirc-paneList .chanbox td.chan1 {
-  background-color: $(bg_chanlist_background_1);
+  background-color: $(bg_chanlist_1);
 }
 
 .qwebirc-paneList .chanbox td.chan2 {
-  background-color: $(bg_chanlist_background_2);
+  background-color: $(bg_chanlist_2);
 }
 
 .qwebirc-paneList .chanbox tr:hover td.chan1 {
-  background-color: $(bg_chanlist_background_header);
+  background-color: $(bg_chanlist_header);
 }
 
 .qwebirc-paneList .chanbox tr:hover td.chan2 {
-  background-color: $(bg_chanlist_background_header);
+  background-color: $(bg_chanlist_header);
 }
