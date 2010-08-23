@@ -230,9 +230,9 @@ qwebirc.session = new Class({
 	},
 	loadCookieSettings: function() {
 		var cookie = new Hash.Cookie("iris-settings", {duration: 3650, autoSave: false});
-		for (var i = 0; i < qwebirc.config.UserOptions.length; i++) {
-			var category = qwebirc.config.UserOptions[i].category;
-			var option = qwebirc.config.UserOptions[i].option;
+		for (var i = 0; i < qwebirc.options.Options.length; i++) {
+			var category = qwebirc.options.Options[i].category;
+			var option = qwebirc.options.Options[i].option;
 			var cookieName = category + "." + option;
 			if ($defined(cookie.get(cookieName)))
 				this.config[category][option] = cookie.get(cookieName);
@@ -248,9 +248,9 @@ qwebirc.session = new Class({
 		var cookie = new Hash.Cookie("iris-settings", {duration: 3650, autoSave: false});
 		cookie.erase();
 		cookie = new Hash.Cookie("iris-settings", {duration: 3650, autoSave: false});
-		for (var i = 0; i < qwebirc.config.UserOptions.length; i++) {
-			var category = qwebirc.config.UserOptions[i].category;
-			var option = qwebirc.config.UserOptions[i].option;
+		for (var i = 0; i < qwebirc.options.Options.length; i++) {
+			var category = qwebirc.options.Options[i].category;
+			var option = qwebirc.options.Options[i].option;
 			var cookieName = category + "." + option;
 			cookie.set(cookieName, this.config[category][option]);
 		}
