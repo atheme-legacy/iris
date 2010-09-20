@@ -15,6 +15,7 @@ sections = [
 
 booleans = [
     ("atheme", "nickserv_login"),
+    ("atheme", "chan_list_cloud_view"),
     ("atheme", "chan_list_on_start"),
     ("athemeengine", "chan_list_enabled"),
     ("frontend", "prompt"),

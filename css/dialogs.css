@@ -241,6 +241,20 @@
 
 /************* LIST *****************/
 
+.qwebirc-paneList table {
+  width: 100%;
+}
+
+.qwebirc-paneList .viewchange {
+  width: 15em;
+}
+
+.qwebirc-paneList .hoverhint {
+  text-align: center;
+  padding: 0;
+  margin: 0;
+}
+
 .qwebirc-paneList .filterbox {
   padding: 0.3em;
   text-align: center;
@@ -255,23 +269,23 @@
   text-align: center;
 }
 
-.qwebirc-paneList .chanbox {
+.qwebirc-paneList .listbox {
   width: 100%;
   clear: both;
   border-style: solid;
   border-width: 0 0 1px 0;
 }
 
-.qwebirc-paneList .chanbox .name {
+.qwebirc-paneList .listbox .name {
   width: 11em;
 }
 
-.qwebirc-paneList .chanbox .users {
+.qwebirc-paneList .listbox .users {
   text-align: center;
   width: 4em;
 }
 
-.qwebirc-paneList .chanbox th {
+.qwebirc-paneList .listbox th {
   padding: 0.3em;
   text-align: center;
   font-weight: bold;
@@ -279,36 +293,53 @@
   border-style: solid;
 }
 
-.qwebirc-paneList .chanbox th.chantopic {
+.qwebirc-paneList .listbox th.chantopic {
   border-width: 1px 0 1px 0;
 }
 
-.qwebirc-paneList .chanbox td {
+.qwebirc-paneList .listbox td {
   padding: 0.3em;
   border-width: 0 1px 0 0;
   border-style: solid;
 }
 
-.qwebirc-paneList .chanbox td.loading {
+.qwebirc-paneList .listbox td.loading {
   padding: 0.3em;
   border-width: 1px 0 0 0;
   border-style: solid;
 }
 
-.qwebirc-paneList .chanbox td.chantopic {
+.qwebirc-paneList .listbox td.chantopic {
   border-width: 0;
 }
 
-.qwebirc-paneList .chanbox tr:hover td.chan1 {
+.qwebirc-paneList .listbox tr:hover td.chan1 {
   cursor: pointer;
   cursor: hand;
 }
 
-.qwebirc-paneList .chanbox tr:hover td.chan2 {
+.qwebirc-paneList .listbox tr:hover td.chan2 {
   cursor: pointer;
   cursor: hand;
 }
 
-.qwebirc-paneList .chanbox tr:hover td.name {
+.qwebirc-paneList .listbox tr:hover td.name {
+  text-decoration: underline;
+}
+
+.qwebirc-paneList .tagbox {
+  font-size: 1.2em;
+  line-height: 1.2;
+  padding: 0.5em 1.5em 0 1.5em;
+  text-align: justify;
+}
+
+.qwebirc-paneList .tagbox span {
+  margin: 0 0.15em;
+}
+
+.qwebirc-paneList .tagbox span:hover {
+  cursor: pointer;
+  cursor: hand;
   text-decoration: underline;
 }

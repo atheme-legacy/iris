@@ -332,31 +332,35 @@ div#noscript {
 }
 
 
-.qwebirc-paneList .chanbox {
+.qwebirc-paneList .listbox {
   border-color: $(bg_chanlist_border);
 }
 
-.qwebirc-paneList .chanbox th {
+.qwebirc-paneList .listbox th {
   border-color: $(bg_chanlist_border);
   background-color: $(bg_chanlist_header);
 }
 
-.qwebirc-paneList .chanbox td {
+.qwebirc-paneList .listbox td {
   border-color: $(bg_chanlist_border);
 }
 
-.qwebirc-paneList .chanbox td.chan1 {
+.qwebirc-paneList .listbox td.chan1 {
   background-color: $(bg_chanlist_1);
 }
 
-.qwebirc-paneList .chanbox td.chan2 {
+.qwebirc-paneList .listbox td.chan2 {
   background-color: $(bg_chanlist_2);
 }
 
-.qwebirc-paneList .chanbox tr:hover td.chan1 {
+.qwebirc-paneList .listbox tr:hover td.chan1 {
   background-color: $(bg_chanlist_header);
 }
 
-.qwebirc-paneList .chanbox tr:hover td.chan2 {
+.qwebirc-paneList .listbox tr:hover td.chan2 {
+  background-color: $(bg_chanlist_header);
+}
+
+.qwebirc-paneList .tagbox span:hover {
   background-color: $(bg_chanlist_header);
 }

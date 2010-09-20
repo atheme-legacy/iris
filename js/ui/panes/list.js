@@ -17,25 +17,53 @@ qwebirc.ui.Panes.List = {
 qwebirc.ui.Panes.List.pclass = new Class({
   Implements: [Events],
   session: null,
+  parent: null,
 
   /* Store the list's current state. */
+  cloud: true,
   loading: null,
   timestamp: 0,
   page: 1,
   namefilter: "",
   topicfilter: "",
+  filterBox: null,
+  viewBox: null,
   chanBox: null,
   pageBox: null,
+  viewChange: null,
   pageText: null,
   prev: null,
   next: null,
+  
 
   initialize: function(session, parent) {
     this.session = session;
+    this.parent = parent;
+    this.cloud = this.session.config.atheme.chan_list_cloud_view;
+    
+    /* Make header table. */
+    var headerTable = new Element("table");
+    var header = new Element("tbody");
+    headerTable.appendChild(header);
+
+
+    /* Make and add view change link. */
+    this.viewChange = new Element("a", { "class": "", "href": "#" });
+    this.viewChange.addEvent("click", function(e) {
+      if (this.cloud) {
+        this.createListView();
+      } else {
+        this.createCloudView();
+      }
+    }.bind(this));
+    var cell = new Element("td", { "class": "viewchange" });
+    cell.appendChild(this.viewChange);
+    header.appendChild(cell);
+
 
     /* Make filter box. */
     var filterBox = new Element("form", { "class": "filterbox" });
-    
+
     /* Add name filter text box. */
     var filterSubBox = new Element("span", { "class": "inputbox" });
     filterSubBox.appendText("Filter by Name:");
@@ -49,7 +77,7 @@ qwebirc.ui.Panes.List.pclass = new Class({
     var topicinput = new Element("input");
     filterSubBox.appendChild(topicinput);
     filterBox.appendChild(filterSubBox);
-    
+
     /* Add refresh and update filters button. */
     var refresh = new Element("input", {"type": "submit", "value": "Refresh and Apply Filters"});
     refresh.addEvent("click", function(e) {
@@ -64,15 +92,40 @@ qwebirc.ui.Panes.List.pclass = new Class({
     }.bind(this));
     filterBox.appendChild(refresh);
 
-    /* Add filter box. */
-    parent.appendChild(filterBox);
+    /* Add filter box and completed header. */
+    var cell = new Element("td"); cell.appendChild(filterBox);
+    header.appendChild(cell);
+    this.parent.appendChild(headerTable);
+
+
+    /* Make and add view box. */
+    this.viewBox = new Element("div");
+    this.parent.appendChild(this.viewBox);
+
+    if (this.cloud) {
+      this.createCloudView();
+    } else {
+      this.createListView();
+    }
+  },
+
+  /**
+   * Setup the "list view" list of channels.
+  */
+  createListView: function() {
+    this.cloud = false;
+    while(this.viewBox.childNodes.length > 0)
+      this.viewBox.removeChild(this.viewBox.firstChild);
+
+    /* Update view change text. */
+    this.viewChange.set("text", "Switch to cloud view...");
 
     /* Create the channel table. */
-    var table = new Element("table", { "class": "chanbox", "cellspacing": "0"});
-    parent.appendChild(table);
+    var table = new Element("table", { "class": "listbox", "cellspacing": "0"});
     this.chanBox = new Element("tbody");
     table.appendChild(this.chanBox);
-    
+    this.viewBox.appendChild(table);
+   
     /* Make page box and components. */
     this.pageBox = new Element("div", { "class": "pagebox" });
     this.pageBox.style.display = "none";
@@ -86,11 +139,36 @@ qwebirc.ui.Panes.List.pclass = new Class({
     this.pageBox.appendChild(this.next);
 
     /* Add page box. */
-    parent.appendChild(this.pageBox);
+    this.viewBox.appendChild(this.pageBox);
 
     /* Start the loading display timer. */
     var delayfn = function() { this.chanBox.set("html", "<tr><td class=\"loading\">Loading. . .</td></tr>"); }.bind(this);
     this.loading = delayfn.delay(500);
+
+    /* Get a channel list. */
+    this.update();
+  },
+
+  /**
+   * Setup the "cloud view" list of channels.
+  */
+  createCloudView: function() {
+    this.cloud = true;
+    this.page = 1;
+    while(this.viewBox.childNodes.length > 0)
+      this.viewBox.removeChild(this.viewBox.firstChild);
+
+    /* Update view change text. */
+    this.viewChange.set("text", "Switch to list view...");
+
+    /* Add hint text. */
+    var hint = new Element("div", { "class": "hoverhint"});
+    hint.appendText("Hover over a channel to view its topic!");
+    this.viewBox.appendChild(hint);
+
+    /* Add channel box. */
+    this.chanBox = new Element("div", { "class": "tagbox" });
+    this.viewBox.appendChild(this.chanBox);
 
     /* Get a channel list. */
     this.update();
@@ -105,27 +183,97 @@ qwebirc.ui.Panes.List.pclass = new Class({
       /* Update our timestamp to the timestamp of this list. */
       this.timestamp = timestamp;
 
-      /* Update the page number. */
-      var pages = Math.ceil(total/100);
-      while (this.pageText.childNodes.length >= 1)
-        this.pageText.removeChild(this.pageText.firstChild);
-      this.pageText.appendText("Page " + (this.page) + " of " + pages);
+      /* Calculate the range of the channel sizes. */
+      var minUsers = channels[channels.length-1].users
+      var userScale = channels[0].users - minUsers
 
       /* Cancel any timeout. */
       if (this.loading != null) {
-        clearTimeout(this.loading)
+        clearTimeout(this.loading);
         this.loading = null;
       }
 
-      /* Remove any previous content from the channel list box. */
+      /* Remove any previous content from the channel box. */
       if (this.chanBox.hasChildNodes()) {
         while (this.chanBox.childNodes.length >= 1)
           this.chanBox.removeChild(this.chanBox.firstChild);
       }
 
+      /* If the connection failed, display that and return. */
+      if (channels == null) {
+        if (this.cloud) {
+          this.chanBox.set("html", "<span class=\"loading\">Unable to load channel list, please try reopening the channel list later.</span>");
+        } else {
+          this.chanBox.set("html", "<tr><td class=\"loading\">Unable to load channel list, please try refreshing again later.</td></tr>");
+        }
+        return;
+      }
+
+      /* Print the table headings, for list view. */
+      if (!this.cloud) {
+        var headers = new Element("tr");
+        var name = new Element("th", { "class": "name" });
+        name.appendText("Channel");
+        headers.appendChild(name);
+
+        var users = new Element("th", { "class": "users" });
+        users.appendText("Users");
+        headers.appendChild(users);
+
+        var topic = new Element("th", { "class": "chantopic" });
+        topic.appendText("Topic");
+        headers.appendChild(topic);
+        this.chanBox.appendChild(headers);
+      }
+
+      /* Sort the channels into alphabetical order for cloud view. */
+      if (this.cloud) {
+        channels.sort(function (a, b) {
+          an = a.name.toLowerCase(); bn = b.name.toLowerCase();
+          if (an < bn) return -1;
+          if (an > bn) return 1;
+          return 0;
+        });
+      }
+
+      /* Finally, add the channels. */ 
+      for (var i = 0; i < channels.length; i++) {
+        var channel;
+        if (this.cloud) {
+          channel = new Element("span", { "class": "chantag", style: "font-size: " + (1 + 2 * (channels[i].users - minUsers) / (userScale+1)) + "em;" });
+        } else {
+          channel = new Element("tr");
+        }
+
+        this.makeChannel(channel, channels[i], i%2 + 1);
+
+	this.chanBox.appendChild(channel);
+        if (this.cloud) {
+          this.chanBox.appendText(" ");
+        }
+      }
+    }.bind(this), this.timestamp, "100", this.page, this.namefilter, this.topicfilter);
+  },
+
+  /**
+   * Update page numbers and paging boxes.
+   */
+  updatePaging: function(total) {
+
+    /* Update the page number, if there is one. */
+    if (this.pageText) {
+      var pages = Math.ceil(total/100);
+      while (this.pageText.childNodes.length >= 1)
+        this.pageText.removeChild(this.pageText.firstChild);
+      this.pageText.appendText("Page " + (this.page) + " of " + pages);
+    }
+
+    /* Update the page change buttons, if there are any. */
+    if (this.prev && this.next) {
+
       /* If we have a previous page, enable prev button. */
       while (this.prev.childNodes.length >= 1)
-        this.prev.removeChild(this.prev.firstChild);
+       this.prev.removeChild(this.prev.firstChild);
       if (this.page > 1) {
         var prevLink = new Element("a", {"href": "#"});
         prevLink.appendText("Prev Page");
@@ -135,8 +283,7 @@ qwebirc.ui.Panes.List.pclass = new Class({
           this.update();
         }.bind(this));
         this.prev.appendChild(prevLink);
-      }
-      else {
+      } else {
         this.prev.appendText("Prev Page");
       }
 
@@ -156,73 +303,64 @@ qwebirc.ui.Panes.List.pclass = new Class({
       else {
         this.next.appendText("Next Page");
       }
+    }
 
-      /* Show the page sorting box only if it has any contents. */
+    /* Show the page sorting box only if it has any contents. */
+    if (this.PageBox) {
       if (this.page != 1 || pages > 1)
         this.pageBox.style.display = "block";
       else
         this.pageBox.style.display = "none";
+    }
+  },
 
-      /* If the connection failed, display that and return. */
-      if (channels == null) {
-        this.chanBox.set("html", "<tr><td class=\"loading\">Unable to load channel list, please try again later.</td></tr>");
-        return;
-      }
+  /**
+   * Make channel item for the list, as appropriate for the current list mode.
+   */
+  makeChannel: function(chanitem, channel, oddeven) {
 
-      /* Otherwise, print the table headings... */
-      var headers = new Element("tr");
-      var name = new Element("th", { "class": "name" });
-      name.appendText("Channel");
-      headers.appendChild(name);
+    var name;
+    if (this.cloud) {
+      name = chanitem
+    } else {
+      name = new Element("td", { "class": "name chan" + oddeven });
+    }
 
-      var users = new Element("th", { "class": "users" });
-      users.appendText("Users");
-      headers.appendChild(users);
-
-      var topic = new Element("th", { "class": "chantopic" });
-      topic.appendText("Topic");
-      headers.appendChild(topic);
-      this.chanBox.appendChild(headers);
-
-      /* ...then the channels. */ 
-      for (var i = 0; i < channels.length; i++) {
-        var channel = new Element("tr");
-        var chantype = "chan" + (i%2 + 1);
-
-        /* This closure is a trick so each event handler gets a unique
-         * channame recording the channel it should open. */
-	var name = new Element("td", { "class": "name " + chantype });
-        var closure = function() {
-          var channame = channels[i].name;
-          channel.addEvent("click", function(e) {
-            new Event(e).stop();
-            if (this.session.irc)
-              this.session.irc.exec("/JOIN " + channame);
-            else {
-              var connect = this.session.ui.getWindow(qwebirc.ui.WINDOW_CUSTOM, "Connect");
-              if (connect) {
-                var connected = connect.subWindow.connectChannel(channame);
-                if (!connected) {
-                  this.session.ui.selectWindow(connect);
-                  connect.subWindow.nickBox.focus();
-                }
-              }
+    /* This closure is a trick so each event handler gets a unique
+     * channame recording the channel it should open. */
+    var closure = function() {
+      var channame = channel.name;
+      chanitem.addEvent("click", function(e) {
+        new Event(e).stop();
+        if (this.session.irc)
+          this.session.irc.exec("/JOIN " + channame);
+        else {
+          var connect = this.session.ui.getWindow(qwebirc.ui.WINDOW_CUSTOM, "Connect");
+          if (connect) {
+            var connected = connect.subWindow.connectChannel(channame);
+            if (!connected) {
+              this.session.ui.selectWindow(connect);
+              connect.subWindow.nickBox.focus();
             }
-          }.bind(this));
-        }.bind(this); closure();
-        name.appendText(channels[i].name);
-	channel.appendChild(name);
+          }
+        }
+      }.bind(this));
+    }.bind(this); closure();
+    name.appendText(channel.name);
 
-	var users = new Element("td", { "class": "users " + chantype });
-	users.appendText(channels[i].users);
-	channel.appendChild(users);
+    /* Add all other information shown for the channel in this view. */
+    if (this.cloud) {
+      chanitem.setProperty("title", channel.topic);
+    } else {
+      chanitem.appendChild(name);
 
-	var topic = new Element("td", { "class": "chantopic " + chantype });
-        qwebirc.ui.Colourise(this.session, channels[i].topic, topic);
-	channel.appendChild(topic);
+      var users = new Element("td", { "class": "users chan" + oddeven });
+      users.appendText(channel.users);
+      chanitem.appendChild(users);
 
-	this.chanBox.appendChild(channel);
-      }
-    }.bind(this), this.timestamp, "100", this.page, this.namefilter, this.topicfilter);
+      var topic = new Element("td", { "class": "chantopic chan" + oddeven });
+      qwebirc.ui.Colourise(this.session, channel.topic, topic);
+      chanitem.appendChild(topic);
+    }
   }
 });

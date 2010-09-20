@@ -215,6 +215,11 @@ nickserv_login: true
 # explicitly set on in the query string to enable.
 chan_list_on_start: true
 
+# CHAN LIST CLOUD VIEW: Whether the channel list's cloud view should be the
+# default, or it should default to the list view. An option to switch view mode
+# is shown regardless.
+chan_list_cloud_view: false
+
 
 
 # UI OPTIONS
