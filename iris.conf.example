@@ -49,9 +49,9 @@ port: 6667
 realname: http://moo.com/
 
 # IDENT: Type of ident to use on IRC, possible values include:
-# - string: Use a fixed string specified by ident_string.
-# - hex: Use the user's IP, in hexadecimal.
-# - nickname: Use the user's specified nickname.
+# string: Use a fixed string specified by ident_string.
+# hex: Use the user's IP, in hexadecimal.
+# nickname: Use the user's specified nickname.
 ident: string
 
 # IDENT STRING: A fixed string to use as an ident on IRC.
@@ -63,7 +63,7 @@ ident_string: webchat
 # be able to transparently display users of Iris as from their
 # original hosts, rather than as coming from the webclient's IP.
 # Possible values include:
-# - "webirc": Use WEBIRC type blocks, with an IRCD configuration of
+# webirc: Use WEBIRC type blocks, with an IRCD configuration of
 #   the following style:
 #
 #   cgiirc: {
@@ -74,11 +74,11 @@ ident_string: webchat
 #
 #   You must set webirc_password to be the same as <password>.
 #
-# - "realname": Disables WEBIRC.
+# realname: Disables WEBIRC.
 #   Sends the IP and hostname in the realname field in the format
 #   <hostname>/<ip> - <normal realname>, convenient for human reading.
 #
-# - <left empty>: Disables WEBIRC.
+# <left empty>: Disables WEBIRC.
 #   Sends the IP in the realname field, overriding the REALNAME option.
 webirc_mode:
 
