@@ -41,11 +41,11 @@ qwebirc.ui.urlificate = function(session, element, text) {
       if (session.irc)
         session.irc.exec("/JOIN " + newtext);
       else {
-        var connect = session.ui.getWindow(qwebirc.ui.WINDOW_CUSTOM, "Connect");
+        var connect = ui.getWindow(qwebirc.ui.WINDOW_CUSTOM, "Connect");
         if (connect) {
           var connected = connect.subWindow.connectChannel(newtext);
           if (!connected) {
-            session.ui.selectWindow(connect);
+            ui.selectWindow(connect);
             connect.subWindow.nickBox.focus();
           }
         }
@@ -76,7 +76,7 @@ qwebirc.ui.urlificate = function(session, element, text) {
         return; 
       }
       
-      var cmd = session.ui.urlDispatcher(m[1]);
+      var cmd = ui.urlDispatcher(m[1]);
       if(cmd) {
         addClass = m[1];
         elementType = cmd[0];

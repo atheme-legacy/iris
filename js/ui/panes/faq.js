@@ -8,16 +8,16 @@ qwebirc.ui.Panes.FAQ = {
 qwebirc.ui.Panes.FAQ.pclass = new Class({
   Implements: [Events],
   session: null,
-  initialize: function(session, parent) {
+  initialize: function(session, w) {
     this.session = session;
 
-    var delayfn = function() { parent.set("html", "<div class=\"loading\">Loading. . .</div>"); };
+    var delayfn = function() { w.lines.set("html", "<div class=\"loading\">Loading. . .</div>"); };
     var cb = delayfn.delay(500);
     
-    var r = qwebirc.ui.RequestTransformHTML(session, {url: this.session.config.frontend.static_base_url + "panes/faq.html", update: parent, onSuccess: function() {
+    var r = qwebirc.ui.RequestTransformHTML(session, {url: conf.frontend.static_base_url + "panes/faq.html", update: w.lines, onSuccess: function() {
       $clear(cb);
-      parent.getElement("input[class=close]").addEvent("click", function() {
-        this.fireEvent("close");
+      w.lines.getElement("input[class=close]").addEvent("click", function() {
+        ui.closeWindow(w);
       }.bind(this));
     }.bind(this)});
     r.get();

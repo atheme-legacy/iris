@@ -56,7 +56,7 @@ qwebirc.irc.IRCConnection = new Class({
       asynchronous = false;
 
     var r = new Request.JSON({
-      url: this.session.config.frontend.dynamic_base_url + "e/" + url + "?r=" + this.cacheAvoidance + "&t=" + this.counter++,
+      url: conf.frontend.dynamic_base_url + "e/" + url + "?r=" + this.cacheAvoidance + "&t=" + this.counter++,
       async: asynchronous
     });
     

@@ -72,7 +72,8 @@ def producehtml(name, debug):
 %s
 %s
   <script type="text/javascript">
-    var ui = new qwebirc.ui.Interface("ircui", qwebirc.ui.%s, %s);
+    conf = qwebirc.config.load(%s);
+    qwebirc.ui.create("ircui", qwebirc.ui.%s);
   </script>
 </head>
 <body>
@@ -83,7 +84,7 @@ def producehtml(name, debug):
   </div>
 </body>
 </html>
-""" % (ui["doctype"], config.frontend["app_title"], config.frontend["static_base_url"], csshtml, customcss, jshtml, customjs, ui["class"], config.js_config(), div)
+""" % (ui["doctype"], config.frontend["app_title"], config.frontend["static_base_url"], csshtml, customcss, jshtml, customjs, config.js_config(), ui["class"], div)
 
 def main(outputdir=".", produce_debug=True):
   p = os.path.join(outputdir, "static")

@@ -15,7 +15,7 @@ qwebirc.ui.Window = new Class({
     this.identifier = identifier;
     this.hilighted = qwebirc.ui.HILIGHT_NONE;
     this.scrolltimer = null;
-    this.commandhistory = this.session.ui.commandhistory;
+    this.commandhistory = ui.commandhistory;
     this.scrolleddown = true;
     this.scrollpos = null;
     this.lastNickHash = {};
@@ -32,17 +32,6 @@ qwebirc.ui.Window = new Class({
   updateTopic: function(topic, element)  {
     qwebirc.ui.Colourise(this.session, "[" + topic + "]", element);
   },
-  close: function() {
-    this.closed = true;
-    
-    if($defined(this.scrolltimer)) {
-      $clear(this.scrolltimer);
-      this.scrolltimer = null;
-    }
-
-    this.session.ui.__closed(this);
-    this.fireEvent("close", this);
-  },
   subEvent: function(event) {
     if($defined(this.subWindow))
       this.subWindow.fireEvent(event);
@@ -51,13 +40,13 @@ qwebirc.ui.Window = new Class({
     this.subWindow = window;
   },
   select: function() {
-    if(this.lastPositionLineInserted && !this.session.config.ui.lastpos_line) {
+    if(this.lastPositionLineInserted && !conf.ui.lastpos_line) {
       this.lines.removeChild(this.lastPositionLine);
       this.lastPositionLineInserted = false;
     }
   
     this.active = true;
-    this.session.ui.__setActiveWindow(this);
+    ui.__setActiveWindow(this);
     if(this.hilighted)
       this.setHilighted(qwebirc.ui.HILIGHT_NONE);
 
@@ -87,7 +76,7 @@ qwebirc.ui.Window = new Class({
     }
   },
   setScrollPos: function() {
-    if(!this.session.ui.singleWindow) {
+    if(!ui.singleWindow) {
       this.scrolleddown = this.scrolledDown();
       this.scrollpos = this.lines.getScroll();
     }
@@ -105,15 +94,15 @@ qwebirc.ui.Window = new Class({
             hilight = qwebirc.ui.HILIGHT_ACTIVITY;
           } else {
             hilight = qwebirc.ui.HILIGHT_US;
-            this.session.ui.beep();
-            this.session.ui.flash();
+            ui.beep();
+            ui.flash();
           }
         }
         if(!type.match(/^OUR/) && this.session.irc.hilightController.match(line["m"])) {
           lhilight = true;
           hilight = qwebirc.ui.HILIGHT_US;
-          this.session.ui.beep();
-          this.session.ui.flash();
+          ui.beep();
+          ui.flash();
         } else if(hilight != qwebirc.ui.HILIGHT_US) {
           hilight = qwebirc.ui.HILIGHT_SPEECH;
         }
@@ -124,7 +113,7 @@ qwebirc.ui.Window = new Class({
       this.setHilighted(hilight);
 
     if(type)
-      line = this.session.ui.theme.message(type, line, lhilight);
+      line = ui.theme.message(type, line, lhilight);
     
     qwebirc.ui.Colourise(this.session, qwebirc.irc.IRCTimestamp(new Date()) + " " + line, element);
     this.scrollAdd(element);
@@ -231,7 +220,7 @@ qwebirc.ui.Window = new Class({
     this.replaceLastPositionLine();
   },
   replaceLastPositionLine: function() {
-    if(this.session.config.ui.lastpos_line) {
+    if(conf.ui.lastpos_line) {
       if(!this.lastPositionLineInserted) {
         this.scrollAdd(this.lastPositionLine);
       } else if(this.lines.lastChild != this.lastPositionLine) {
@@ -247,6 +236,6 @@ qwebirc.ui.Window = new Class({
         this.lines.removeChild(this.lastPositionLine);
     }
     
-    this.lastPositionLineInserted = this.session.config.ui.lastpos_line;
+    this.lastPositionLineInserted = conf.ui.lastpos_line;
   }
 });

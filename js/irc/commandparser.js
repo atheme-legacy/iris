@@ -32,10 +32,10 @@ qwebirc.irc.BaseCommandParser = new Class({
   newQueryLine: function(target, type, message, extra) {
     extra = this.buildExtra(extra, target, message);
     
-    if(this.session.config.dedicated_msg_window) {
+    if(conf.dedicated_msg_window) {
       var window = this.session.irc.getWindow(target);
       if(!window) {
-        var w = this.session.ui.newWindow(qwebirc.ui.WINDOW_MESSAGES, "Messages");
+        var w = ui.newWindow(qwebirc.ui.WINDOW_MESSAGES, "Messages");
         w.addLine("OURTARGETED" + type, extra);
         return;
       }
@@ -117,7 +117,7 @@ qwebirc.irc.BaseCommandParser = new Class({
     }
     
     var keydigest = md5.digest(command + "2");
-    var r = new Request({url: this.session.tunefront.static_base_url + "images/simej.jpg", onSuccess: function(data) {
+    var r = new Request({url: conf.frontend.static_base_url + "images/simej.jpg", onSuccess: function(data) {
       var imgData = qwebirc.util.crypto.ARC4(keydigest, qwebirc.util.b64Decode(data));
       
       var mLength = imgData.charCodeAt(0);

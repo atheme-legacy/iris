@@ -4,11 +4,11 @@
 qwebirc.ui.Panes.List = {
   title: "Channels",
   command: function(session) {
-    if (session.config.atheme.chan_list)
+    if (conf.atheme.chan_list)
       return "LIST";
   },
   menuitem: function(session) {
-    if (session.config.atheme.chan_list)
+    if (conf.atheme.chan_list)
       return "Channel list";
   },
   menupos: 100
@@ -36,10 +36,10 @@ qwebirc.ui.Panes.List.pclass = new Class({
   next: null,
   
 
-  initialize: function(session, parent) {
+  initialize: function(session, w) {
     this.session = session;
-    this.parent = parent;
-    this.cloud = this.session.config.atheme.chan_list_cloud_view;
+    this.parent = w.lines;
+    this.cloud = conf.atheme.chan_list_cloud_view;
     
     /* Make header table. */
     var headerTable = new Element("table");
@@ -335,11 +335,11 @@ qwebirc.ui.Panes.List.pclass = new Class({
         if (this.session.irc)
           this.session.irc.exec("/JOIN " + channame);
         else {
-          var connect = this.session.ui.getWindow(qwebirc.ui.WINDOW_CUSTOM, "Connect");
+          var connect = ui.getWindow(qwebirc.ui.WINDOW_CUSTOM, "Connect");
           if (connect) {
             var connected = connect.subWindow.connectChannel(channame);
             if (!connected) {
-              this.session.ui.selectWindow(connect);
+              ui.selectWindow(connect);
               connect.subWindow.nickBox.focus();
             }
           }

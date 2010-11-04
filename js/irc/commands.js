@@ -17,7 +17,7 @@ qwebirc.irc.Commands = new Class({
      var command = pane.command(session);
      if (command) {
        this["cmd_" + command] = [false, undefined, undefined, function(args) {
-         session.ui.addPane(name);
+         ui.addPane(name);
        }];
      }
    }.bind(this));

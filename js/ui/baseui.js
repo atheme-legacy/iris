@@ -10,7 +10,6 @@ qwebirc.ui.BaseUI = new Class({
     this.parentElement = parentElement;
     this.windowClass = windowClass;
     
-    this.windows = {};
     this.windowArray = [];
     this.parentElement.addClass("qwebirc");
     this.parentElement.addClass("qwebirc-" + uiName);
@@ -41,7 +40,6 @@ qwebirc.ui.BaseUI = new Class({
       window.addEvent("focus", focus);
     }
     
-    this.windows[this.session.id] = {}
     this.postInitialize();
   },
   newClient: function() {
@@ -72,25 +70,21 @@ qwebirc.ui.BaseUI = new Class({
       return w;
       
     var wId = this.getWindowIdentifier(type, name);
-    var w = this.windows[this.session.id][wId] = new this.windowClass(this.session, type, name, wId);
+    var w = this.session.windows[wId] = new this.windowClass(this.session, type, name, wId);
 
     this.windowArray.push(w);
-    
+
     return w;
   },
   getWindow: function(type, name) {
-    var c = this.windows[this.session.id];
-    if(!$defined(c))
-      return null;
-      
-    return c[this.getWindowIdentifier(type, name)];
+    return this.session.windows[this.getWindowIdentifier(type, name)];
   },
   getActiveWindow: function() {
     return this.active;
   },
   getActiveIRCWindow: function() {
     if(!this.active || this.active.type == qwebirc.ui.WINDOW_CUSTOM) {
-      return this.windows[this.session.id][this.getWindowIdentifier(qwebirc.ui.WINDOW_STATUS)];
+      return this.session.windows[this.getWindowIdentifier(qwebirc.ui.WINDOW_STATUS)];
     } else {
       return this.active;
     }
@@ -102,7 +96,7 @@ qwebirc.ui.BaseUI = new Class({
     if(this.active)
       this.active.deselect();
     window.select();  /* calls setActiveWindow */
-    this.updateTitle(window.name + " - " + this.session.config.frontend.app_title);
+    this.updateTitle(window.name + " - " + conf.frontend.app_title);
   },
   updateTitle: function(text) {
     document.title = text;
@@ -130,7 +124,18 @@ qwebirc.ui.BaseUI = new Class({
   prevWindow: function() {
     this.nextWindow(-1);
   },
-  __closed: function(window) {
+
+  /* Cleans up for an ALREADY REMOVED window. */
+  closeWindow: function(window) {
+
+    /* Window cleanup. */
+    window.closed = true;
+    if($defined(window.scrolltimer)) {
+      $clear(window.scrolltimer);
+      window.scrolltimer = null;
+    }
+
+    /* Transfer active window. */
     if(window.active) {
       this.active = undefined;
       if(this.windowArray.length == 1) {
@@ -146,10 +151,12 @@ qwebirc.ui.BaseUI = new Class({
         }
       }
     }
-    
+
+    /* Delete records of the window. */
+    delete window.session.windows[window.identifier];
     this.windowArray = this.windowArray.erase(window);
-    delete this.windows[this.session.id][window.identifier];
   },
+
   focusChange: function(newValue) {
     var window_ = this.getActiveWindow();
     if($defined(window_))
@@ -228,9 +235,6 @@ qwebirc.ui.StandardUI = new Class({
       type = qwebirc.ui.WINDOW_CUSTOM;
       
     var w = this.newWindow(type, name);
-    w.addEvent("close", function(w) {
-      delete this.windows[this.session.id][w.identifier];
-    }.bind(this));
     
     if(select)
       this.selectWindow(w);  
@@ -242,18 +246,15 @@ qwebirc.ui.StandardUI = new Class({
     var title = qwebirc.ui.Panes[name].title;
 
     var id = this.getWindowIdentifier(qwebirc.ui.WINDOW_CUSTOM, title)
-    if(this.windows[this.session.id][id]) {
-      this.selectWindow(this.windows[this.session.id][id]);
+    if(this.session.windows[id]) {
+      this.selectWindow(this.session.windows[id]);
       return;
     }
     
     var d = this.newCustomWindow(title, true);
     d.lines.addClass("qwebirc-pane" + name);
       
-    var ew = new qwebirc.ui.Panes[name].pclass(this.session, d.lines);
-    ew.addEvent("close", function() {
-      d.close();
-    }.bind(this));
+    var ew = new qwebirc.ui.Panes[name].pclass(this.session, d);
     
     d.setSubWindow(ew);
     return d;
@@ -262,7 +263,7 @@ qwebirc.ui.StandardUI = new Class({
     var pane = qwebirc.ui.Panes.Connect;
     var w = this.addPane("Connect");
     w.subWindow.connectCallback = function(args) {
-      w.close();
+      ui.closeWindow(w);
       callbackfn(args);
     };
   },
@@ -276,7 +277,7 @@ qwebirc.ui.StandardUI = new Class({
     /* doesn't really belong here */
     if(name == "whois") {
       return ["span", function(nick) {
-        if (this.session.config.ui.nick_click_query)
+        if (conf.ui.nick_click_query)
           this.session.irc.exec("/QUERY " + nick);
         else
           this.session.irc.exec("/WHOIS " + nick);
@@ -297,9 +298,9 @@ qwebirc.ui.StandardUI = new Class({
     this.tabCompleter.reset();
   },
   setModifiableStylesheet: function(name) {
-    this.__styleSheet = new qwebirc.ui.style.ModifiableStylesheet(this.session.config.frontend.static_base_url + "css/" + name + qwebirc.FILE_SUFFIX + ".mcss");
+    this.__styleSheet = new qwebirc.ui.style.ModifiableStylesheet(conf.frontend.static_base_url + "css/" + name + qwebirc.FILE_SUFFIX + ".mcss");
     
-    this.setModifiableStylesheetValues(this.session.config.ui.fg_color, this.session.config.ui.fg_sec_color, this.session.config.ui.bg_color);
+    this.setModifiableStylesheetValues(conf.ui.fg_color, conf.ui.fg_sec_color, conf.ui.bg_color);
   },
   setModifiableStylesheetValues: function(fg_color, fg_sec_color, bg_color) {
 
@@ -375,7 +376,7 @@ qwebirc.ui.RequestTransformHTML = function(session, options) {
       if($defined(attr) && $defined(value)) {
         node.removeAttribute("transform_attr");
         node.removeAttribute("transform_value");
-        node.setAttribute(attr, session.config.frontend.static_base_url + value);
+        node.setAttribute(attr, conf.frontend.static_base_url + value);
       }
     }
 

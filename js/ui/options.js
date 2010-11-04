@@ -14,7 +14,7 @@ qwebirc.options.Input = new Class({
     this.session = session;
     this.options = options;
     this.option = option;
-    this.value = session.config[option.category][option.option];
+    this.value = conf[option.category][option.option];
     this.enabled = true;
     this.position = position;
     this.parentElement = parent;
@@ -93,7 +93,7 @@ qwebirc.options.ColorInput = new Class({
 
     var reset = new Element("input", {type: "button", value: "Reset to Default"});
 
-    if (!this.session.config.ui.simple_color) {
+    if (!conf.ui.simple_color) {
       this.parentElement.appendChild(sat);
       this.parentElement.appendChild(light);
       this.parentElement.appendChild(hexform);
@@ -153,7 +153,7 @@ qwebirc.options.ColorInput = new Class({
 
       reset.addEvent("click", function(e) {
         (new Event(e)).stop();
-        this.value = this.session.config[this.option.category][this.option.option + "_default"];
+        this.value = conf[this.option.category][this.option.option + "_default"];
        var color = new Color(this.value)
        hue_slider.set(color.hsb[0]);
        sat_slider.set(color.hsb[1]);
@@ -245,8 +245,8 @@ qwebirc.options.Options = [
       return true;
     },
     onSave: function(session) {
-      if (session.ui.updateBeepOnMention)
-        session.ui.updateBeepOnMention();
+      if (ui.updateBeepOnMention)
+        ui.updateBeepOnMention();
     }
   },
   {
@@ -297,10 +297,10 @@ qwebirc.options.Options = [
     type: qwebirc.options.ColorInput,
     label: "Adjust main foreground color",
     onChange: function (session, options, value) {
-      session.ui.setModifiableStylesheetValues(value, options["ui.fg_sec_color"].get(), options["ui.bg_color"].get());
+      ui.setModifiableStylesheetValues(value, options["ui.fg_sec_color"].get(), options["ui.bg_color"].get());
     },
     isEnabled: function (session) {
-      return !session.config.ui.simple_color;
+      return !conf.ui.simple_color;
     }
   },
   {
@@ -309,10 +309,10 @@ qwebirc.options.Options = [
     type: qwebirc.options.ColorInput,
     label: "Adjust title/link foreground color",
     onChange: function (session, options, value) {
-      session.ui.setModifiableStylesheetValues(options["ui.fg_color"].get(), value, options["ui.bg_color"].get());
+      ui.setModifiableStylesheetValues(options["ui.fg_color"].get(), value, options["ui.bg_color"].get());
     },
     isEnabled: function (session) {
-      return !session.config.ui.simple_color;
+      return !conf.ui.simple_color;
     }
   },
   {
@@ -322,15 +322,15 @@ qwebirc.options.Options = [
     label: "Adjust background color",
     onChange: function (session, options, value) {
       if ($defined(options["ui.fg_color"]))
-        session.ui.setModifiableStylesheetValues(options["ui.fg_color"].get(), options["ui.fg_sec_color"].get(), value);
+        ui.setModifiableStylesheetValues(options["ui.fg_color"].get(), options["ui.fg_sec_color"].get(), value);
       else
-        session.ui.setModifiableStylesheetValues(session.config.ui.fg_color, session.config.ui.fg_sec_color, value);
+        ui.setModifiableStylesheetValues(conf.ui.fg_color, conf.ui.fg_sec_color, value);
     },
     onSave: function (session) {
-      session.ui.setModifiableStylesheetValues(session.config.ui.fg_color, session.config.ui.fg_sec_color, session.config.ui.bg_color);
+      ui.setModifiableStylesheetValues(conf.ui.fg_color, conf.ui.fg_sec_color, conf.ui.bg_color);
     },
     onCancel: function (session) {
-      session.ui.setModifiableStylesheetValues(session.config.ui.fg_color, session.config.ui.fg_sec_color, session.config.ui.bg_color);
+      ui.setModifiableStylesheetValues(conf.ui.fg_color, conf.ui.fg_sec_color, conf.ui.bg_color);
     }
   }
 ];

@@ -9,9 +9,10 @@ qwebirc.ui.Panes.Embed.pclass = new Class({
   Implements: [Events],
   parent: null,
   session: null,
-  initialize: function(session, parent) {
+  initialize: function(session, window) {
     this.session = session;
-    this.parent = parent;
+    this.window = window;
+    this.parent = window.lines;
     this.create();
     this.addSteps();
   },
@@ -93,7 +94,7 @@ qwebirc.ui.Panes.Embed.pclass = new Class({
       "first": "This wizard will help you create an embedded client by asking you questions then giving you the code to add to your website.<br/><br/>You can use the <b>Next</b> and <b>Back</b> buttons to navigate through the wizard; click <b>Next</b> to continue."
     });
     
-    var default_nick = this.session.config.frontend.initial_nick_default;
+    var default_nick = conf.frontend.initial_nick_default;
     this.nicknameBox = new Element("input");
     this.nicknameBox.addClass("text");
     this.nicknameBox.set("value", default_nick);
@@ -104,7 +105,7 @@ qwebirc.ui.Panes.Embed.pclass = new Class({
       "middle": this.nicknameBox
     }).addEvent("show", af.bind(this.nicknameBox));
 
-    var default_chans = this.session.config.frontend.initial_chans_default;
+    var default_chans = conf.frontend.initial_chans_default;
     this.chanBox = new Element("input");
     this.chanBox.addClass("text");
     this.chanBox.set("value", default_chans);
@@ -116,7 +117,7 @@ qwebirc.ui.Panes.Embed.pclass = new Class({
       middle: this.chanBox
     }).addEvent("show", af.bind(this.chanBox));
     
-    var default_prompt = this.session.config.frontend.prompt_default;
+    var default_prompt = conf.frontend.prompt_default;
     var promptdiv = new Element("form");
     this.connectdialog = this.newStep({
       "title": "Display connect dialog?",
@@ -200,7 +201,7 @@ qwebirc.ui.Panes.Embed.pclass = new Class({
     this.showStep();
   },
   close: function() {
-    this.fireEvent("close");
+    ui.closeWindow(this.window);
   },
   back: function() {
     if(this.step <= 0)
@@ -238,7 +239,7 @@ qwebirc.ui.Panes.Embed.pclass = new Class({
     else if (chans != "" && nick != "")
       URL.push("prompt=0");
 
-    return this.session.config.frontend.base_url + (URL.length>0?"?":"") + URL.join("&");
+    return conf.frontend.base_url + (URL.length>0?"?":"") + URL.join("&");
   }
 });
 
@@ -269,6 +270,6 @@ qwebirc.ui.Panes.Embed.Step = new Class({
     if($defined(this.options.middle))
       this.parent.middleRow.appendChild(this.options.middle);
     
-    this.fireEvent("show");
+    w.fireEvent("show");
   }
 });

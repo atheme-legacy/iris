@@ -70,7 +70,7 @@ qwebirc.ui.Colourise = function(session, line, entity) {
     element.className = classes.join(" ");
   }
   
-  var nickColouring = session.config.ui.nick_colors;
+  var nickColouring = conf.ui.nick_colors;
   var capturingNick = false;
   for(var i=0;i<xline.length;i++) {
     var lc = xline[i];

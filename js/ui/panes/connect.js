@@ -7,26 +7,26 @@ qwebirc.ui.Panes.Connect = {
 qwebirc.ui.Panes.Connect.pclass = new Class({
   Implements: [Events],
   session: null,
-  parentElement: null,
+  parent: null,
   connectCallback: null,
   nickBox: null,
   chanBox: null,
 
-  initialize: function(session, parentElement) {
+  initialize: function(session, w) {
     this.session = session;
-    this.parentElement = parentElement;
+    this.parent = w.lines;
 
-    if (!this.session.config.frontend.prompt
-          && this.session.config.frontend.initial_nick
-          && this.session.config.frontend.initial_chans)
+    if (!conf.frontend.prompt
+          && conf.frontend.initial_nick
+          && conf.frontend.initial_chans)
       this.createConfirmBox();
     else
       this.createLoginBox(null);
   },
 
   connectChannel: function(channel) {
-    if (this.session.config.frontend.chan_autoconnect 
-        && (this.session.config.frontend.initial_nick
+    if (conf.frontend.chan_autoconnect 
+        && (conf.frontend.initial_nick
          || (this.nickBox && this.nickBox.value))) {
       this.connect(channel);
       return true;
@@ -42,22 +42,22 @@ qwebirc.ui.Panes.Connect.pclass = new Class({
   },
 
   connect: function(channel) {
-    while(this.parentElement.childNodes.length > 0)
-      this.parentElement.removeChild(this.parentElement.firstChild);
+    while(this.parent.childNodes.length > 0)
+      this.parent.removeChild(this.parent.firstChild);
 
     var data = {};
 
     if (this.nickBox != null)
       data["nickname"] = this.nickBox.value;
     else
-      data["nickname"] = this.session.config.frontend.initial_nick;
+      data["nickname"] = conf.frontend.initial_nick;
 
     if (channel != null)
       data["autojoin"] = channel;
     else if (this.chanBox != null)
       data["autojoin"] = this.chanBox.value;
     else
-      data["autojoin"] = this.session.config.frontend.initial_chans;
+      data["autojoin"] = conf.frontend.initial_chans;
 
     if (this.session.atheme.state) {
       data["authUser"] = this.session.atheme.user;
@@ -68,12 +68,12 @@ qwebirc.ui.Panes.Connect.pclass = new Class({
   },
 
   createConfirmBox: function() {
-    while(this.parentElement.childNodes.length > 0)
-      this.parentElement.removeChild(this.parentElement.firstChild);
+    while(this.parent.childNodes.length > 0)
+      this.parent.removeChild(this.parent.firstChild);
 
     var outerbox = new Element("table");
     outerbox.addClass("qwebirc-centrebox");
-    this.parentElement.appendChild(outerbox);
+    this.parent.appendChild(outerbox);
     var tbody = new Element("tbody");
     outerbox.appendChild(tbody);
 
@@ -97,11 +97,11 @@ qwebirc.ui.Panes.Connect.pclass = new Class({
     tr.appendChild(text);
 
     var nick = new Element("b");
-    nick.set("text", this.session.config.frontend.initial_nick);
+    nick.set("text", conf.frontend.initial_nick);
 
-    var c = this.session.config.frontend.initial_chans.split(" ")[0].split(",");
+    var c = conf.frontend.initial_chans.split(" ")[0].split(",");
 
-    text.appendChild(document.createTextNode("To connect to " + this.session.config.frontend.network_name + " IRC and join channel" + ((c.length>1)?"s":"") + " "));
+    text.appendChild(document.createTextNode("To connect to " + conf.frontend.network_name + " IRC and join channel" + ((c.length>1)?"s":"") + " "));
 
     for(var i=0;i<c.length;i++) {
       if((c.length > 1) && (i == c.length - 1)) {
@@ -112,7 +112,7 @@ qwebirc.ui.Panes.Connect.pclass = new Class({
       text.appendChild(new Element("b").set("text", c[i]));
     }
 
-    if(!this.session.config.frontend.initial_nick_rand) {
+    if(!conf.frontend.initial_nick_rand) {
       text.appendChild(document.createTextNode(" as "));
       text.appendChild(nick);
     }
@@ -136,12 +136,12 @@ qwebirc.ui.Panes.Connect.pclass = new Class({
   },
 
   createLoginBox: function(channel) {
-    while(this.parentElement.childNodes.length > 0)
-      this.parentElement.removeChild(this.parentElement.firstChild);
+    while(this.parent.childNodes.length > 0)
+      this.parent.removeChild(this.parent.firstChild);
 
     var outerbox = new Element("table");
     outerbox.addClass("qwebirc-centrebox");
-    this.parentElement.appendChild(outerbox);
+    this.parent.appendChild(outerbox);
     var tbody = new Element("tbody");
     outerbox.appendChild(tbody);
 
@@ -163,7 +163,7 @@ qwebirc.ui.Panes.Connect.pclass = new Class({
 
     var td = new Element("td");
     tr.appendChild(td);
-    td.set("html", "<h1>Connect to " + this.session.config.frontend.network_name + " IRC</h1>");
+    td.set("html", "<h1>Connect to " + conf.frontend.network_name + " IRC</h1>");
 
     var tr = new Element("tr");
     tbody.appendChild(tr);
@@ -206,7 +206,7 @@ qwebirc.ui.Panes.Connect.pclass = new Class({
     this.nickBox = new Element("input");
     createRow("Nickname:", this.nickBox);
 
-    if (this.session.config.atheme.nickserv_login) {
+    if (conf.atheme.nickserv_login) {
       var srvbutton = new Element("input");
       srvbutton.set("type", "checkbox");
       srvbutton.set("checked", false);
@@ -224,8 +224,8 @@ qwebirc.ui.Panes.Connect.pclass = new Class({
       }.bind(this));
     }
     
-    if (channel || this.session.config.frontend.chan_prompt ||
-        !this.session.config.frontend.initial_chans) {
+    if (channel || conf.frontend.chan_prompt ||
+        !conf.frontend.initial_chans) {
       this.chanBox = new Element("input");
       createRow("Channels:", this.chanBox);
     }
@@ -255,7 +255,7 @@ qwebirc.ui.Panes.Connect.pclass = new Class({
       }
       Cookie.write("iris-nick", this.nickBox.value, {"duration": 3650});
 
-      if (this.session.config.atheme.nickserv_login && pass.value) {
+      if (conf.atheme.nickserv_login && pass.value) {
         qwebirc.irc.AthemeQuery.login(function(token) {
           if (token == null)
             alert("Authentication failed");
@@ -273,13 +273,13 @@ qwebirc.ui.Panes.Connect.pclass = new Class({
 
     if (Cookie.read("iris-nick") != null)
       this.nickBox.set("value", Cookie.read("iris-nick"));
-    else if (this.session.config.frontend.initial_nick)
-      this.nickBox.set("value", this.session.config.frontend.initial_nick);
+    else if (conf.frontend.initial_nick)
+      this.nickBox.set("value", conf.frontend.initial_nick);
 
     if (this.chanBox != null && channel)
       this.chanBox.set("value", channel);
     else if (this.chanBox != null)
-      this.chanBox.set("value", this.session.config.frontend.initial_chans);
+      this.chanBox.set("value", conf.frontend.initial_chans);
 
     this.nickBox.focus();
   }

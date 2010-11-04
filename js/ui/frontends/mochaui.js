@@ -2,7 +2,7 @@ qwebirc.ui.MochaUI = new Class({
   Extends: qwebirc.ui.RootUI,
   initialize: function(session, parentElement) {
     this.parent(session, parentElement, qwebirc.ui.MochaUI.Window, "mochaui");
-    this.theme = new qwebirc.ui.Theme(this.session.theme);
+    this.theme = new qwebirc.ui.Theme(null);
     this.parentElement = parentElement;
     
     window.addEvent("domready", function() {
@@ -76,7 +76,7 @@ qwebirc.ui.MochaUI.Window = new Class({
         //alert(this.windowObject.windowEl);
         //MochaUI.focusWindow.pass(this.windowObject.windowEl, this.windowObject);
         //this.windowObject.focusWindow();
-        this.session.ui.selectWindow(this);
+        ui.selectWindow(this);
       }.bind(this));
     
       this.form.addEvent("submit", function(e) {
@@ -95,7 +95,7 @@ qwebirc.ui.MochaUI.Window = new Class({
       title: name,
       footerHeight: 0,
       container: $("pageWrapper"),
-      toolbarHeight: session.ui.inputHeight,
+      toolbarHeight: ui.inputHeight,
       toolbarPosition: "bottom",
       toolbarContent: "",
       //toolbarURL: "",
@@ -104,7 +104,7 @@ qwebirc.ui.MochaUI.Window = new Class({
       minimized: true,
       addClass: "hidenewwin",
       onFocus: function() {
-        session.ui.selectWindow(this);
+        ui.selectWindow(this);
       }.bind(this),
       onClose: function() {
         if(type == qwebirc.ui.WINDOW_CHANNEL)

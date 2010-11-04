@@ -9,7 +9,7 @@ qwebirc.ui.TabCompleterFactory = new Class({
     if(!$defined(this.obj)) {
       this.incr = 1;
       
-      var w = this.ui.getActiveWindow();
+      var w = ui.getActiveWindow();
       if(!w)
         return;
         
@@ -49,7 +49,7 @@ qwebirc.ui.TabCompleterFactory = new Class({
       if(postword == "")
         postword = " ";
       
-      this.obj = new obj(preword, word, postword, w);
+      this.obj = new obj(session, preword, word, postword, w);
       if(!$defined(this.obj))
         return;
     }
@@ -143,10 +143,9 @@ qwebirc.ui.ChannelNameTabCompleter = new Class({
 
     /* WTB map */
     var l = [];
-    var wa = session.ui.windows[session.id];
     
     for(var c in session.irc.channels) {
-      var w = wa[c];
+      var w = session.windows[c];
       
       /* redundant? */
       if($defined(w))
@@ -168,8 +167,8 @@ qwebirc.ui.ChannelNameTabCompleter = new Class({
 
 qwebirc.ui.ChannelUsersTabCompleter = new Class({
   Extends: qwebirc.ui.BaseTabCompleter,
-  initialize: function(session, existingText, suffix) {
-    var nc = session.irc.tracker.getSortedByLastSpoke(session.ui.getActiveWindow().name);
+  initialize: function(session, prefix, existingText, suffix, nc) {
+    var nc = session.irc.tracker.getSortedByLastSpoke(ui.getActiveWindow().name);
 
     this.parent(session, prefix, existingText, suffix, nc);
   }

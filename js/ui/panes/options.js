@@ -8,9 +8,10 @@ qwebirc.ui.Panes.Options = {
 qwebirc.ui.Panes.Options.pclass = new Class({
   Implements: [Events],
   session: null,
-  initialize: function(session, parentElement) {
+  initialize: function(session, w) {
     this.session = session;
-    this.parentElement = parentElement;
+    this.window = w;
+    this.parent = w.lines;
     
     this.createElements();
   },
@@ -21,7 +22,7 @@ qwebirc.ui.Panes.Options.pclass = new Class({
       return n;
     };
     
-    var t = FE("table", this.parentElement);
+    var t = FE("table", this.parent);
     var tb = FE("tbody", t);
     
     this.boxList = [];
@@ -60,14 +61,14 @@ qwebirc.ui.Panes.Options.pclass = new Class({
     
     save.addEvent("click", function() {
       this.save();
-      this.fireEvent("close");
+      ui.closeWindow(this.window);
     }.bind(this));
     
     var cancel = qwebirc.util.createInput("submit", cellb);
     cancel.value = "Cancel";
     cancel.addEvent("click", function() {
       this.cancel();
-      this.fireEvent("close");
+      ui.closeWindow(this.window);
     }.bind(this));
   },
   save: function() {
@@ -75,12 +76,12 @@ qwebirc.ui.Panes.Options.pclass = new Class({
       var option = x[0];
       var box = x[1];
 
-      this.session.config[option.category][option.option] = box.get();
+      conf[option.category][option.option] = box.get();
       if (option.onSave)
         option.onSave(this.session);
     }.bind(this));
 
-    this.session.saveUserSettings();
+    qwebirc.config.saveUserSettings(conf);
   },
   cancel: function() {
     this.boxList.forEach(function(x) {

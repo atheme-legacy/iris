@@ -8,19 +8,19 @@ qwebirc.ui.Panes.About = {
 qwebirc.ui.Panes.About.pclass = new Class({
   Implements: [Events],
   session: null,
-  initialize: function(session, parent) {
+  initialize: function(session, w) {
     this.session = session;
 
-    var delayfn = function() { parent.set("html", "<div class=\"loading\">Loading. . .</div>"); };
+    var delayfn = function() { w.lines.set("html", "<div class=\"loading\">Loading. . .</div>"); };
     var cb = delayfn.delay(500);
     
-    var r = qwebirc.ui.RequestTransformHTML(session, {url: this.session.config.frontend.static_base_url + "panes/about.html", update: parent, onSuccess: function() {
+    var r = qwebirc.ui.RequestTransformHTML(session, {url: conf.frontend.static_base_url + "panes/about.html", update: w.lines, onSuccess: function() {
       $clear(cb);
-      parent.getElement("input[class=close]").addEvent("click", function() {
-        this.fireEvent("close");
-      }.bind(this));
-      parent.getElement("span[class=version]").set("text", "v" + qwebirc.VERSION);
-    }.bind(this)});
+      w.lines.getElement("input[class=close]").addEvent("click", function() {
+        ui.closeWindow(w);
+      });
+      w.lines.getElement("span[class=version]").set("text", "v" + qwebirc.VERSION);
+    }});
     r.get();
   }
 });

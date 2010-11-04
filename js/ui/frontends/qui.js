@@ -2,7 +2,7 @@ qwebirc.ui.QUI = new Class({
   Extends: qwebirc.ui.RootUI,
   initialize: function(session, parentElement) {
     this.parent(session, parentElement, qwebirc.ui.QUI.Window, "qui");
-    this.theme = new qwebirc.ui.Theme(this.session.theme);
+    this.theme = new qwebirc.ui.Theme(null);
     this.setModifiableStylesheet("qui");
   },
   postInitialize: function() {
@@ -82,7 +82,7 @@ qwebirc.ui.QUI = new Class({
       e.addEvent("mousedown", function(e) { new Event(e).stop(); });
       e.addEvent("click", function() {
         dropdownMenu.hide();
-        this.session.ui.addPane(x.name);
+        ui.addPane(x.name);
       }.bind(this));
       e.set("text", x.text);
       dropdownMenu.appendChild(e);
@@ -90,7 +90,7 @@ qwebirc.ui.QUI = new Class({
 
     var dropdown = new Element("div");
     dropdown.addClass("dropdown-tab");
-    dropdown.appendChild(new Element("img", {src: this.session.config.frontend.static_base_url + "images/menu.png", title: "menu", alt: "menu"})); 
+    dropdown.appendChild(new Element("img", {src: conf.frontend.static_base_url + "images/menu.png", title: "menu", alt: "menu"})); 
 
     this.outerTabs.appendChild(dropdown);
     dropdownMenu.show = function(x) {
@@ -212,6 +212,13 @@ qwebirc.ui.QUI = new Class({
 
     this.topic.parentNode.replaceChild(topic, this.topic);
     this.qjsui.topic = this.topic = topic;
+  },
+  closeWindow: function(window) {
+    this.parent(window);
+
+    this.tabs.removeChild(window.tab);
+    this.tabs.removeChild(window.spaceNode);
+    this.reflow();
   }
 });
 
@@ -330,23 +337,23 @@ qwebirc.ui.QUI.Window = new Class({
     this.spaceNode = document.createTextNode(" ");
  
     /* Always put the connect/status windows in front. */
-    if (session.ui.tabs.hasChildNodes()) { 
+    if (ui.tabs.hasChildNodes()) { 
       if (type == qwebirc.ui.WINDOW_STATUS) {
-        session.ui.tabs.insertBefore(this.tab, session.ui.tabs.firstChild);
-        session.ui.tabs.insertBefore(this.spaceNode, this.tab.nextSibling);
+        ui.tabs.insertBefore(this.tab, ui.tabs.firstChild);
+        ui.tabs.insertBefore(this.spaceNode, this.tab.nextSibling);
       }
       else if (type == qwebirc.ui.WINDOW_CUSTOM && name == "Connect") {
-        session.ui.tabs.insertBefore(this.tab, session.ui.tabs.firstChild);
-        session.ui.tabs.insertBefore(this.spaceNode, this.tab.nextSibling);
+        ui.tabs.insertBefore(this.tab, ui.tabs.firstChild);
+        ui.tabs.insertBefore(this.spaceNode, this.tab.nextSibling);
       }
       else {
-        session.ui.tabs.appendChild(this.tab);
-        session.ui.tabs.appendChild(this.spaceNode);
+        ui.tabs.appendChild(this.tab);
+        ui.tabs.appendChild(this.spaceNode);
       }
     } 
     else {
-      session.ui.tabs.appendChild(this.tab);
-      session.ui.tabs.appendChild(this.spaceNode);
+      ui.tabs.appendChild(this.tab);
+      ui.tabs.appendChild(this.spaceNode);
     }
     
     this.tab.appendText(name);
@@ -356,7 +363,7 @@ qwebirc.ui.QUI.Window = new Class({
       if(this.closed)
         return;
         
-      session.ui.selectWindow(this);
+      ui.selectWindow(this);
     }.bind(this));
     
     if(type != qwebirc.ui.WINDOW_STATUS && (type != qwebirc.ui.WINDOW_CUSTOM || name != "Connect")) {
@@ -372,9 +379,9 @@ qwebirc.ui.QUI.Window = new Class({
         if(type == qwebirc.ui.WINDOW_CHANNEL)
           this.session.irc.exec("/PART " + name);
 
-        this.close();
+        ui.closeWindow(this);
         
-        //session.ui.inputbox.focus();
+        //ui.inputbox.focus();
       }.bind(this);
       
       tabclose.addEvent("click", close);
@@ -385,14 +392,14 @@ qwebirc.ui.QUI.Window = new Class({
           button = 4;
 
         if(e.event.button == button)
-          close(e);
+          close();
       }.bind(this));
       
       this.tab.appendChild(tabclose);
     }
 
     this.lines = new Element("div");
-    this.session.ui.qjsui.applyClasses("middle", this.lines);
+    ui.qjsui.applyClasses("middle", this.lines);
     this.lines.addClass("lines");
     if(type != qwebirc.ui.WINDOW_CUSTOM)
       this.lines.addClass("ircwindow");
@@ -408,20 +415,20 @@ qwebirc.ui.QUI.Window = new Class({
       this.topic.addClass("tab-invisible");
       this.topic.set("html", "&nbsp;");
       this.topic.addEvent("dblclick", this.editTopic.bind(this));
-      this.session.ui.qjsui.applyClasses("topic", this.topic);
+      ui.qjsui.applyClasses("topic", this.topic);
       
       this.prevNick = null;
       this.nicklist = new Element("div");
       this.nicklist.addClass("nicklist");
       this.nicklist.addClass("tab-invisible");
       this.nicklist.addEvent("click", this.removePrevMenu.bind(this));
-      this.session.ui.qjsui.applyClasses("nicklist", this.nicklist);
+      ui.qjsui.applyClasses("nicklist", this.nicklist);
     }
     
     if(type == qwebirc.ui.WINDOW_CHANNEL)
       this.updateTopic("");
     
-    this.nicksColoured = this.session.config.ui.nick_colors;
+    this.nicksColoured = conf.ui.nick_colors;
     this.reflow();
   },
   editTopic: function() {
@@ -439,7 +446,7 @@ qwebirc.ui.QUI.Window = new Class({
     this.session.irc.exec("/TOPIC " + newTopic);
   },
   reflow: function() {
-    this.session.ui.reflow();
+    ui.reflow();
   },
   onResize: function() {
     if(this.scrolleddown) {
@@ -512,7 +519,7 @@ qwebirc.ui.QUI.Window = new Class({
     
     e.href = "#";
     var span = new Element("span");
-    if(this.session.config.ui.nick_colors) {
+    if(conf.ui.nick_colors) {
       var colour = realNick.toHSBColour(this.session);
       if($defined(colour))
         span.setStyle("color", colour.rgbToHex());
@@ -568,23 +575,23 @@ qwebirc.ui.QUI.Window = new Class({
     this.tab.removeClass("tab-unselected");
     this.tab.addClass("tab-selected");
 
-    this.session.ui.setLines(this.lines);
-    this.session.ui.setChannelItems(this.nicklist, this.topic);
-    this.session.ui.qjsui.showInput(inputVisible);
-    this.session.ui.qjsui.showChannel($defined(this.nicklist));
+    ui.setLines(this.lines);
+    ui.setChannelItems(this.nicklist, this.topic);
+    ui.qjsui.showInput(inputVisible);
+    ui.qjsui.showChannel($defined(this.nicklist));
 
     this.reflow();
     
     this.parent();
     
     if(inputVisible)
-      this.session.ui.inputbox.focus();
+      ui.inputbox.focus();
 
-    if(this.type == qwebirc.ui.WINDOW_CHANNEL && this.nicksColoured != this.session.config.ui.nick_colors) {
-      this.nicksColoured = this.session.config.ui.nick_colors;
+    if(this.type == qwebirc.ui.WINDOW_CHANNEL && this.nicksColoured != conf.ui.nick_colors) {
+      this.nicksColoured = conf.ui.nick_colors;
       
       var nodes = this.nicklist.childNodes;
-      if(this.session.config.ui.nick_colors) {
+      if(conf.ui.nick_colors) {
         for(var i=0;i<nodes.length;i++) {
           var e = nodes[i], span = e.firstChild;
           var colour = e.realNick.toHSBColour(this.session);
@@ -604,13 +611,6 @@ qwebirc.ui.QUI.Window = new Class({
     
     this.tab.removeClass("tab-selected");
     this.tab.addClass("tab-unselected");
-  },
-  close: function() {
-    this.parent();
-    
-    this.session.ui.tabs.removeChild(this.tab);
-    this.session.ui.tabs.removeChild(this.spaceNode);
-    this.reflow();
   },
   addLine: function(type, line, colourClass) {
     var e = new Element("div");

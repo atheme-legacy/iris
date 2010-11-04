@@ -8,28 +8,28 @@ qwebirc.ui.Panes.Feedback = {
 qwebirc.ui.Panes.Feedback.pclass = new Class({
   Implements: [Events],
   session: null,
-  initialize: function(session, parent) {
+  initialize: function(session, w) {
     this.session = session;
     this.textboxVisible = false;
 
-    var delayfn = function() { parent.set("html", "<div class=\"loading\">Loading. . .</div>"); };
+    var delayfn = function() { w.lines.set("html", "<div class=\"loading\">Loading. . .</div>"); };
     var cb = delayfn.delay(500);
     
     this.addEvent("select", this.onSelect);
     
-    var r = qwebirc.ui.RequestTransformHTML(session, {url: this.session.config.frontend.static_base_url + "panes/feedback.html", update: parent, onSuccess: function() {
+    var r = qwebirc.ui.RequestTransformHTML(session, {url: conf.frontend.static_base_url + "panes/feedback.html", update: w.lines, onSuccess: function() {
       $clear(cb);
-      parent.getElement("input[class=close]").addEvent("click", function() {
-        this.fireEvent("close");
+      w.lines.getElement("input[class=close]").addEvent("click", function() {
+        ui.closeWindow(w);
       }.bind(this));
-      parent.getElement("input[class=close2]").addEvent("click", function() {
-        this.fireEvent("close");
+      w.lines.getElement("input[class=close2]").addEvent("click", function() {
+        ui.closeWindow(w);
       }.bind(this));
       
-      var textbox = parent.getElement("textarea");
+      var textbox = w.lines.getElement("textarea");
       this.textbox = textbox;
-      parent.getElement("input[class=submitfeedback]").addEvent("click", function() {
-        this.sendFeedback(parent, textbox, textbox.value);
+      w.lines.getElement("input[class=submitfeedback]").addEvent("click", function() {
+        this.sendFeedback(w.lines, textbox, textbox.value);
       }.bind(this));
       
       this.textboxVisible = true;
@@ -53,12 +53,12 @@ qwebirc.ui.Panes.Feedback.pclass = new Class({
     }
     
     this.textboxVisible = false;
-    var mainBody = parent.getElement("div[class=enterarea]");
+    var mainBody = w.lines.getElement("div[class=enterarea]");
     mainBody.setStyle("display", "none");
     
-    var messageBody = parent.getElement("div[class=messagearea]");
-    var messageText = parent.getElement("p[class=messagetext]");
-    var messageClose = parent.getElement("input[class=close2]");
+    var messageBody = w.lines.getElement("div[class=messagearea]");
+    var messageText = w.lines.getElement("p[class=messagetext]");
+    var messageClose = w.lines.getElement("input[class=close2]");
     
     messageText.set("text", "Submitting. . .");
     messageBody.setStyle("display", "");
@@ -69,7 +69,7 @@ qwebirc.ui.Panes.Feedback.pclass = new Class({
     for(var i=0;i<text.length;i++)
       checksum = ((checksum + 1) % 256) ^ (text.charCodeAt(i) % 256);
 
-    var r = new Request({url: this.session.config.frontend.dynamic_base_url + "feedback", onSuccess: function() {
+    var r = new Request({url: conf.frontend.dynamic_base_url + "feedback", onSuccess: function() {
       messageText.set("text", "Submitted successfully, thanks for the feedback!");
       messageClose.setStyle("display", "");
     }, onFailure: function() {
