@@ -10,9 +10,9 @@ HEADER = """
 <div class="header"> 
   <table> 
     <tr> 
-      <td><img src="/images/qwebircsmall.png" alt="qwebirc" title="qwebirc"/></td> 
+      <td><img src="/images/iris.png" alt="Iris" title="Iris"/></td> 
       <td>&nbsp;&nbsp;&nbsp;&nbsp;</td> 
-      <td align="center"><div class="title">qwebirc</div><div class="version">AdminEngine</div></td> 
+      <td align="center"><div class="title">Iris</div><div class="version">AdminEngine</div></td>
     </tr> 
   </table> 
 </div> 

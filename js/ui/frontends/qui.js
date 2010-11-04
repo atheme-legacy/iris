@@ -21,8 +21,7 @@ qwebirc.ui.QUI = new Class({
     
     this.outerTabs = this.qjsui.top;
 
-    this.tabs = new Element("div");
-    this.tabs.addClass("tabbar");
+    this.tabs = new Element("div", { "class":"tabbar" });
     
     this.__createDropdownMenu();
     
@@ -88,18 +87,11 @@ qwebirc.ui.QUI = new Class({
       e.set("text", x.text);
       dropdownMenu.appendChild(e);
     }.bind(this));
-    
+
     var dropdown = new Element("div");
     dropdown.addClass("dropdown-tab");
-    dropdown.appendChild(new Element("img", {src: this.session.config.frontend.static_base_url + "images/icon.png", title: "menu", alt: "menu"}));
-    dropdown.setStyle("opacity", 1);
+    dropdown.appendChild(new Element("img", {src: this.session.config.frontend.static_base_url + "images/menu.png", title: "menu", alt: "menu"})); 
 
-    var dropdownEffect = new Fx.Tween(dropdown, {duration: "long", property: "opacity", link: "chain"});
-    dropdownEffect.start(0.25);
-    dropdownEffect.start(1);
-    dropdownEffect.start(0.33);
-    dropdownEffect.start(1);
-    
     this.outerTabs.appendChild(dropdown);
     dropdownMenu.show = function(x) {
       new Event(x).stop();
@@ -119,31 +111,6 @@ qwebirc.ui.QUI = new Class({
     }.bind(this);
     dropdown.addEvent("mousedown", function(e) { new Event(e).stop(); });
     dropdown.addEvent("click", dropdownMenu.show);
-  },
-  __createDropdownHint: function() {
-    var dropdownhint = new Element("div");
-    dropdownhint.addClass("dropdownhint");
-    dropdownhint.set("text", "Click the icon for the main menu.");
-    dropdownhint.setStyle("top", this.outerTabs.getSize().y + 5);
-
-    this.parentElement.appendChild(dropdownhint);
-    new Fx.Morph(dropdownhint, {duration: "normal", transition: Fx.Transitions.Sine.easeOut}).start({left: [900, 5]});
-    
-    var hider = function() {
-      new Fx.Morph(dropdownhint, {duration: "long"}).start({left: [5, -900]});
-    }.delay(4000, this);
-    
-    var hider2 = function() {
-      if(dropdownhint.hidden)
-        return;
-      this.parentElement.removeChild(dropdownhint);
-      dropdownhint.hidden = 1;
-    }.bind(this);
-    hider2.delay(4000);
-    this.hideHint = hider2;
-    
-    document.addEvent("mousedown", hider2);
-    document.addEvent("keypress", hider2);
   },
   createInput: function() {
     var form = new Element("form");

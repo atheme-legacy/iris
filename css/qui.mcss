@@ -1,11 +1,12 @@
 bg_topic=408080
 bg_lines=408080
 bg_tabbar=3C7878
+bg_tab_dropdown=418282
 bg_tab_hover=408080
 bg_tab_selected=408080
 bg_menu=408080
 bg_menu_hover=397373
-bg_header=#418282
+bg_header=418282
 bg_nicklist=408080
 bg_chanlist_header=397373
 bg_chanlist_1=408080
@@ -24,6 +25,7 @@ bg_chanlist_border=336666
 bg_lastpositionbar=336666
 fg_default_text=408080
 fg_topic_text=59B3B3
+fg_tabbar_dropdown_text=408080
 fg_tabbar_hilight_text=408080
 fg_sec_title_text=408080
 fg_sec_link_text=408080
@@ -148,9 +150,9 @@ input:not([type]),input[type="text"],input[type="password"] {
 }
 
 .qwebirc-qui .tabbar {
+  margin-left: 27px;
   font-size: 0.8em;
   color: $(fg_sec_tabbar_text);
-  margin-left: 38px;
   line-height: 24px;
 }
 
@@ -269,11 +271,10 @@ div#noscript {
 }
 
 .qwebirc-qui .outertabbar .dropdown-tab {
+  float: left;
+  width: 24px;
   cursor: pointer;
   cursor: hand;
-  float: left;
-  padding: 4px;
-  width: 30px;
 }
 
 .qwebirc-qui .dropdownmenu {
