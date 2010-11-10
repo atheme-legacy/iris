@@ -13,7 +13,7 @@ qwebirc.irc.BaseCommandParser = new Class({
   },
   newTargetLine: function(target, type, message, extra) {
     extra = this.buildExtra(extra, target, message);
-    var window = this.session.irc.getWindow(target);
+    var window = this.session.irc.getWindow(type, target);
     var channel;
     if(!window) {
       type = "TARGETED" + type;
@@ -33,7 +33,7 @@ qwebirc.irc.BaseCommandParser = new Class({
     extra = this.buildExtra(extra, target, message);
     
     if(conf.dedicated_msg_window) {
-      var window = this.session.irc.getWindow(target);
+      var window = ui.getWindow(type, target);
       if(!window) {
         var w = ui.newWindow(qwebirc.ui.WINDOW_MESSAGES, "Messages");
         w.addLine("OURTARGETED" + type, extra);
