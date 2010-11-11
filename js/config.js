@@ -37,13 +37,16 @@ qwebirc.config.load = function(config) {
 	if($defined(args["initial_nick"])) {
 		var initial_nick = args["initial_nick"];
 		config.frontend.initial_nick = initial_nick;
+		config.frontend.chan_prompt = false;
 	}
 
 	/* Load channels from query string. */
 	if($defined(args["url"])) {
 		var urlchans = qwebiec.config.parseIRCURL(args["url"]);
-		if (urlchans)
+		if (urlchans) {
 			config.frontend.initial_chans = urlchans;
+			config.frontend.chan_prompt = false;
+		}
 	}
 	if ($defined(args["initial_chans"])) {
 		var initial_chans = args["initial_chans"];

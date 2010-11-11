@@ -270,6 +270,6 @@ qwebirc.ui.Panes.Embed.Step = new Class({
     if($defined(this.options.middle))
       this.parent.middleRow.appendChild(this.options.middle);
     
-    w.fireEvent("show");
+    this.fireEvent("show");
   }
 });
