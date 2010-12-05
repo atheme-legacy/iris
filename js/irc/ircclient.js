@@ -222,25 +222,23 @@ qwebirc.irc.IRCClient = new Class({
         
     if(nick == this.nickname) {
       this.tracker.removeChannel(channel);
+      var w = ui.getWindow(qwebirc.ui.WINDOW_CHANNEL, channel);
+      if(w)
+        ui.closeWindow(w);
     } else {
       this.tracker.removeNickFromChannel(nick, channel);
       if(!conf.ui.hide_joinparts) {
         this.newChanLine(channel, "PART", user, {"m": message});
       }
-    }
-  
-    this.updateNickList(channel);
-    
-    if(nick == this.nickname) {
-      var w = ui.getWindow(qwebirc.ui.WINDOW_CHANNEL, channel)
-      if(w)
-        ui.closeWindow(w);
+      this.updateNickList(channel);
     }
   },
   userKicked: function(kicker, channel, kickee, message) {
     if(kickee == this.nickname) {
       this.tracker.removeChannel(channel);
-      ui.getWindow(qwebirc.ui.WINDOW_CHANNEL, channel).close();
+      var w = ui.getWindow(qwebirc.ui.WINDOW_CHANNEL, channel);
+      if(w)
+        ui.closeWindow(w);
     } else {
       this.tracker.removeNickFromChannel(kickee, channel);
       this.updateNickList(channel);
