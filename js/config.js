@@ -42,7 +42,7 @@ qwebirc.config.load = function(config) {
 
 	/* Load channels from query string. */
 	if($defined(args["url"])) {
-		var urlchans = qwebiec.config.parseIRCURL(args["url"]);
+		var urlchans = qwebirc.config.parseIRCURL(args["url"]);
 		if (urlchans) {
 			config.frontend.initial_chans = urlchans;
 			config.frontend.chan_prompt = false;
