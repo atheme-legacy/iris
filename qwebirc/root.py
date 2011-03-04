@@ -79,8 +79,9 @@ class RootSite(server.Site):
       root.putChild(path, sobj)
       
     register(engines.AJAXEngine, "e")
-    register(engines.AthemeEngine, "a")
     register(engines.FeedbackEngine, "feedback")
     register(engines.AdminEngine, "adminengine", services)
+    if config.athemeengine["xmlrpc_path"]:
+      register(engines.AthemeEngine, "a")
     
 mimetypes.types_map[".ico"] = "image/vnd.microsoft.icon"

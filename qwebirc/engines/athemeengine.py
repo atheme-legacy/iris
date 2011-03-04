@@ -26,7 +26,8 @@ class AthemeEngine(resource.Resource):
     self.chanlists = {}
     self.prefix = prefix
     self.__total_hit = HitCounter()
-    self.get_xmlrpc_conn()
+    if config.athemeengine["xmlrpc_path"]:
+      self.get_xmlrpc_conn()
     
     # Get an initial list.
     if config.athemeengine["chan_list_enabled"]:
