@@ -78,12 +78,6 @@ qwebirc.config.load = function(config) {
 	}
 
 	/* Load colours from query string. */
-	if ($defined(args["fg_color"]) || $defined(args["bg_color"]) ||
-                    $defined(args["fg_sec_color"])) {
-		config.ui.fg_color = default_fg_color;
-		config.ui.fg_sec_color = default_fg_sec_color;
-		config.ui.bg_color = default_bg_color;
-	}
 	if ($defined(args["fg_color"])) {
 		config.ui.fg_color = args["fg_color"];
 		config.ui.fg_sec_color = args["fg_color"];
