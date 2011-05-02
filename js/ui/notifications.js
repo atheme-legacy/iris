@@ -1,11 +1,11 @@
 qwebirc.ui.HilightController = new Class({
-  initialize: function(parent) {
-    this.parent = parent;
+  initialize: function(session) {
+    this.session = session;
     this.regex = null;
     this.prevnick = null;
   },
   match: function(text) {
-    var nick = this.parent.nickname;
+    var nick = this.session.irc.nickname;
     if(nick != this.prevnick) {
       var classes = '[\\s\\.,;:]';
       this.regex = new RegExp('(^|' + classes + ')' + RegExp.escape(nick) + '(' + classes + '|$)', "i");
