@@ -1,4 +1,3 @@
-syntax: glob
 static/js/{ugly,swm,mocha,q}ui{,-*}.js
 static/js/qwebirc.js
 static/{js,css}/debug
