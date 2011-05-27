@@ -128,6 +128,51 @@ qwebirc.ui.Panes.Embed.pclass = new Class({
     
     this.connectdialogr = this.newRadio(promptdiv, "Show the connect dialog.", "prompt", default_prompt);
     var autoconnect = this.newRadio(promptdiv, "Connect without displaying the dialog.", "prompt", !default_prompt);
+
+    var coloroptdiv = new Element("form");
+    this.choosecolor = this.newStep({
+      "title": "Customize color?",
+      "first": "Would you like to customize the colors used by the widget?",
+      middle: coloroptdiv,
+      "hint": "Color customization can be used to make the widget match the rest of your site."
+    });
+
+
+    var nocustomcolors = this.newRadio(coloroptdiv, "Use the default colors.", "colors", true);
+    this.coloroptr = this.newRadio(coloroptdiv, "Choose custom widget colors.", "colors", false);
+
+    this.fgColor = new Element("input");
+    this.fgColor.addClass("text");
+    this.fgColor.set("value", conf.ui.fg_color);
+    this.foregroundcolor = this.newStep({
+      "title": "Set foreground color",
+      "first": "Set the widget's foreground (text) color:",
+      middle: this.fgColor,
+      "hint": "Enter a hexadecimal color specification, e.g.:",
+      "example": "#0A0A0A"
+    }).addEvent("show", af.bind(this.fgColor));
+
+    this.secColor = new Element("input");
+    this.secColor.addClass("text");
+    this.secColor.set("value", conf.ui.fg_sec_color);
+    this.secondarycolor = this.newStep({
+      "title": "Set secondary color",
+      "first": "Set the widget's secondary foreground (heading) color:",
+      middle: this.secColor,
+      "hint": "Enter a hexadecimal color specification, e.g.:",
+      "example": "#1A1A1A"
+    }).addEvent("show", af.bind(this.secColor));
+
+    this.bgColor = new Element("input");
+    this.bgColor.addClass("text");
+    this.bgColor.set("value", conf.ui.bg_color);
+    this.backgroundcolor = this.newStep({
+      "title": "Set background color",
+      "first": "Set the widget's background color:",
+      middle: this.bgColor,
+      "hint": "Enter a hexadecimal color specification, e.g.:",
+      "example": "#FFFFFF"
+    }).addEvent("show", af.bind(this.bgColor));
     
     var codeDiv = new Element("div");
     this.finish = this.newStep({
@@ -176,6 +221,14 @@ qwebirc.ui.Panes.Embed.pclass = new Class({
     
     if(this.chanBox.value != "" && this.nicknameBox.value != "")
       this.steps.push(this.connectdialog);
+
+    this.steps.push(this.choosecolor);
+
+    if(this.coloroptr.checked == true) {
+      this.steps.push(this.foregroundcolor);
+      this.steps.push(this.secondarycolor);
+      this.steps.push(this.backgroundcolor);
+    }
     
     this.steps.push(this.finish);
   },
@@ -214,6 +267,10 @@ qwebirc.ui.Panes.Embed.pclass = new Class({
     var chans = this.chanBox.value;
     var nick = this.nicknameBox.value;
     var prompt = this.connectdialogr.checked && chans != "" && nick != "";
+    var colors = this.coloroptr.checked;
+    var fg = this.fgColor.value;
+    var sec = this.secColor.value;
+    var bg = this.bgColor.value;
 
     var URL = [];
     URL.push("nick=" + escape(nick));
@@ -233,6 +290,12 @@ qwebirc.ui.Panes.Embed.pclass = new Class({
     }
     else
       URL.push("channels=");
+
+    if(colors) {
+      URL.push("fg_color="+fg.replace("#",""));
+      URL.push("fg_sec_color="+sec.replace("#",""));
+      URL.push("bg_color="+bg.replace("#",""));
+    }
     
     if(prompt)
       URL.push("prompt=1");
