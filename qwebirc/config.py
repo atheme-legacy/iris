@@ -87,14 +87,14 @@ def __interpret_config():
     if athemeengine["xmlrpc_path"] == "":
         for option in atheme:
             atheme[option] = False
+    else:
+        # Set atheme::chan_list so the frontend is aware of whether channel lists
+        # are enabled.
+        atheme["chan_list"] = athemeengine["chan_list_enabled"]
 
-    # Set atheme::chan_list so the frontend is aware of whether channel lists
-    # are enabled.
-    atheme["chan_list"] = athemeengine["chan_list_enabled"]
-
-    # If atheme::chan_list is off, force atheme::chan_list_on_start off.
-    if atheme["chan_list"] == False:
-        atheme["chan_list_on_start"] = False
+        # If atheme::chan_list is off, force atheme::chan_list_on_start off.
+        if atheme["chan_list"] == False:
+            atheme["chan_list_on_start"] = False
 
     # If no secondary foreground colour was specified, use the primary.
     if not "fg_sec_color" in ui:
