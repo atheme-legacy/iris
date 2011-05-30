@@ -17,12 +17,12 @@ qwebirc.ui.Atheme.handleLogin = function(session, user, token) {
 	/* Update state. */
 	session.atheme.state = true;
 	session.atheme.user = user;
-	session.atheme.token = token;
+	session.atheme.secret = token;
 	
 	/* Save cookie. */  
 	cookie = new Hash.Cookie("iris-auth");
 	cookie.set("user", session.atheme.user);
-	cookie.set("token", session.atheme.token);
+	cookie.set("token", session.atheme.secret);
 	cookie.save();
 }
 
@@ -43,15 +43,16 @@ qwebirc.ui.Atheme.check = function(session) {
 
 	/* If we have a user and token, check them for validity. Otherwise,
 	 * we're definitely logged out. */
-	if ($defined(session.atheme.user) && $defined(session.atheme.token)) {
+	if ($defined(session.atheme.user) && $defined(session.atheme.secret) &&
+			conf.atheme.sasl_type == "AUTHCOOKIE") {
 		qwebirc.irc.AthemeQuery.checkLogin(function(valid) {
 		if (valid == null)
 			session.atheme.state = null;
 		else if (valid)
-			this.handleLogin(session, session.atheme.user, session.atheme.token);
+			this.handleLogin(session, session.atheme.user, session.atheme.secret);
 		else
 			this.handleLogout();
-		}.bind(this), session.atheme.user, session.atheme.token);
+		}.bind(this), session.atheme.user, session.atheme.secret);
 	}
 	else
 		this.handleLogout(session);

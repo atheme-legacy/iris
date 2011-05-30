@@ -207,6 +207,7 @@ dynamic_base_url: /
 
 # NICKSERV LOGIN: Enable login to a NickServ account using Iris, before
 # connecting. Requires SASL with the AUTHCOOKIE method be loaded in Atheme.
+# If an XML-RPC connection isn't available, will fall back to SASL PLAIN.
 nickserv_login: true
 
 # CHAN LIST ON START: Open the channel listing automatically when the

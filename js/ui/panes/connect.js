@@ -61,7 +61,7 @@ qwebirc.ui.Panes.Connect.pclass = new Class({
 
     if (this.session.atheme.state) {
       data["authUser"] = this.session.atheme.user;
-      data["authToken"] = this.session.atheme.token;
+      data["authSecret"] = this.session.atheme.secret;
     }
 
     this.connectCallback(data);
@@ -255,7 +255,7 @@ qwebirc.ui.Panes.Connect.pclass = new Class({
       }
       Cookie.write("iris-nick", this.nickBox.value, {"duration": 3650});
 
-      if (conf.atheme.nickserv_login && pass.value) {
+      if (conf.atheme.sasl_type == "AUTHCOOKIE" && pass.value) {
         qwebirc.irc.AthemeQuery.login(function(token) {
           if (token == null)
             alert("Authentication failed");
@@ -263,6 +263,12 @@ qwebirc.ui.Panes.Connect.pclass = new Class({
             qwebirc.ui.Atheme.handleLogin(this.session, this.nickBox.value, token);
           this.connect(null);
         }.bind(this), this.nickBox.value, pass.value);
+      }
+      else if (conf.atheme.sasl_type == "PLAIN" && pass.value) {
+        this.session.atheme.state = true;
+        this.session.atheme.user = this.nickBox.value;
+        this.session.atheme.secret = pass.value;
+        this.connect(null);
       }
       else {
         qwebirc.ui.Atheme.handleLogout(this.session);

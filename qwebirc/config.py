@@ -86,7 +86,14 @@ def __interpret_config():
     # options off in the frontend.
     if athemeengine["xmlrpc_path"] == "":
         for option in atheme:
+            if option == "nickserv_login":
+                # Special case: nickserv login will fall back to SASL PLAIN
+                # instead of being completely unavailable without XML-RPC.
+                continue
             atheme[option] = False
+
+        # No XML-RPC connection, fall back to SASL PLAIN.
+        atheme["sasl_type"] = "PLAIN"
     else:
         # Set atheme::chan_list so the frontend is aware of whether channel lists
         # are enabled.
@@ -95,6 +102,13 @@ def __interpret_config():
         # If atheme::chan_list is off, force atheme::chan_list_on_start off.
         if atheme["chan_list"] == False:
             atheme["chan_list_on_start"] = False
+
+        # XML-RPC support is present. Use SASL AUTHCOOKIE.
+        atheme["sasl_type"] = "AUTHCOOKIE"
+
+    # There's no SASL type if login is disabled...
+    if atheme["nickserv_login"] == False:
+        atheme["sasl_type"] = False
 
     # If no secondary foreground colour was specified, use the primary.
     if not "fg_sec_color" in ui:

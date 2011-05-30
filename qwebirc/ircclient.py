@@ -26,7 +26,7 @@ class QWebIRCClient(basic.LineReceiver):
     self.registered = False
     self.saslauth = False
     self.authUser = None
-    self.authToken = None
+    self.authSecret = None
     self.cap = []
     self.saslTimer = Timer(15.0, self.stopSasl)
     self.saslTimer.start()
@@ -63,7 +63,7 @@ class QWebIRCClient(basic.LineReceiver):
           if ("multi-prefix" in self.cap):
             reqlist.append("multi-prefix")
           if ("sasl" in self.cap):
-            if (self.authUser and self.authToken):
+            if (self.authUser and self.authSecret):
               self.saslauth = True
               reqlist.append("sasl")
           if (reqlist):
@@ -77,8 +77,8 @@ class QWebIRCClient(basic.LineReceiver):
       # underway.
       if "ACK" in params:
         if "sasl" in params[-1].split(" "):
-          if (self.authUser and self.authToken):
-            self.write("AUTHENTICATE AUTHCOOKIE")
+          if (self.authUser and self.authSecret):
+            self.write("AUTHENTICATE "+config.atheme["sasl_type"])
             self.saslauth = True
         if (not self.saslauth):
           self.write("CAP END")
@@ -99,7 +99,7 @@ class QWebIRCClient(basic.LineReceiver):
         return
 
       # We're performing SASL auth. Send them our authcookie.
-      authtext = base64.b64encode('\0'.join([self.authUser, self.authUser, self.authToken]))
+      authtext = base64.b64encode('\0'.join([self.authUser, self.authUser, self.authSecret]))
       while (len(authtext) >= 400):
         self.write("AUTHENTICATE " + authtext[0:400])
         authtext = authtext[400:]
@@ -161,7 +161,7 @@ class QWebIRCClient(basic.LineReceiver):
     self.__nickname = nick
     self.__perform = f.get("perform")
     self.authUser = f.get("authUser")
-    self.authToken = f.get("authToken")
+    self.authSecret = f.get("authSecret")
 
     if config.irc["webirc_mode"] == "webirc":
       self.write("WEBIRC %s qwebirc %s %s" % (config.irc["webirc_password"], hostname, ip))
