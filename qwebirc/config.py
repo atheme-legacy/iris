@@ -31,23 +31,23 @@ def check_config(interpret):
 
         for opt_section, option in options.booleans:
             if opt_section == section and option not in sections[section]:
-                raise ConfigParser.NoOptionError(section + "::" + option)
+                raise ConfigParser.NoOptionError(option, section)
 
         for opt_section, option in options.floats:
             if opt_section == section and option not in sections[section]:
-                raise ConfigParser.NoOptionError(section + "::" + option)
+                raise ConfigParser.NoOptionError(option, section)
 
         for opt_section, option in options.integers:
             if opt_section == section and option not in sections[section]:
-                raise ConfigParser.NoOptionError(section + "::" + option)
+                raise ConfigParser.NoOptionError(option, section)
 
         for opt_section, option in options.lists:
             if opt_section == section and option not in sections[section]:
-                raise ConfigParser.NoOptionError(section + "::" + option)
+                raise ConfigParser.NoOptionError(option, section)
 
         for opt_section, option in options.strings:
             if opt_section == section and option not in sections[section]:
-                raise ConfigParser.NoOptionError(section + "::" + option)
+                raise ConfigParser.NoOptionError(option, section)
 
     if interpret:
         __interpret_config()
