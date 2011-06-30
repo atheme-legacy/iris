@@ -69,17 +69,13 @@ class AthemeEngine(resource.Resource):
    connection error or programming/configuration bug).
 
    """
-   print "Test 1"
    output = None
    try:
      output = self.do_xmlrpc(self.conn.atheme.command, ("*", "*", "0.0.0.0", "ALIS", "LIST", "*", "-maxmatches", "-1"))
    except xmlrpclib.Fault, e:
-     print "Test E:", e
      output = None
    if output is None:
-     print "No output"
      return None
-   print "Test 2"
 
    chanlist = []
 
