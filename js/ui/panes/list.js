@@ -183,10 +183,6 @@ qwebirc.ui.Panes.List.pclass = new Class({
       /* Update our timestamp to the timestamp of this list. */
       this.timestamp = timestamp;
 
-      /* Calculate the range of the channel sizes. */
-      var minUsers = channels[channels.length-1].users
-      var userScale = channels[0].users - minUsers
-
       /* Cancel any timeout. */
       if (this.loading != null) {
         clearTimeout(this.loading);
@@ -208,6 +204,20 @@ qwebirc.ui.Panes.List.pclass = new Class({
         }
         return;
       }
+
+      /* If we got no channels, display that and return. */
+      if (channels.length == 0) {
+        if (this.cloud) {
+          this.chanBox.set("html", "<span class=\"loading\">No channels currently exist, please try refreshing again later.</span>");
+        } else {
+          this.chanBox.set("html", "<tr><td class=\"loading\">No channels currently exist, please try refreshing again later.</td></tr>");
+        }
+        return;
+      }
+
+      /* Calculate the range of the channel sizes. */
+      var minUsers = channels[channels.length-1].users
+      var userScale = channels[0].users - minUsers
 
       /* Print the table headings, for list view. */
       if (!this.cloud) {
