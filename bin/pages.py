@@ -18,7 +18,7 @@ addfrom("js/ui", DEBUG_BASE)
 addfrom("js/ui/panes", DEBUG_BASE)
     
 BUILD_BASE = ["qwebirc"]
-JS_BASE = ["mootools-1.2.1-core", "mootools-1.2-more"]
+JS_BASE = ["mootools-1.2.5-core", "mootools-1.2.5.1-more"]
 JS_EXTRA = ["soundmanager2"]
 
 UIs = {
