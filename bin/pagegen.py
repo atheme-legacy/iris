@@ -28,14 +28,14 @@ def csslist(name, debug, gen=False):
 
 def _getgitid():
   try:
-    p = subprocess.Popen(["git", "show", "--oneline", "--quiet"], stdout=subprocess.PIPE)
+    p = subprocess.Popen(["git", "show", "--pretty=oneline", "--quiet"], stdout=subprocess.PIPE)
   except Exception, e:
     if hasattr(e, "errno") and e.errno == 2:
       raise GitException, "unable to execute"
     raise GitException, "unknown exception running git: %s" % repr(e)
     
   data = p.communicate()[0]
-  if p.wait() != 1: # For some reason, git returns exit status 1 when using --quiet with show.
+  if p.wait() != 0:
     raise GitException, "unable to get id"
   return re.match("^([0-9a-f]+)", data).group(1)
 
