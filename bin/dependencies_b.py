@@ -60,9 +60,9 @@ def check_git():
     warn(specific, "git is not required, but allows qwebirc to save bandwidth by versioning.", "you can get git at http://git-scm.com/")
     
   try:
-    p = subprocess.Popen(["git", "show", "--oneline", "--quiet"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    p = subprocess.Popen(["git", "show", "--pretty=oneline", "--quiet"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     p.communicate()
-    if p.wait() != 1: # For some reason, git returns exit status 1 when --quiet is used with show.
+    if p.wait() != 0:
       git_warn("something went wrong looking for git.")
       return 1
   except: # ugh
