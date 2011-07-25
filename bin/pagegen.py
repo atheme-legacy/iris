@@ -35,7 +35,8 @@ def _getgitid():
     raise GitException, "unknown exception running git: %s" % repr(e)
     
   data = p.communicate()[0]
-  if p.wait() != 0:
+  status = p.wait()
+  if status != 0 and status != 1:
     raise GitException, "unable to get id"
   return re.match("^([0-9a-f]+)", data).group(1)
 

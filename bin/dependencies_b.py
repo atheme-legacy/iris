@@ -62,7 +62,8 @@ def check_git():
   try:
     p = subprocess.Popen(["git", "show", "--pretty=oneline", "--quiet"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     p.communicate()
-    if p.wait() != 0:
+    status = p.wait()
+    if status != 0 and status != 1:
       git_warn("something went wrong looking for git.")
       return 1
   except: # ugh
