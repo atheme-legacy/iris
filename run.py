@@ -62,6 +62,15 @@ if options.debug:
 if options.reactor != DEFAULT_REACTOR:
   rn = options.reactor + "reactor"
   getattr(__import__("twisted.internet", fromlist=[rn]), rn).install()
+else:
+  for reactor in ["epoll", "kq"]:
+    try:
+      rn = reactor + "reactor"
+      getattr(__import__("twisted.internet", fromlist=[rn]), rn).install()
+      print "Auto-selecting reactor: " + reactor
+      break
+    except ImportError:
+      pass
 if options.logfile:
   args1+=["--logfile", options.logfile]
 if options.pidfile:
