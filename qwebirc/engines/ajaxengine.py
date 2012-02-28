@@ -1,8 +1,7 @@
 from twisted.web import resource, server, static, error as http_error
 from twisted.names import client
 from twisted.internet import reactor, error
-import sys, os, time, traceback, socket
-from hashlib import md5
+import md5, sys, os, time, traceback, socket
 import qwebirc.ircclient as ircclient
 from adminengine import AdminEngineAction
 from qwebirc.util import HitCounter

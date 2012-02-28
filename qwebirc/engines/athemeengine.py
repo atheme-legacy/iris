@@ -1,7 +1,6 @@
 from twisted.web import resource, server, static, error as http_error
 from xmlrpclib import ServerProxy
-import fnmatch, sys, os, time, traceback, socket, xmlrpclib
-from hashlib import md5
+import fnmatch, md5, sys, os, time, traceback, socket, xmlrpclib
 import qwebirc.util.qjson as json
 import qwebirc.config as config
 from adminengine import AdminEngineAction
