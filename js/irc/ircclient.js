@@ -446,6 +446,7 @@ qwebirc.irc.IRCClient = new Class({
     }
     this.tracker = undefined;
     
+    qwebirc.connected = false;
     this.newServerLine("DISCONNECT", {"m": message});
   },
   nickOnChanHasPrefix: function(nick, channel, prefix) {
@@ -493,6 +494,7 @@ qwebirc.irc.IRCClient = new Class({
     this.parent(key, value);
   },
   connected: function() {
+    qwebirc.connected = true;
     this.newServerLine("CONNECT");
   },
   serverError: function(message) {

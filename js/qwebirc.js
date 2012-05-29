@@ -1,4 +1,4 @@
-var qwebirc = {ui: {themes: {}, style: {}}, irc: {}, util: {crypto: {}}, config: {}, options: {}, auth: {}, sound: {}};
+var qwebirc = {ui: {themes: {}, style: {}}, irc: {}, util: {crypto: {}}, config: {}, options: {}, auth: {}, sound: {}, connected: false};
 var conf = null;
 var ui = null;
 

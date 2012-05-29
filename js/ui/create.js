@@ -34,9 +34,11 @@ qwebirc.ui.create = function(element, uiclass) {
 
 /* Displays a warning if the user tries to close their browser. */
 qwebirc.ui.onbeforeunload = function(e) { /* IE sucks */
-  var message = "This action will close all active IRC connections.";
-  var e = e || window.event;
-  if(e)
-    e.returnValue = message;
-  return message;
+  if (qwebirc.connected) {
+    var message = "This action will close all active IRC connections.";
+    var e = e || window.event;
+    if(e)
+      e.returnValue = message;
+    return message;
+  }
 };
