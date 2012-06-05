@@ -159,6 +159,23 @@ network_name: FooNet
 # The title of the application in the web browser.
 app_title: %(network_name)s Web IRC
 
+# EXTRA HTML: Additional HTML (e.g. analytics code) to place in the <head> of
+# generated documents. Note: For multi-line values, indent all the lines
+# after the first with at least one space or tab.
+extra_html: <script type="text/javascript">
+
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', '*analytics account number here*']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+
+  </script>
+
 # INITIAL NICK: Default initial nickname for the user.
 # '.' characters will be replaced by random digits.
 # Leave blank to force the user to enter a nick before connecting.

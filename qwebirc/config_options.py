@@ -63,6 +63,7 @@ strings = [
     ("frontend", "base_url"),
     ("frontend", "network_name"),
     ("frontend", "app_title"),
+    ("frontend", "extra_html"),
     ("frontend", "initial_nick"),
     ("frontend", "initial_chans"),
     ("frontend", "static_base_url"),

@@ -69,6 +69,7 @@ def producehtml(name, debug):
   <title>%s (Iris)</title>
   <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
   <link rel="shortcut icon" type="image/png" href="%simages/favicon.png"/>
+%s
 %s%s
 %s
 %s
@@ -85,7 +86,7 @@ def producehtml(name, debug):
   </div>
 </body>
 </html>
-""" % (ui["doctype"], config.frontend["app_title"], config.frontend["static_base_url"], csshtml, customcss, jshtml, customjs, config.js_config(), ui["class"], div)
+""" % (ui["doctype"], config.frontend["app_title"], config.frontend["static_base_url"], config.frontend["extra_html"], csshtml, customcss, jshtml, customjs, config.js_config(), ui["class"], div)
 
 def main(outputdir=".", produce_debug=True):
   p = os.path.join(outputdir, "static")

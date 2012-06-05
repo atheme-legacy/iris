@@ -123,9 +123,11 @@ def __interpret_config():
 
 
 def js_config():
+    f = frontend.copy()
+    del f["extra_html"] # already injected by pagegen.
     options = {
         'atheme': atheme,
-        'frontend': frontend,
+        'frontend': f,
         'ui': ui,
     }
     return json.dumps(options)
