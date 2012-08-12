@@ -86,7 +86,7 @@ class QWebIRCClient(basic.LineReceiver):
       # We're receiving negative acknowledgement; a feature upgrade was denied.
       # Once all acknowledgements are received, end CAP is SASL is not
       # underway.
-      if (params[1] == "NACK"):
+      if (params[1] == "NAK"):
         for item in params[2].split(" "):
           self.cap.remove(item)
         if (not self.saslauth):
