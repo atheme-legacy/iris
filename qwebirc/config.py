@@ -125,7 +125,7 @@ def __interpret_config():
         try:
             from twisted.internet.ssl import ClientContextFactory
         except ImportError:
-            raise ConfigError("Configuration error: SSL support not installed")
+            raise ConfigException("Configuration error: SSL support not installed")
 
 
 def js_config():
