@@ -44,6 +44,9 @@ server: irc.myserver.com
 # PORT: Port of IRC server to connect to.
 port: 6667
 
+# SSL: Use SSL to connect to IRC server or not
+ssl: false
+
 # REALNAME: The realname field for clients connecting through the
 # webclient.
 realname: http://moo.com/
