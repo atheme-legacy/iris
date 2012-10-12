@@ -21,6 +21,7 @@ booleans = [
     ("frontend", "prompt"),
     ("frontend", "chan_prompt"),
     ("frontend", "chan_autoconnect"),
+    ("irc", "ssl"),
     ("ui", "dedicated_msg_window"),
     ("ui", "dedicated_notice_window"),
     ("ui", "hide_joinparts"),

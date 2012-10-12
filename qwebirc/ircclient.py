@@ -223,7 +223,13 @@ class QWebIRCFactory(protocol.ClientFactory):
 
 def createIRC(*args, **kwargs):
   f = QWebIRCFactory(*args, **kwargs)
-  reactor.connectTCP(config.irc["server"], config.irc["port"], f)
+  server = config.irc["server"]
+  port = config.irc["port"]
+  if config.irc["ssl"]:
+      from twisted.internet.ssl import ClientContextFactory
+      reactor.connectSSL(server, port, f, ClientContextFactory())
+  else:
+      reactor.connectTCP(server, port, f)
   return f
 
 if __name__ == "__main__":

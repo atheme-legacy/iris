@@ -121,6 +121,12 @@ def __interpret_config():
     else:
         ui["privacy"] = True
 
+    if irc["ssl"]:
+        try:
+            from twisted.internet.ssl import ClientContextFactory
+        except ImportError:
+            raise ConfigException("Configuration error: SSL support not installed")
+
 
 def js_config():
     f = frontend.copy()
