@@ -1,0 +1,11 @@
+If you want to install Iris, read AUTHORS and LICENSE first, then continue with the following steps:
+
+(0. install all dependencies, get python, install python-simplejson etc.; do not complain about errors which are caused by missing dependencies)
+1. copy iris.conf.example to iris.conf, then edit iris.conf and change all options to fit your needs. You may NOT comment out sections you don't need; if you do not need additional HTML text, remove the analytics code and leave the option empty, but do not comment it out.
+2. run the following command:
+python ./compile.py
+3. if there were no errors, read the help of run.py:
+python ./run.py --help
+4. you can now run run.py with any arguments you need; maybe you should create a cronjob or a script to run Iris. If run.py does not correctly daemonize, use screen or nohup and disown like this:
+nohup python ./run.py -p 9090 &
+disown
