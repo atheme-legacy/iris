@@ -1,6 +1,6 @@
 The Iris GIT repository can be checked out using the following command:
-	git clone git://git.atheme.org/iris.git iris-devel
+	git clone https://github.com/atheme/iris.git
 
 Iris's GIT repository depot can be browsed over the internet at 
 the following address:
-	http://git.atheme.org/
+	https://github.com/atheme/iris
