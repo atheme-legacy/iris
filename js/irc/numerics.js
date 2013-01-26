@@ -1,6 +1,7 @@
 qwebirc.irc.Numerics = {
   "001": "RPL_WELCOME",
   "433": "ERR_NICKNAMEINUSE",
+  "437": "ERR_UNAVAILRESOURCE",
   "004": "RPL_MYINFO",
   "005": "RPL_ISUPPORT",
   "353": "RPL_NAMREPLY",

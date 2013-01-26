@@ -129,20 +129,6 @@ qwebirc.irc.BaseIRCClient = new Class({
     this.__signedOn = true;
     this.signedOn(this.nickname);
   },
-  irc_ERR_NICKNAMEINUSE: function(prefix, params) {
-    this.genericError(params[1], params.indexFromEnd(-1).replace("in use.", "in use"));
-    
-    if(this.__signedOn)
-      return true;
-    
-    var newnick = params[1] + "_";
-    if(newnick == this.lastnick)
-      newnick = "qwebirc" + Math.floor(Math.random() * 1024 * 1024);
-
-    this.send("NICK " + newnick);
-    this.lastnick = newnick;
-    return true;
-  },
   irc_NICK: function(prefix, params) {
     var user = prefix;
     var oldnick = user.hostToNick();
@@ -507,9 +493,27 @@ qwebirc.irc.BaseIRCClient = new Class({
     this.genericQueryError(target, message);
     return true;
   },
+  irc_genericNickInUse: function(prefix, params) {
+    this.genericError(params[1], params.indexFromEnd(-1).replace("in use.", "in use"));
+
+    if(this.__signedOn)
+      return true;
+
+    /* this also handles ERR_UNAVAILRESOURCE, which can be sent for both nicks and
+     * channels, but since this.__signedOn is false, we can safely assume it means
+     * a nick. */
+    var newnick = params[1] + "_";
+    if(newnick == this.lastnick)
+      newnick = "iris" + Math.floor(Math.random() * 1024 * 1024);
+
+    this.send("NICK " + newnick);
+    this.lastnick = newnick;
+    return true;
+  },
   setupGenericErrors: function() {
     this.irc_ERR_CHANOPPRIVSNEEDED = this.irc_ERR_CANNOTSENDTOCHAN = this.irc_genericError;
     this.irc_ERR_NOSUCHNICK = this.irc_genericQueryError;
+    this.irc_ERR_NICKNAMEINUSE = this.irc_ERR_UNAVAILRESOURCE = this.irc_genericNickInUse;
     return true;
   },
   irc_RPL_AWAY: function(prefix, params) {
