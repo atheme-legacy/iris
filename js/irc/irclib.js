@@ -40,7 +40,7 @@ qwebirc.irc.RFC1459toIRCLower = function(x) {
 
     p.push(qwebirc.irc.IRCLowerTable[l]);
   }
-    
+
   return p.join("");
 }
 
@@ -62,7 +62,7 @@ qwebirc.irc.IRCTimestamp = function(d) {
 
 qwebirc.irc.IRCDate = function(d) {
   var pad = qwebirc.util.pad;
-  
+
   return qwebirc.util.DaysOfWeek[d.getDay()] + " " + qwebirc.util.MonthsOfYear[d.getMonth()] + " " + pad(d.getDate()) + " "  + pad(d.getHours()) + ":" + pad(d.getMinutes()) + ":" + pad(d.getSeconds()) + " " + d.getFullYear();
 }
 

@@ -20,14 +20,14 @@ qwebirc.ui.create = function(element, uiclass) {
     /* Create UI. */
     ui = new uiclass(this.session, $(element));
 
-    /* Create login window. */ 
+    /* Create login window. */
     ui.connectWindow(callback);
 
     /* If enabled, open channel list. */
     if (conf.atheme.chan_list_on_start) {
       if (qwebirc.ui.Panes.List)
         ui.addPane("List");
-    } 
+    }
   });
 };
 

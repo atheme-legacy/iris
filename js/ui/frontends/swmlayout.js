@@ -83,7 +83,7 @@ qwebirc.ui.SWMUI.Container = new Class({
     var left = anchorFilter(x, qwebirc.ui.SWMUI.SWM_ANCHOR_LEFT);
     var right = anchorFilter(x, qwebirc.ui.SWMUI.SWM_ANCHOR_RIGHT);
     var none = anchorFilter(x, qwebirc.ui.SWMUI.SWM_ANCHOR_NONE);
-    
+
     var x = this.getInnerSize();
     var y = this.getOuterSize();
 
@@ -134,7 +134,7 @@ qwebirc.ui.SWMUI.Frame = new Class({
       "left": "0px",
       "height": "100%",
       "width": "100%"
-    }}); 
+    }});
     this.element.wmpanel = this;
 
     parentElement.appendChild(this.element);
@@ -148,7 +148,7 @@ qwebirc.ui.SWMUI.Panel = new Class({
     this.parent(parentPanel);
     this.element = new Element("div", {"styles": {
       "position": "absolute"
-    }}); 
+    }});
     this.element.wmpanel = this;
 
     if(hidden) {
@@ -156,7 +156,7 @@ qwebirc.ui.SWMUI.Panel = new Class({
     } else {
       this.hidden = false;
     }
-    
+
     parentPanel.element.appendChild(this.element);
     this.anchor = qwebirc.ui.SWMUI.SWM_ANCHOR_NONE;
   },

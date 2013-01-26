@@ -12,7 +12,7 @@ qwebirc.ui.Panes.Options.pclass = new Class({
     this.session = session;
     this.window = w;
     this.parent = w.lines;
-    
+
     this.createElements();
   },
   createElements: function() {
@@ -21,13 +21,13 @@ qwebirc.ui.Panes.Options.pclass = new Class({
       parent.appendChild(n);
       return n;
     };
-    
+
     var t = FE("table", this.parent);
     var tb = FE("tbody", t);
-    
+
     this.boxList = [];
     this.options = {};
-    
+
     for(var i=0;i<qwebirc.options.Options.length;i++) {
       var x = qwebirc.options.Options[i];
 
@@ -52,18 +52,18 @@ qwebirc.ui.Panes.Options.pclass = new Class({
       this.boxList.push([x, input]);
       this.options[x.category + "." + x.option] = input;
     }
-    
+
     var r = FE("tr", tb);
     var cella = FE("td", r);
     var cellb = FE("td", r);
     var save = qwebirc.util.createInput("submit", cellb);
     save.value = "Save";
-    
+
     save.addEvent("click", function() {
       this.save();
       ui.closeWindow(this.window);
     }.bind(this));
-    
+
     var cancel = qwebirc.util.createInput("submit", cellb);
     cancel.value = "Cancel";
     cancel.addEvent("click", function() {

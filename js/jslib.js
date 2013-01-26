@@ -1,6 +1,6 @@
 Array.prototype.indexFromEnd = function(d) {
   var p = this;
-  
+
   if(d < 0)
     return p[p.length + d];
 
@@ -19,7 +19,7 @@ qwebirc.util.dictCopy = function(d) {
 String.prototype.replaceAll = function(f, t) {
   var i = this.indexOf(f);
   var c = this;
- 
+
   while(i > -1) {
     c = c.replace(f, t);
     i = c.indexOf(f);
@@ -34,7 +34,7 @@ String.prototype.splitMax = function(by, max) {
 
   if(items.length >= max)
     newitems.push(items.slice(max-1).join(by));
-  
+
   return newitems;
 }
 
@@ -45,19 +45,19 @@ qwebirc.util.parseURI = function(uri) {
   var start = uri.indexOf('?');
   if(start == -1)
     return result;
-    
+
   var querystring = uri.substring(start + 1);
-  
+
   var args = querystring.split("&");
-  
+
   for(var i=0;i<args.length;i++) {
     var r = args[i].splitMax("=", 2);
     if(r.length < 2)
       continue;
-      
+
     result[unescape(r[0])] = unescape(r[1]);
   }
-  
+
   return result;
 }
 
@@ -91,7 +91,7 @@ qwebirc.util.NBSPCreate = function(text, element) {
   for(var i=0;i<e.length;i++) {
     var tn = document.createTextNode(e[i]);
     element.appendChild(tn);
-    
+
     if(i != e.length - 1) {
       var e2 = new Element("span");
       e2.set("html", "&nbsp;&nbsp;");
@@ -105,7 +105,7 @@ qwebirc.util.longtoduration = function(l) {
   var minutes = Math.floor((l % 3600) / 60);
   var hours = Math.floor((l % (3600 * 24)) / 3600);
   var days = Math.floor(l / (24*3600));
-  
+
   return days + " days " + hours + " hours " + minutes + " minutes " + seconds + " seconds";
 }
 
@@ -124,7 +124,7 @@ RegExp.escape = function(text) {
     ];
     arguments.callee.sRE = new RegExp('(\\' + specials.join('|\\') + ')', 'g');
   }
-  
+
   return text.replace(arguments.callee.sRE, '\\$1');
 }
 
@@ -137,12 +137,12 @@ qwebirc.ui.insertAt = function(position, parent, element) {
 }
 
 qwebirc.util.setCaretPos = function(obj, pos) {
-  if($defined(obj.selectionStart)) { 
-    obj.focus(); 
-    obj.setSelectionRange(pos, pos); 
-  } else if(obj.createTextRange) { 
-    var range = obj.createTextRange(); 
-    range.move("character", pos); 
+  if($defined(obj.selectionStart)) {
+    obj.focus();
+    obj.setSelectionRange(pos, pos);
+  } else if(obj.createTextRange) {
+    var range = obj.createTextRange();
+    range.move("character", pos);
     range.select();
   }
 }
@@ -154,7 +154,7 @@ qwebirc.util.setAtEnd = function(obj) {
 qwebirc.util.getCaretPos = function(element) {
   if($defined(element.selectionStart))
     return element.selectionStart;
-    
+
   if(document.selection) {
     element.focus();
     var sel = document.selection.createRange();
@@ -171,13 +171,13 @@ qwebirc.util.browserVersion = function() {
 qwebirc.util.getEnclosedWord = function(text, position) {
   var l = text.split("");
   var buf = [];
-  
+
   if(text == "")
     return;
 
   var start = position - 1;
   if(start < 0) {
-    /* special case: starting with space */    
+    /* special case: starting with space */
     start = 0;
   } else {
     /* work back until we find the first space */
@@ -188,15 +188,15 @@ qwebirc.util.getEnclosedWord = function(text, position) {
       }
     }
   }
-  
+
   if(start < 0)
     start = 0;
-    
+
   var s = text.substring(start);
   var pos = s.indexOf(" ");
   if(pos != -1)
     s = s.substring(0, pos);
-    
+
   return [start, s];
 }
 
@@ -209,11 +209,11 @@ qwebirc.util.randHexString = function(numBytes) {
   var getByte = function() {
     return (((1+Math.random())*0x100)|0).toString(16).substring(1);
   };
-  
+
   var l = [];
   for(var i=0;i<numBytes;i++)
     l.push(getByte());
-  
+
   return l.join("");
 }
 
@@ -221,7 +221,7 @@ qwebirc.util.importJS = function(name, watchFor, onload) {
   var script = document.createElement("script");
   script.type = "text/javascript";
   script.src = name;
-  
+
   if(Browser.Engine.trident) {
     /* HORRID */
     var checkFn = function() {
@@ -257,17 +257,17 @@ qwebirc.util.createInput = function(type, parent, name, selected, id) {
       /* fallthough, trying it the proper way... */
     }
   }
-  
+
   r = new Element("input");
   r.type = type;
   if(name)
     r.name = name;
   if(id)
     r.id = id;
-      
+
   if(selected)
     r.checked = true;
-    
+
   parent.appendChild(r);
   return r;
 }
@@ -331,7 +331,7 @@ qwebirc.util.composeAnd = function() {
     for(var i=0;i<xargs.length;i++)
       if(!xargs[i].apply(this, arguments))
         return false;
-        
+
     return true;
   }
 }
@@ -360,19 +360,19 @@ qwebirc.util.deviceHasKeyboard = function() {
     for(var i=0;i<MOBILE_UAs.length;i++)
       if(contains(MOBILE_UAs[i]))
         return false;
-      
+
     for(var i=0;i<DESKTOP_UAs.length;i++)
       if(contains(DESKTOP_UAs[i]))
         return true;
-      
+
     return false;
   };
   var v = determine();
-  
+
   qwebirc.util.deviceHasKeyboard = function() {
     return v;
   }
-  
+
   return v;
 }
 

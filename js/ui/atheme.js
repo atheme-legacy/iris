@@ -3,7 +3,7 @@
  * Configures the client when the user changes between logged in and out, and
  * provides checks to determine whether which it is in.
  */
- 
+
 qwebirc.ui.Atheme = {};
 
 /**
@@ -18,8 +18,8 @@ qwebirc.ui.Atheme.handleLogin = function(session, user, token) {
 	session.atheme.state = true;
 	session.atheme.user = user;
 	session.atheme.secret = token;
-	
-	/* Save cookie. */  
+
+	/* Save cookie. */
 	cookie = new Hash.Cookie("iris-auth");
 	cookie.set("user", session.atheme.user);
 	cookie.set("token", session.atheme.secret);
@@ -30,7 +30,7 @@ qwebirc.ui.Atheme.handleLogin = function(session, user, token) {
  * Handle an Atheme logout.
  */
 qwebirc.ui.Atheme.handleLogout = function() {
-  
+
 	/* Update state. */
 	this.state = false;
 }

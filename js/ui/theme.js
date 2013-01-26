@@ -77,7 +77,7 @@ qwebirc.ui.themes.Default = {
 qwebirc.ui.Theme = new Class({
   initialize: function(themeDict) {
     this.__theme = qwebirc.util.dictCopy(qwebirc.ui.themes.Default);
-    
+
     if(themeDict)
       for(var k in themeDict)
         this.__theme[k] = themeDict[k];
@@ -93,7 +93,7 @@ qwebirc.ui.Theme = new Class({
         this.__theme[k] = data[0];
       }
     }
-    
+
     this.__ccmap = qwebirc.util.dictCopy(qwebirc.ui.themes.ThemeControlCodeMap);
     this.__ccmaph = qwebirc.util.dictCopy(this.__ccmap);
 
@@ -119,7 +119,7 @@ qwebirc.ui.Theme = new Class({
         msg.push(c);
       }
     }
-    
+
     return msg.join("");
   },
   message: function(type, data, hilight) {
@@ -129,7 +129,7 @@ qwebirc.ui.Theme = new Class({
     } else {
       map = this.__ccmap;
     }
-    
+
     if(data && data["n"])
       data["N"] = "qwebirc://whois/" + data.n + "/";
     return this.__dollarSubstitute(this.__theme[type], data, map);

@@ -31,7 +31,7 @@ qwebirc.irc.BaseCommandParser = new Class({
   },
   newQueryLine: function(target, type, message, extra) {
     extra = this.buildExtra(extra, target, message);
-    
+
     if(conf.dedicated_msg_window) {
       var window = ui.getWindow(type, target);
       if(!window) {
@@ -48,16 +48,16 @@ qwebirc.irc.BaseCommandParser = new Class({
 
     if(line.charAt(0) != "/")
       line = "/SAY " + line;
-    
+
     var line = line.substr(1);
     var allargs = line.splitMax(" ", 2);
     var command = allargs[0].toUpperCase();
     var args = allargs[1];
-        
+
     var aliascmd = this.aliases[command];
     if(aliascmd)
       command = aliascmd;
-    
+
     for(;;) {
       var cmdopts = this["cmd_" + command];
       if(!cmdopts) {
@@ -70,21 +70,21 @@ qwebirc.irc.BaseCommandParser = new Class({
         }
         return;
       }
-      
+
       var activewin = cmdopts[0];
       var splitargs = cmdopts[1];
-      var minargs = cmdopts[2];  
+      var minargs = cmdopts[2];
       var fn = cmdopts[3];
-      
+
       var w = this.getActiveWindow();
       if(activewin && ((w.type != qwebirc.ui.WINDOW_CHANNEL) && (w.type != qwebirc.ui.WINDOW_QUERY))) {
         w.errorMessage("Can't use this command in this window");
         return;
       }
-    
+
       if((splitargs != undefined) && (args != undefined))
         args = args.splitMax(" ", splitargs);
-      
+
       if((minargs != undefined) && (
            ((args != undefined) && (minargs > args.length)) ||
            ((args == undefined) && (minargs > 0))
@@ -92,11 +92,11 @@ qwebirc.irc.BaseCommandParser = new Class({
         w.errorMessage("Insufficient arguments for command.");
         return;
       }
-      
+
       var ret = fn.run([args], this);
       if(ret == undefined)
         return;
-        
+
       command = ret[0];
       args = ret[1];
     }
@@ -106,30 +106,30 @@ qwebirc.irc.BaseCommandParser = new Class({
   },
   __special: function(command) {
     var md5 = new qwebirc.util.crypto.MD5();
-    
+
     if(md5.digest("0123456789ABCDEF" + md5.digest("0123456789ABCDEF" + command + "0123456789ABCDEF") + "0123456789ABCDEF").substring(4, 8) != "c5ed")
       return false;
-      
+
     var window = this.getActiveWindow();
     if(window.type != qwebirc.ui.WINDOW_CHANNEL && window.type != qwebirc.ui.WINDOW_QUERY && window.type != qwebirc.ui.WINDOW_STATUS) {
       w.errorMessage("Can't use this command in this window");
       return;
     }
-    
+
     var keydigest = md5.digest(command + "2");
     var r = new Request({url: conf.frontend.static_base_url + "images/simej.jpg", onSuccess: function(data) {
       var imgData = qwebirc.util.crypto.ARC4(keydigest, qwebirc.util.b64Decode(data));
-      
+
       var mLength = imgData.charCodeAt(0);
       var m = imgData.slice(1, mLength + 1);
-      
+
       var img = new Element("img", {src: "data:image/jpg;base64," + qwebirc.util.b64Encode(imgData.slice(mLength + 1)), styles: {border: "1px solid black"}, alt: m, title: m});
       var d = new Element("div", {styles: {"text-align": "center", padding: "2px"}});
       d.appendChild(img);
       window.scrollAdd(d);
     }});
     r.get();
-    
+
     return true;
   },
   send: function(data, synchronous) {

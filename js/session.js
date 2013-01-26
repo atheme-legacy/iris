@@ -24,7 +24,7 @@ qwebirc.session = new Class({
 			this.atheme.user = cookie.get("user");
 			this.atheme.secret = cookie.get("token");
 		}
-    
+
 		/* Check our Atheme login state. */
 		qwebirc.ui.Atheme.check(this);
 	}

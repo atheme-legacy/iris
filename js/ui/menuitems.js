@@ -31,11 +31,11 @@ qwebirc.ui.MENU_ITEMS = function() {
   };
 
   var invert = qwebirc.util.invertFn, compose = qwebirc.util.composeAnd;
-  
+
   var command = function(cmd) {
     return function(nick) { this.session.irc.exec("/" + cmd + " " + nick); };
   };
-  
+
   return [
     {
       text: "PM",
@@ -43,7 +43,7 @@ qwebirc.ui.MENU_ITEMS = function() {
       predicate: true
     },
     {
-      text: "whois", 
+      text: "whois",
       fn: command("whois"),
       predicate: true
     },

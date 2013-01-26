@@ -34,13 +34,13 @@ qwebirc.ui.Panes.List.pclass = new Class({
   pageText: null,
   prev: null,
   next: null,
-  
+
 
   initialize: function(session, w) {
     this.session = session;
     this.parent = w.lines;
     this.cloud = conf.atheme.chan_list_cloud_view;
-    
+
     /* Make header table. */
     var headerTable = new Element("table");
     var header = new Element("tbody");
@@ -70,7 +70,7 @@ qwebirc.ui.Panes.List.pclass = new Class({
     var nameinput = new Element("input");
     filterSubBox.appendChild(nameinput);
     filterBox.appendChild(filterSubBox);
-      
+
     /* Add topic filter box. */
     var filterSubBox = new Element("span", { "class": "inputbox" });
     filterSubBox.appendText("Filter by Topic:");
@@ -125,7 +125,7 @@ qwebirc.ui.Panes.List.pclass = new Class({
     this.chanBox = new Element("tbody");
     table.appendChild(this.chanBox);
     this.viewBox.appendChild(table);
-   
+
     /* Make page box and components. */
     this.pageBox = new Element("div", { "class": "pagebox" });
     this.pageBox.style.display = "none";
@@ -246,7 +246,7 @@ qwebirc.ui.Panes.List.pclass = new Class({
         });
       }
 
-      /* Finally, add the channels. */ 
+      /* Finally, add the channels. */
       for (var i = 0; i < channels.length; i++) {
         var channel;
         if (this.cloud) {

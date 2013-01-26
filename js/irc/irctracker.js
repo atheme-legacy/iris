@@ -39,18 +39,18 @@ qwebirc.irc.IRCTracker = new Class({
   },
   getOrCreateNickOnChannel: function(nick, channel) {
     var n = this.getOrCreateNick(nick);
-    
+
     var nc = n[this.toIRCLower(channel)];
     if(!nc)
       return this.addNickToChannel(nick, channel);
-      
+
     return nc;
   },
   getNickOnChannel: function(nick, channel) {
     var n = this.getNick(nick);
     if(!n)
       return;
-      
+
     return n[this.toIRCLower(channel)];
   },
   addNickToChannel: function(nick, channel) {
@@ -58,21 +58,21 @@ qwebirc.irc.IRCTracker = new Class({
 
     var n = this.getOrCreateNick(nick);
     n[this.toIRCLower(channel)] = nc;
-    
+
     var c = this.getOrCreateChannel(channel);
     c[nick] = nc;
-    
+
     return nc;
   },
   removeNick: function(nick) {
     var n = this.getNick(nick);
     if(!n)
       return;
-      
+
     for(var channel in n) {
       var lchannel = this.toIRCLower(channel);
       var c = this.channels[lchannel];
-      
+
       delete c[nick];
       if(this.isEmpty(c))
         delete this.channels[lchannel];
@@ -88,7 +88,7 @@ qwebirc.irc.IRCTracker = new Class({
 
     for(var nick in c) {
       var n = this.nicknames[nick];
-      
+
       delete n[lchannel];
       if(this.isEmpty(n))
         delete this.nicknames[nick];
@@ -102,10 +102,10 @@ qwebirc.irc.IRCTracker = new Class({
     var c = this.getChannel(lchannel);
     if(!n || !c)
       return;
-      
+
     delete n[lchannel];
     delete c[nick];
-    
+
     if(this.isEmpty(n))
       delete this.nicknames[nick];
     if(this.isEmpty(c))
@@ -115,13 +115,13 @@ qwebirc.irc.IRCTracker = new Class({
     var n = this.getNick(oldnick);
     if(!n)
       return;
-      
+
     for(var channel in n) {
       var lchannel = this.toIRCLower(channel);
       this.channels[lchannel][newnick] = this.channels[lchannel][oldnick];
       delete this.channels[lchannel][oldnick];
     }
-    
+
     this.nicknames[newnick] = this.nicknames[oldnick];
     delete this.nicknames[oldnick];
   },
@@ -134,21 +134,21 @@ qwebirc.irc.IRCTracker = new Class({
     var sorter = function(a, b) {
       return b[1].lastSpoke - a[1].lastSpoke;
     };
-    
+
     var c = this.getChannel(channel);
     if(!c)
       return;
-      
+
     var n = [];
     for(var k in c)
       n.push([k, c[k]]);
-    
+
     n.sort(sorter);
 
     var n2 = [];
     for(var i=0;i<n.length;i++)
       n2.push(n[i][0]);
-    
+
     return n2;
   }
 });

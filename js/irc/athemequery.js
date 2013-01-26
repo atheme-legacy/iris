@@ -6,14 +6,14 @@ qwebirc.irc.AthemeQuery = {};
  * \param command The command being requested.
  */
 qwebirc.irc.AthemeQuery.newRequest = function(command) {
-	
+
 	/* New login request. */
 	var cacheAvoidance = qwebirc.util.randHexString(16);
 	var r = new Request.JSON({
 		url: "/a/" + command + "?r=" + cacheAvoidance,
 		async: true
 	});
-	
+
 	/* Try to minimise the amount of headers. */
 	r.headers = new Hash;
 	r.addEvent("request", function() {
@@ -23,14 +23,14 @@ qwebirc.irc.AthemeQuery.newRequest = function(command) {
 			} catch(e) {
 			}
 		}.bind(this);
-		
+
 		setHeader("User-Agent", null);
 		setHeader("Accept", null);
 		setHeader("Accept-Language", null);
 	}.bind(r.xhr));
 	if(Browser.Engine.trident)
 		r.setHeader("If-Modified-Since", "Sat, 1 Jan 2000 00:00:00 GMT");
-	
+
 	return r;
 }
 

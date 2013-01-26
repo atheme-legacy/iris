@@ -9,13 +9,13 @@ qwebirc.ui.BaseUI = new Class({
     this.session = session;
     this.parentElement = parentElement;
     this.windowClass = windowClass;
-    
+
     this.windowArray = [];
     this.parentElement.addClass("qwebirc");
     this.parentElement.addClass("qwebirc-" + uiName);
     this.firstClient = false;
     this.commandhistory = new qwebirc.irc.CommandHistory();
-    
+
     this.windowFocused = true;
 
     if(Browser.Engine.trident) {
@@ -39,7 +39,7 @@ qwebirc.ui.BaseUI = new Class({
       document.addEvent("focus", focus);
       window.addEvent("focus", focus);
     }
-    
+
     this.postInitialize();
   },
   newClient: function() {
@@ -68,7 +68,7 @@ qwebirc.ui.BaseUI = new Class({
     var w = this.getWindow(type, name);
     if($defined(w))
       return w;
-      
+
     var wId = this.getWindowIdentifier(type, name);
     var w = this.session.windows[wId] = new this.windowClass(this.session, type, name, wId);
 
@@ -88,7 +88,7 @@ qwebirc.ui.BaseUI = new Class({
     } else {
       return this.active;
     }
-  },  
+  },
   __setActiveWindow: function(window) {
     this.active = window;
   },
@@ -104,21 +104,21 @@ qwebirc.ui.BaseUI = new Class({
   nextWindow: function(direction) {
     if(this.windowArray.length == 0 || !this.active)
       return;
-      
+
     if(!direction)
       direction = 1;
-      
+
     var index = this.windowArray.indexOf(this.active);
     if(index == -1)
       return;
-      
+
     index = index + direction;
     if(index < 0) {
       index = this.windowArray.length - 1;
     } else if(index >= this.windowArray.length) {
       index = 0;
     }
-    
+
     this.selectWindow(this.windowArray[index]);
   },
   prevWindow: function() {
@@ -170,7 +170,7 @@ qwebirc.ui.StandardUI = new Class({
     this.parent(session, parentElement, windowClass, uiName);
 
     this.tabCompleter = new qwebirc.ui.TabCompleterFactory(this);
-    
+
     var ev;
     if(Browser.Engine.trident) {
       ev = "keydown";
@@ -191,7 +191,7 @@ qwebirc.ui.StandardUI = new Class({
       var highestNum = 0;
       var highestIndex = -1;
       success = true;
-      
+
       new Event(x).stop();
       for(var i=0;i<this.windowArray.length;i++) {
         var h = this.windowArray[i].hilighted;
@@ -204,16 +204,16 @@ qwebirc.ui.StandardUI = new Class({
         this.selectWindow(this.windowArray[highestIndex]);
     } else if(x.key >= '0' && x.key <= '9') {
       success = true;
-      
+
       number = x.key - '0';
       if(number == 0)
         number = 10
-        
+
       number = number - 1;
-      
+
       if(number >= this.windowArray.length)
         return;
-        
+
       this.selectWindow(this.windowArray[number]);
     } else if(x.key == "left") {
       this.prevWindow();
@@ -233,11 +233,11 @@ qwebirc.ui.StandardUI = new Class({
   newCustomWindow: function(name, select, type) {
     if(!type)
       type = qwebirc.ui.WINDOW_CUSTOM;
-      
+
     var w = this.newWindow(type, name);
-    
+
     if(select)
-      this.selectWindow(w);  
+      this.selectWindow(w);
 
     return w;
   },
@@ -250,12 +250,12 @@ qwebirc.ui.StandardUI = new Class({
       this.selectWindow(this.session.windows[id]);
       return;
     }
-    
+
     var d = this.newCustomWindow(title, true);
     d.lines.addClass("qwebirc-pane" + name);
-      
+
     var ew = new qwebirc.ui.Panes[name].pclass(this.session, d);
-    
+
     d.setSubWindow(ew);
     return d;
   },
@@ -270,7 +270,7 @@ qwebirc.ui.StandardUI = new Class({
   urlDispatcher: function(name) {
     if(name == "embedded")
       return ["a", this.embeddedWindow.bind(this)];
-      
+
     if(name == "options")
       return ["a", this.optionsWindow.bind(this)];
 
@@ -299,7 +299,7 @@ qwebirc.ui.StandardUI = new Class({
   },
   setModifiableStylesheet: function(name) {
     this.__styleSheet = new qwebirc.ui.style.ModifiableStylesheet(conf.frontend.static_base_url + "css/" + name + qwebirc.FILE_SUFFIX + ".mcss");
-    
+
     this.setModifiableStylesheetValues(conf.ui.fg_color, conf.ui.fg_sec_color, conf.ui.bg_color);
   },
   setModifiableStylesheetValues: function(fg_color, fg_sec_color, bg_color) {
@@ -332,12 +332,12 @@ qwebirc.ui.NotificationUI = new Class({
   Extends: qwebirc.ui.StandardUI,
   initialize: function(session, parentElement, windowClass, uiName) {
     this.parent(session, parentElement, windowClass, uiName);
-    
+
     this.__beeper = new qwebirc.ui.Beeper(session);
     this.__flasher = new qwebirc.ui.Flasher(session);
-    
+
     this.beep = this.__beeper.beep.bind(this.__beeper);
-    
+
     this.flash = this.__flasher.flash.bind(this.__flasher);
     this.cancelFlash = this.__flasher.cancelFlash.bind(this.__flasher);
   },

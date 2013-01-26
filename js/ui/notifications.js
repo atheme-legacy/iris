@@ -19,7 +19,7 @@ qwebirc.ui.HilightController = new Class({
 qwebirc.ui.Beeper = new Class({
   initialize: function(session) {
     this.session = session;
-    
+
     this.soundInited = false;
     this.soundReady = false;
 
@@ -32,18 +32,18 @@ qwebirc.ui.Beeper = new Class({
     if(!$defined(Browser.Plugins.Flash) || Browser.Plugins.Flash.version < 8)
       return;
     this.soundInited = true;
-    
+
     this.soundPlayer = new qwebirc.sound.SoundPlayer(this.session);
     this.soundPlayer.addEvent("ready", function() {
       this.soundReady = true;
     }.bind(this));
-    
+
     this.soundPlayer.go();
   },
   beep: function() {
     if(!this.soundReady || !conf.ui.beep_on_mention)
       return;
-      
+
     this.soundPlayer.beep();
   }
 });
@@ -51,7 +51,7 @@ qwebirc.ui.Beeper = new Class({
 qwebirc.ui.Flasher = new Class({
   initialize: function(session) {
     this.session = session;
-    
+
     this.windowFocused = false;
     this.canUpdateTitle = true;
     this.titleText = document.title;
@@ -66,7 +66,7 @@ qwebirc.ui.Flasher = new Class({
       this.emptyFavIcon.href = conf.frontend.static_base_url + "images/empty_favicon.ico";
       this.emptyFavIcon.type = "image/x-icon";
       this.flashing = false;
-    
+
       this.canFlash = true;
       document.addEvent("mousedown", this.cancelFlash.bind(this));
       document.addEvent("keydown", this.cancelFlash.bind(this));
@@ -84,20 +84,20 @@ qwebirc.ui.Flasher = new Class({
     if(!conf.ui.flash_on_mention || this.windowFocused || !this.canFlash || this.flashing)
       return;
 
-    this.titleText = document.title; /* just in case */      
+    this.titleText = document.title; /* just in case */
     var flashA = function() {
       this.hideFavIcon();
       this.canUpdateTitle = false;
       document.title = "Activity!";
-      
+
       this.flasher = flashB.delay(500);
     }.bind(this);
-    
+
     var flashB = function() {
       this.showFavIcon();
       this.canUpdateTitle = true;
       document.title = this.titleText;
-      
+
       this.flasher = flashA.delay(500);
     }.bind(this);
 
@@ -107,12 +107,12 @@ qwebirc.ui.Flasher = new Class({
   cancelFlash: function() {
     if(!this.canFlash || !$defined(this.flasher))
       return;
-      
+
     this.flashing = false;
-    
+
     $clear(this.flasher);
     this.flasher = null;
-    
+
     this.showFavIcon();
     document.title = this.titleText;
     this.canUpdateTitle = true;

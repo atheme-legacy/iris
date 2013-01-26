@@ -12,19 +12,19 @@ qwebirc.ui.SWMUI = new Class({
     this.tabPanel = new qwebirc.ui.SWMUI.Panel(this.rootFrame);
     this.tabPanel.anchor = qwebirc.ui.SWMUI.SWM_ANCHOR_TOP;
     this.tabPanel.addClass("tabs");
-    
+
     this.mainPanel = new qwebirc.ui.SWMUI.Panel(this.rootFrame);
     this.mainPanel.addClass("main");
-    
+
     this.entryPanel = new qwebirc.ui.SWMUI.Panel(this.rootFrame);
     this.entryPanel.anchor = qwebirc.ui.SWMUI.SWM_ANCHOR_BOTTOM;
     this.entryPanel.addClass("entry");
 
     var form = new Element("form");
-    
+
     var inputbox = new Element("input");
     inputbox.setStyle("border", "0px");
-    
+
     window.addEvent("resize", function() {
       var s = this.entryPanel.getInnerSize().x;
       inputbox.setStyle("width", s + "px");
@@ -32,7 +32,7 @@ qwebirc.ui.SWMUI = new Class({
 
     form.addEvent("submit", function(e) {
       new Event(e).stop();
-    
+
       this.getActiveWindow().client.exec(inputbox.value);
       inputbox.value = "";
     }.bind(this));
@@ -54,7 +54,7 @@ qwebirc.ui.SWMUI = new Class({
 
 qwebirc.ui.SWMUI.Window = new Class({
   Extends: qwebirc.ui.Window,
-  
+
   initialize: function(parentObject, client, type, name, identifier) {
     this.parent(parentObject, client, type, name, identifier);
     this.contentPanel = new qwebirc.ui.SWMUI.Panel(parentObject.mainPanel, true);
@@ -69,13 +69,13 @@ qwebirc.ui.SWMUI.Window = new Class({
       this.topic.anchor = qwebirc.ui.SWMUI.SWM_ANCHOR_TOP;
       this.topic.addClass("topic");
     }
-    
+
     this.xlines = new qwebirc.ui.SWMUI.Panel(this.contentPanel);
     this.lines = this.xlines.element;
-    
+
     this.tab = new Element("span");
     this.tab.addClass("tab");
-    
+
     this.tab.appendText(name);
     this.tab.addEvent("click", function() {
       parentObject.selectWindow(this);
@@ -83,13 +83,13 @@ qwebirc.ui.SWMUI.Window = new Class({
 
     parentObject.tabPanel.appendChild(this.tab);
     parentObject.resize();
-    
+
     if(type != qwebirc.ui.WINDOW_STATUS && type != qwebirc.ui.WINDOW_CONNECT) {
       tabclose = new Element("span");
       tabclose.addClass("tabclose");
       tabclose.addEvent("click", function(e) {
         new Event(e).stop();
-        
+
         if(type == qwebirc.ui.WINDOW_CHANNEL)
           this.client.exec("/PART " + name);
 
@@ -108,7 +108,7 @@ qwebirc.ui.SWMUI.Window = new Class({
       this.nickList.appendChild(e);
       e.appendChild(document.createTextNode(nick));
     }.bind(this));
-    
+
     this.parentObject.resize();
   },
   updateTopic: function(topic) {
@@ -152,14 +152,14 @@ qwebirc.ui.SWMUI.Window = new Class({
     } else {
       e.addClass("linestyle2");
     }
-    
+
     this.lastcolour = !this.lastcolour;
 
     this.parent(type, line, colour, e);
   },
   setHilighted: function(state) {
     this.parent(state);
-    
+
     if(state) {
       this.tab.addClass("tab-highlighted");
     } else {

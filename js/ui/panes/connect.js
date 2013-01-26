@@ -25,7 +25,7 @@ qwebirc.ui.Panes.Connect.pclass = new Class({
   },
 
   connectChannel: function(channel) {
-    if (conf.frontend.chan_autoconnect 
+    if (conf.frontend.chan_autoconnect
         && (conf.frontend.initial_nick
          || (this.nickBox && this.nickBox.value))) {
       this.connect(channel);
@@ -223,7 +223,7 @@ qwebirc.ui.Panes.Connect.pclass = new Class({
         passRow.setStyle("display", passRow.visible ? null : "none");
       }.bind(this));
     }
-    
+
     if (channel || conf.frontend.chan_prompt ||
         !conf.frontend.initial_chans) {
       this.chanBox = new Element("input");

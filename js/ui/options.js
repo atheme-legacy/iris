@@ -2,7 +2,7 @@ qwebirc.ui.supportsFocus = function(session) {
   var ua = navigator.userAgent;
   if(!$defined(ua))
     return true;
-      
+
   if(Browser.Engine.ipod || ua.indexOf("Konqueror") != -1)
     return false;
 
@@ -19,7 +19,7 @@ qwebirc.options.Input = new Class({
     this.position = position;
     this.parentElement = parent;
     this.id = qwebirc.util.generateID();
-    
+
     if ($defined(this.option.isEnabled))
       this.enabled = this.option.isEnabled(session);
 
@@ -35,7 +35,7 @@ qwebirc.options.Input = new Class({
     var n = new Element(element);
     if(!$defined(parent))
       parent = this.parentElement;
-      
+
     parent.appendChild(n);
     return n;
   },
@@ -57,7 +57,7 @@ qwebirc.options.TextInput = new Class({
       this.onChange();
     }.bind(this));
     this.mainElement = i;
-    
+
     i.value = this.value;
     i.disabled = !this.enabled;
   },
@@ -78,7 +78,7 @@ qwebirc.options.ColorInput = new Class({
     hue.addClass("qwebirc-optionspane");
     hue.addClass("hue-slider");
     this.parentElement.appendChild(hue);
-    
+
     var sat = new Element("div");
     sat.addClass("qwebirc-optionspane");
     sat.addClass("sat-slider");
@@ -107,7 +107,7 @@ qwebirc.options.ColorInput = new Class({
     if(Browser.Engine.trident) {
       k.setStyle("top", "0px");
       k.setStyle("background-color", "black");
-    } 
+    }
     hue.appendChild(k);
     var hue_slider = new Slider(hue, k, {steps: 36, range: [0, 369], wheel: true});
     hue_slider.set(color.hsb[0]);
@@ -117,21 +117,21 @@ qwebirc.options.ColorInput = new Class({
     if(Browser.Engine.trident) {
       k.setStyle("top", "0px");
       k.setStyle("background-color", "black");
-    } 
+    }
     sat.appendChild(k);
     var sat_slider = new Slider(sat, k, {steps: 50, range: [0, 100], wheel: true});
     sat_slider.set(color.hsb[1]);
-    
+
     k = new Element("div");
     k.addClass("knob");
     if(Browser.Engine.trident) {
       k.setStyle("top", "0px");
       k.setStyle("background-color", "black");
-    } 
+    }
     light.appendChild(k);
     var light_slider = new Slider(light, k, {steps: 50, range: [0, 100], wheel: true});
     light_slider.set(color.hsb[2]);
-    
+
     var change_func = function(step) {
       var newcolor = $HSB(hue_slider.step, sat_slider.step, light_slider.step);
       this.value = newcolor.rgb.rgbToHex();
@@ -142,7 +142,7 @@ qwebirc.options.ColorInput = new Class({
       hue_slider.addEvent("change", change_func);
       sat_slider.addEvent("change", change_func);
       light_slider.addEvent("change", change_func);
-    
+
       hexform.addEvent("submit", function(e) {
         (new Event(e)).stop();
         var color = new Color(this.hexbox.value)
@@ -187,7 +187,7 @@ qwebirc.options.CheckInput = new Class({
       this.onChange();
     }.bind(this));
     this.mainElement = i;
-    
+
     i.checked = this.value;
     i.disabled = !this.enabled;
   },
@@ -200,9 +200,9 @@ qwebirc.options.RadioInput = new Class({
   Extends: qwebirc.options.Input,
   render: function() {
     var value = this.option.options;
-    
+
     this.elements = [];
-     
+
     for(var i=0;i<value.length;i++) {
       var d = this.FE("div");
       var e = this.createInput("radio", d, "options_radio" + this.position, i == this.option.position);
@@ -216,10 +216,10 @@ qwebirc.options.RadioInput = new Class({
           this.onChange();
         }
       }.bind(this));
-   
+
       if(i == 0)
         this.mainElement = e;
-      
+
       d.appendChild(document.createTextNode(value[i][0]));
     };
   },

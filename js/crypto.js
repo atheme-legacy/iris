@@ -7,7 +7,7 @@ qwebirc.util.crypto.getARC4Stream = function(key, length) {
 
   for(var i=0;i<256;i++)
     s[i] = i;
-  
+
   var j = 0;
   for(var i=0;i<256;i++) {
     j = (j + s[i] + keyint[i % key.length]) & 255;

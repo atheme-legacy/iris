@@ -2,7 +2,7 @@ qwebirc.irc.Commands = new Class({
   Extends: qwebirc.irc.BaseCommandParser,
   initialize: function(session) {
     this.parent(session);
-    
+
     this.aliases = {
       "J": "JOIN",
       "K": "KICK",
@@ -22,7 +22,7 @@ qwebirc.irc.Commands = new Class({
      }
    }.bind(this));
   },
-  
+
   /* [require_active_window, splitintoXargs, minargs, function] */
   cmd_ME: [true, undefined, undefined, function(args) {
     if(args == undefined)
@@ -38,7 +38,7 @@ qwebirc.irc.Commands = new Class({
     var target = args[0];
     var type = args[1].toUpperCase();
     var message = args[2];
-    
+
     if(message == undefined)
       message = "";
 
@@ -49,17 +49,17 @@ qwebirc.irc.Commands = new Class({
       if(!this.send("PRIVMSG " + target + " :\x01" + type + " " + message + "\x01"))
         return;
     }
-  
+
     this.newTargetLine(target, "CTCP", message, {"x": type});
   }],
   cmd_PRIVMSG: [false, 2, 2, function(args) {
     var target = args[0];
     var message = args[1];
-    
+
     if(!this.session.irc.isChannel(target))
       this.session.irc.pushLastNick(target);
     if(this.send("PRIVMSG " + target + " :" + message))
-      this.newQueryLine(target, "MSG", message, {"@": this.session.irc.getNickStatus(target, this.session.irc.nickname)});  
+      this.newQueryLine(target, "MSG", message, {"@": this.session.irc.getNickStatus(target, this.session.irc.nickname)});
   }],
   cmd_NOTICE: [false, 2, 2, function(args) {
     var target = args[0];
@@ -87,7 +87,7 @@ qwebirc.irc.Commands = new Class({
   cmd_SAY: [true, undefined, undefined, function(args) {
     if(args == undefined)
       args = "";
-      
+
     return ["PRIVMSG", this.getActiveWindow().name + " " + args]
   }],
   cmd_LOGOUT: [false, undefined, undefined, function(args) {
@@ -98,13 +98,13 @@ qwebirc.irc.Commands = new Class({
   }],
   cmd_KICK: [true, 2, 1, function(args) {
     var channel = this.getActiveWindow().name;
-    
+
     var message = "";
     var target = args[0];
-    
+
     if(args.length == 2)
       message = args[1];
-    
+
     this.send("KICK " + channel + " " + target + " :" + message);
   }],
   automode: function(direction, mode, args) {
@@ -113,7 +113,7 @@ qwebirc.irc.Commands = new Class({
     var modes = direction;
     for(var i=0;i<args.length;i++)
       modes = modes + mode;
-      
+
     this.send("MODE " + channel + " " + modes + " " + args.join(" "));
   },
   cmd_OP: [true, 6, 1, function(args) {
@@ -139,18 +139,18 @@ qwebirc.irc.Commands = new Class({
   }],
   cmd_CYCLE: [true, 1, 0, function(args) {
     var c = this.getActiveWindow().name;
-    
+
     this.send("PART " + c + " :" + (args?args[0]:"rejoining. . ."));
     this.send("JOIN " + c);
   }],
   cmd_JOIN: [false, 2, 1, function(args) {
     var channels = args.shift();
-    
+
     var schans = channels.split(",");
     var fchans = [];
-    
+
     var warn = false;
-    
+
     schans.forEach(function(x) {
       if(!this.session.irc.isChannel(x)) {
         x = "#" + x;
@@ -164,7 +164,7 @@ qwebirc.irc.Commands = new Class({
         this.getActiveWindow().infoMessage("Channel names begin with # (corrected automatically).");
       }.bind(this).delay(250);
     }
-      
+
     this.send("JOIN " + fchans.join(",") + " " + args.join(" "));
   }],
   cmd_UMODE: [false, 1, 0, function(args) {
@@ -185,13 +185,13 @@ qwebirc.irc.Commands = new Class({
     var w = this.getActiveWindow();
     var message = "";
     var channel;
-    
+
     if(w.type != qwebirc.ui.WINDOW_CHANNEL) {
       if(!args || args.length == 0) {
         w.errorMessage("Insufficient arguments for command.");
         return;
       }
-      channel = args[0];  
+      channel = args[0];
       if(args.length > 1)
         message = args[1];
     } else {
@@ -209,7 +209,7 @@ qwebirc.irc.Commands = new Class({
         }
       }
     }
-    
+
     this.send("PART " + channel + " :" + message);
   }]
 });

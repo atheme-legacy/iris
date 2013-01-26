@@ -4,13 +4,13 @@ qwebirc.ui.Colourise = function(session, line, entity) {
   var underline = false;
   var bold = false;
   var autoNickColour = false;
-  
+
   var out = [];
   var xline = line.split("");
   var element = document.createElement("span");
 
   entity.addClass("colourline");
-  
+
   function isNum(x) {
     return x >= '0' && x <= '9';
   }
@@ -33,7 +33,7 @@ qwebirc.ui.Colourise = function(session, line, entity) {
     if(!isNum(xline[i + 2]))
       return i;
     i+=2;
-    
+
     if(isNum(xline[i + 1])) {
       bg = parseInt(xline[i] + xline[i + 1]);
       i++;
@@ -52,12 +52,12 @@ qwebirc.ui.Colourise = function(session, line, entity) {
     }
     element = document.createElement("span");
     return data;
-  }  
-  
+  }
+
   function emitStartToken() {
     if(autoNickColour)
       return element;
-      
+
     var classes = []
     if(fg != undefined)
       classes.push("Xc" + fg);
@@ -69,7 +69,7 @@ qwebirc.ui.Colourise = function(session, line, entity) {
       classes.push("Xu");
     element.className = classes.join(" ");
   }
-  
+
   var nickColouring = conf.ui.nick_colors;
   var capturingNick = false;
   for(var i=0;i<xline.length;i++) {
@@ -89,7 +89,7 @@ qwebirc.ui.Colourise = function(session, line, entity) {
           autoNickColour = true;
           var e = emitStartToken();
           var text = emitEndToken();
-          
+
           var c = text.toHSBColour(session);
           if($defined(c))
             e.style.color = c.rgbToHex();
@@ -100,41 +100,41 @@ qwebirc.ui.Colourise = function(session, line, entity) {
     } else if(lc == "\x00") {
       continue;
     }
-    
+
     if(lc == "\x02") {
       emitEndToken();
 
       bold = !bold;
-      
+
       emitStartToken();
     } else if(lc == "\x1F") {
       emitEndToken();
 
       underline = !underline;
-      
+
       emitStartToken();
     } else if(lc == "\x0F") {
       emitEndToken();
-      
+
       fg = undefined;
       bg = undefined;
       underline = false;
       bold = false;
     } else if(lc == "\x03") {
       emitEndToken();
-      
+
       i = parseColours(xline, i);
       if(bg > 15)
         bg = undefined;
       if(fg > 15)
         fg = undefined;
-        
+
       emitStartToken();
     } else {
       out.push(lc);
     }
   }
-  
+
   emitEndToken();
 }
 
@@ -142,11 +142,11 @@ String.prototype.toHSBColour = function(session) {
   var lower = session.irc.toIRCLower(session.irc.stripPrefix(this));
   if(lower == session.irc.lowerNickname)
     return null;
-    
+
   var hash = 0;
   for(var i=0;i<lower.length;i++)
     hash = 31 * hash + lower.charCodeAt(i);
-  
+
   var hue = Math.abs(hash) % 360;
 
   return new Color([hue, 70, 60], "hsb");

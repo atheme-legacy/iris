@@ -4,7 +4,7 @@
  * Accepts a default configuration object, which is modified with settings
  * from cookies and the query string, then returned. */
 qwebirc.config.load = function(config) {
-	
+
 	/* Stow away some unmodified values from default configuration.
 	 * This allows them to be accessed as 'default' values for
 	 * query strings later. */
@@ -28,7 +28,7 @@ qwebirc.config.load = function(config) {
 		args["initial_nick"] = args["nick"];
 	if($defined(args["channels"]) && !$defined(args["initial_chans"]))
 		args["initial_chans"] = args["channels"];
-	
+
 	/* If we had any arguments, default chan_list_on_start off. */
 	if (uri.splitMax("/", 4)[3].indexOf("?") != -1)
 		args["chan_list_on_start"] = "0";
@@ -167,13 +167,13 @@ qwebirc.config.parseIRCURL = function(url) {
 		/* irc: */
 		return;
 	}
-		
+
 	var pathComponents = url.splitMax("/", 4);
 	if(pathComponents.length < 4 || pathComponents[3] == "") {
 		/* irc://abc */
 		return;
 	}
-		
+
 	var args, queryArgs;
 	if(pathComponents[3].indexOf("?") > -1) {
 		queryArgs = qwebirc.util.parseURI(pathComponents[3]);
@@ -200,7 +200,7 @@ qwebirc.config.parseIRCURL = function(url) {
 	if($defined(queryArgs)) {
 		for(var key_ in queryArgs) {
 			var value = queryArgs[key_];
-			
+
 			if(key_ == "key") {
 				key = value;
 				needkey = true;
@@ -209,16 +209,16 @@ qwebirc.config.parseIRCURL = function(url) {
 			}
 		}
 	}
-		
+
 	if(needkey) {
 		if(!$defined(key))
 			key = prompt("Please enter the password for channel " + channel + ":");
 		if($defined(key))
 			channel = channel + " " + key;
 	}
-		
+
 	if(not_supported.length > 0)
 		alert("The following IRC URL components were not accepted: " + not_supported.join(", ") + ".");
-		
+
 	return channel;
 };
