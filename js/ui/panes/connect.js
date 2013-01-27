@@ -212,16 +212,44 @@ qwebirc.ui.Panes.Connect.pclass = new Class({
       srvbutton.set("checked", false);
       createRow("Login to Services:", srvbutton);
 
+      var user = new Element("input");
+      var userRow = createRow("Username:", user, {})[0];
+      userRow.setStyle("display", "none");
+
       var pass = new Element("input");
       pass.set("type", "password");
       var passRow = createRow("Password:", pass, {})[0];
       passRow.setStyle("display", "none");
-      passRow.visible = false;
+
+      var syncInput = function (e) {
+        user.value = this.nickBox.value;
+      }.bind(this);
+
+      /* the 'input' event is buggy in IE9, but this isn't a very
+       * important feature.
+       */
+      user.addEventListener("input", function (e) {
+        this.nickBox.removeEventListener("input", syncInput, false);
+      }.bind(this), false);
 
       srvbutton.addEvent("click", function(e) {
-        passRow.visible = !passRow.visible;
-        passRow.setStyle("display", passRow.visible ? null : "none");
+        var visible = srvbutton.checked;
+        var display = visible ? null : "none";
+        userRow.setStyle("display", display);
+        passRow.setStyle("display", display);
+        if (visible) {
+          this.nickBox.addEventListener("input", syncInput, false);
+          user.focus();
+          /* setting the value after calling focus() will place the cursor at
+           * the end of the text.
+           */
+          user.value = this.nickBox.value;
+        } else {
+          this.nickBox.removeEventListener("input", syncInput, false);
+          this.nickBox.focus();
+        }
       }.bind(this));
+
     }
 
     if (channel || conf.frontend.chan_prompt ||
@@ -255,18 +283,31 @@ qwebirc.ui.Panes.Connect.pclass = new Class({
       }
       Cookie.write("iris-nick", this.nickBox.value, {"duration": 3650});
 
-      if (conf.atheme.sasl_type == "AUTHCOOKIE" && pass.value) {
+      if (srvbutton.checked) {
+        if (!user.value) {
+          alert("You must supply a username.");
+          user.focus();
+          return;
+        }
+        if (!pass.value) {
+          alert("You must supply a password.");
+          pass.focus();
+          return;
+        }
+      }
+
+      if (srvbutton.checked && conf.atheme.sasl_type == "AUTHCOOKIE") {
         qwebirc.irc.AthemeQuery.login(function(token) {
           if (token == null)
             alert("Authentication failed");
           else
-            qwebirc.ui.Atheme.handleLogin(this.session, this.nickBox.value, token);
+            qwebirc.ui.Atheme.handleLogin(this.session, user.value, token);
           this.connect(null);
-        }.bind(this), this.nickBox.value, pass.value);
+        }.bind(this), user.value, pass.value);
       }
-      else if (conf.atheme.sasl_type == "PLAIN" && pass.value) {
+      else if (srvbutton.checked && conf.atheme.sasl_type == "PLAIN") {
         this.session.atheme.state = true;
-        this.session.atheme.user = this.nickBox.value;
+        this.session.atheme.user = user.value;
         this.session.atheme.secret = pass.value;
         this.connect(null);
       }
