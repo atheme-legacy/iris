@@ -225,11 +225,18 @@ def createIRC(*args, **kwargs):
   f = QWebIRCFactory(*args, **kwargs)
   server = config.irc["server"]
   port = config.irc["port"]
+  
+  bind_ip = config.execution["bind_ip"]
+  bind_port = config.execution["bind_port"]
+  bindToAddress = None
+  if bind_ip:
+    bindToAddress = (bind_ip, bind_port)
+  
   if config.irc["ssl"]:
       from twisted.internet.ssl import ClientContextFactory
-      reactor.connectSSL(server, port, f, ClientContextFactory())
+      reactor.connectSSL(server, port, f, ClientContextFactory(), bindAddress=bindToAddress)
   else:
-      reactor.connectTCP(server, port, f)
+      reactor.connectTCP(server, port, f, bindAddress=bindToAddress)
   return f
 
 if __name__ == "__main__":
