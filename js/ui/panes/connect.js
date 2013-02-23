@@ -283,37 +283,39 @@ qwebirc.ui.Panes.Connect.pclass = new Class({
       }
       Cookie.write("iris-nick", this.nickBox.value, {"duration": 3650});
 
-      if (srvbutton.checked) {
-        if (!user.value) {
-          alert("You must supply a username.");
-          user.focus();
-          return;
+      if (conf.atheme.nickserv_login) {
+        if (srvbutton.checked) {
+          if (!user.value) {
+            alert("You must supply a username.");
+            user.focus();
+            return;
+          }
+          if (!pass.value) {
+            alert("You must supply a password.");
+            pass.focus();
+            return;
+          }
         }
-        if (!pass.value) {
-          alert("You must supply a password.");
-          pass.focus();
-          return;
-        }
-      }
 
-      if (srvbutton.checked && conf.atheme.sasl_type == "AUTHCOOKIE") {
-        qwebirc.irc.AthemeQuery.login(function(token) {
-          if (token == null)
-            alert("Authentication failed");
-          else
-            qwebirc.ui.Atheme.handleLogin(this.session, user.value, token);
+        if (srvbutton.checked && conf.atheme.sasl_type == "AUTHCOOKIE") {
+          qwebirc.irc.AthemeQuery.login(function(token) {
+            if (token == null)
+              alert("Authentication failed");
+            else
+              qwebirc.ui.Atheme.handleLogin(this.session, user.value, token);
+            this.connect(null);
+          }.bind(this), user.value, pass.value);
+        }
+        else if (srvbutton.checked && conf.atheme.sasl_type == "PLAIN") {
+          this.session.atheme.state = true;
+          this.session.atheme.user = user.value;
+          this.session.atheme.secret = pass.value;
           this.connect(null);
-        }.bind(this), user.value, pass.value);
-      }
-      else if (srvbutton.checked && conf.atheme.sasl_type == "PLAIN") {
-        this.session.atheme.state = true;
-        this.session.atheme.user = user.value;
-        this.session.atheme.secret = pass.value;
-        this.connect(null);
-      }
-      else {
-        qwebirc.ui.Atheme.handleLogout(this.session);
-        this.connect(null);
+        }
+        else {
+          qwebirc.ui.Atheme.handleLogout(this.session);
+          this.connect(null);
+        }
       }
 
     }.bind(this));
