@@ -228,8 +228,8 @@ qwebirc.ui.Panes.Connect.pclass = new Class({
       /* the 'input' event is buggy in IE9, but this isn't a very
        * important feature.
        */
-      user.addEventListener("input", function (e) {
-        this.nickBox.removeEventListener("input", syncInput, false);
+      user.addEvent("input", function (e) {
+        this.nickBox.removeEvent("input", syncInput, false);
       }.bind(this), false);
 
       srvbutton.addEvent("click", function(e) {
@@ -238,14 +238,14 @@ qwebirc.ui.Panes.Connect.pclass = new Class({
         userRow.setStyle("display", display);
         passRow.setStyle("display", display);
         if (visible) {
-          this.nickBox.addEventListener("input", syncInput, false);
+          this.nickBox.addEvent("input", syncInput, false);
           user.focus();
           /* setting the value after calling focus() will place the cursor at
            * the end of the text.
            */
           user.value = this.nickBox.value;
         } else {
-          this.nickBox.removeEventListener("input", syncInput, false);
+          this.nickBox.removeEvent("input", syncInput, false);
           this.nickBox.focus();
         }
       }.bind(this));
