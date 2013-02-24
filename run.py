@@ -35,6 +35,7 @@ parser.add_option("-r", "--reactor", help="Which reactor to use (see --help-reac
 parser.add_option("-p", "--port", help="Port to start the server on.", type="int", dest="port", default=DEFAULT_PORT)
 parser.add_option("-i", "--ip", help="IP address to listen on.", dest="ip", default="0.0.0.0")
 parser.add_option("-l", "--logfile", help="Path to twisted log file.", dest="logfile")
+parser.add_option("--no-log", help="Don't write logs to file or console.", action="store_true", dest="nolog", default=False)
 parser.add_option("-c", "--clf", help="Path to web CLF (Combined Log Format) log file.", dest="clogfile")
 parser.add_option("-C", "--certificate", help="Path to SSL certificate.", dest="sslcertificate")
 parser.add_option("-k", "--key", help="Path to SSL key.", dest="sslkey")
@@ -73,6 +74,8 @@ else:
       pass
 if options.logfile:
   args1+=["--logfile", options.logfile]
+if options.nolog:
+  args1+=["--logger", "qwebirc.log.NullLogger"]
 if options.pidfile:
   args1+=["--pidfile", options.pidfile]
 if options.syslog:
