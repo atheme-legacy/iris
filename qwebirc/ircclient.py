@@ -226,11 +226,10 @@ def createIRC(*args, **kwargs):
   server = config.irc["server"]
   port = config.irc["port"]
   
-  bind_ip = config.execution["bind_ip"]
-  bind_port = config.execution["bind_port"]
+  bind_ip = config.irc["bind_ip"]
   bindToAddress = None
   if bind_ip:
-    bindToAddress = (bind_ip, bind_port)
+    bindToAddress = (bind_ip, 0)
   
   if config.irc["ssl"]:
       from twisted.internet.ssl import ClientContextFactory

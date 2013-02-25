@@ -30,13 +30,7 @@ syslog_addr:
 # SYSLOG PORT: Sets the port to send syslog datagrams to, if syslog_addr is set.
 syslog_port: 514
 
-# Binds to a specific IP and port
-# Use this if your machine has more than one outgoing IP
-# Example:
-# bind_ip: 127.0.0.1
-# bind_port: 0
-bind_ip:
-bind_port:
+
 
 # BACKEND IRC CONNECTION OPTIONS
 # These options provide the needed information for the backend to connect to
@@ -52,6 +46,10 @@ port: 6667
 
 # SSL: Use SSL to connect to IRC server or not
 ssl: false
+
+# BIND IP: The (local) IP address to bind to for the IRC server connection.
+# Leave unset to bind to the first applicable interface.
+bind_ip:
 
 # REALNAME: The realname field for clients connecting through the
 # webclient.
