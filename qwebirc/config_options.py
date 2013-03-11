@@ -29,6 +29,8 @@ booleans = [
     ("ui", "nick_click_query"),
     ("ui", "nick_colors"),
     ("ui", "nick_status"),
+    ("ui", "flash_on_mention"),
+    ("ui", "beep_on_mention"),
     ("ui", "simple_color"),
 ]
     
@@ -46,6 +48,7 @@ integers = [
     ("tuneback", "http_ajax_request_timeout"),
     ("tuneback", "http_request_timeout"),
     ("tuneback", "maxbuflen"),
+    ("tuneback", "maxlinelen"),
     ("tuneback", "maxsubscriptions"),
 ]
 
@@ -58,7 +61,6 @@ lists = [
 strings = [
     ("athemeengine", "xmlrpc_path"),
     ("execution", "args"),
-    ("execution", "syslog_addr"),
     ("feedbackengine", "from"),
     ("feedbackengine", "to"),
     ("frontend", "base_url"),
@@ -69,8 +71,9 @@ strings = [
     ("frontend", "initial_chans"),
     ("frontend", "static_base_url"),
     ("frontend", "dynamic_base_url"),
-    ("proxyengine", "forwarded_for_header"),
+    ("proxy", "forwarded_for_header"),
     ("irc", "server"),
+    ("irc", "bind_ip"),
     ("irc", "realname"),
     ("irc", "ident"),
     ("irc", "ident_string"),
