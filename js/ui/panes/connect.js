@@ -130,9 +130,6 @@ qwebirc.ui.Panes.Connect.pclass = new Class({
     var yes = new Element("input", {"type": "submit", "value": "Connect"});
     td.appendChild(yes);
     yes.focus();
-    yes.addEvent("click", function(e) {
-      this.connect(null);
-    }.bind(this));
   },
 
   createLoginBox: function(channel) {
@@ -316,6 +313,9 @@ qwebirc.ui.Panes.Connect.pclass = new Class({
           qwebirc.ui.Atheme.handleLogout(this.session);
           this.connect(null);
         }
+      }
+      else {
+        this.connect(null);
       }
 
     }.bind(this));
