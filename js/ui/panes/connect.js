@@ -127,9 +127,18 @@ qwebirc.ui.Panes.Connect.pclass = new Class({
     var td = new Element("td");
     tr.appendChild(td);
 
+    var form = new Element("form");
+    td.appendChild(form);
+
     var yes = new Element("input", {"type": "submit", "value": "Connect"});
-    td.appendChild(yes);
+    form.appendChild(yes);
     yes.focus();
+
+    form.addEvent("submit", function(e) {
+      new Event(e).stop();
+      this.connect(null);
+    }.bind(this));
+
   },
 
   createLoginBox: function(channel) {
