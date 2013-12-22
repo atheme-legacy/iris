@@ -10,7 +10,7 @@ qwebirc.irc.AthemeQuery.newRequest = function(command) {
 	/* New login request. */
 	var cacheAvoidance = qwebirc.util.randHexString(16);
 	var r = new Request.JSON({
-		url: "/a/" + command + "?r=" + cacheAvoidance,
+		url: conf.frontend.dynamic_base_url + "a/" + command + "?r=" + cacheAvoidance,
 		async: true
 	});
 
