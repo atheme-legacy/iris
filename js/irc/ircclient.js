@@ -117,7 +117,7 @@ qwebirc.irc.IRCClient = new Class({
   newPrivmsgQueryWindow: function(name) {
     if(conf.ui.dedicated_msg_window) {
       if(!ui.getWindow(qwebirc.ui.WINDOW_MESSAGES, "Messages"))
-        return ui.newWindow(this, qwebirc.ui.WINDOW_MESSAGES, "Messages");
+        return ui.newWindow(qwebirc.ui.WINDOW_MESSAGES, "Messages");
     } else {
       return this.newWindow(name, qwebirc.ui.WINDOW_QUERY, false);
     }
@@ -125,7 +125,7 @@ qwebirc.irc.IRCClient = new Class({
   newNoticeQueryWindow: function(name) {
     if(conf.ui.dedicated_notice_window)
       if(!ui.getWindow(qwebirc.ui.WINDOW_MESSAGES, "Messages"))
-        return ui.newWindow(this, qwebirc.ui.WINDOW_MESSAGES, "Messages");
+        return ui.newWindow(qwebirc.ui.WINDOW_MESSAGES, "Messages");
   },
   newQueryLine: function(window, type, data, privmsg, active) {
     if(ui.getWindow(qwebirc.ui.WINDOW_QUERY, window))
