@@ -67,6 +67,16 @@ qwebirc.ui.Panes.Connect.pclass = new Class({
     this.connectCallback(data);
   },
 
+  /* Focus elem if we're not embedded in an iframe. This prevents stealing focus. */
+  autoFocus: function(elem) {
+    /* Accessing window.top might raise if we are iframed... */
+    try {
+      if (window.self === window.top) {
+        elem.focus();
+      }
+    } catch (e) {}
+  },
+
   createConfirmBox: function() {
     while(this.parent.childNodes.length > 0)
       this.parent.removeChild(this.parent.firstChild);
@@ -132,7 +142,7 @@ qwebirc.ui.Panes.Connect.pclass = new Class({
 
     var yes = new Element("input", {"type": "submit", "value": "Connect"});
     form.appendChild(yes);
-    yes.focus();
+    this.autoFocus(yes);
 
     form.addEvent("submit", function(e) {
       new Event(e).stop();
@@ -339,7 +349,7 @@ qwebirc.ui.Panes.Connect.pclass = new Class({
     else if (this.chanBox != null)
       this.chanBox.set("value", conf.frontend.initial_chans);
 
-    this.nickBox.focus();
+    this.autoFocus(this.nickBox);
   }
 });
 
