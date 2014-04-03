@@ -91,6 +91,7 @@ input:not([type]),input[type="text"],input[type="password"] {
 .qwebirc-qui .lines {
   overflow: auto;
   font-size: 0.8em;
+  word-wrap: break-word;
   background: $(bg_lines);
 }
 
