@@ -22,11 +22,9 @@ qwebirc.ui.Panes.Options.pclass = new Class({
       return n;
     };
 
-    var t = FE("table", this.parent);
-    var tb = FE("tbody", t);
-
     this.boxList = [];
     this.options = {};
+    var prev, t, vb;
 
     for(var i=0;i<qwebirc.options.Options.length;i++) {
       var x = qwebirc.options.Options[i];
@@ -37,6 +35,11 @@ qwebirc.ui.Panes.Options.pclass = new Class({
       if (type == qwebirc.options.ColorInput && $defined(x.isEnabled)) {
         if (!x.isEnabled(this.session))
           continue
+      }
+      if(type != prev) {
+        t = FE("table", this.parent);
+        tb = FE("tbody", t);
+        prev = type;
       }
 
       var row = FE("tr", tb);
