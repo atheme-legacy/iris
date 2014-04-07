@@ -1,4 +1,4 @@
-static/js/{ugly,swm,mocha,q}ui{,-*}.js
+static/js/qui{,-*}.js
 static/js/qwebirc.js
 static/{js,css}/debug
 static/css
@@ -12,7 +12,7 @@ dropin.cache
 defargs.conf
 Thumbs.db
 [dD]esktop.ini
-static/{ugly,swm,mocha,q}ui{,debug}.html
+static/qui{,debug}.html
 {bin/,}.checked
 {bin/,}.compiled
 ssl

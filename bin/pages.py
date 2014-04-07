@@ -22,15 +22,6 @@ JS_BASE = ["mootools-1.2.5-core", "mootools-1.2.5.1-more"]
 JS_EXTRA = ["soundmanager2"]
 
 UIs = {
-  "mochaui": {
-    "class": "MochaUI",
-    "nocss": True,
-    "uifiles": ["mochaui"],
-    "doctype": "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"" + "\n" \
-      "  \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">",
-    "customjs": ["js/mochaui/excanvas-compressed.js", "js/mochaui/mocha.js"],
-    "customcss": ["css/mochaui/content.css", "css/mochaui/ui.css"]
-  },
   "qui": {
     "class": "QUI",
     "nocss": True,
