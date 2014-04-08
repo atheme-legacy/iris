@@ -27,25 +27,42 @@ qwebirc.irc.BaseIRCClient = new Class({
     this.lowerNickname = this.toIRCLower(this.nickname);
 
     this.__signedOn = false;
+    this.__connected = false;
     this.caps = {};
     this.sasl_timeout = false;
     this.pmodes = {b: qwebirc.irc.PMODE_LIST, l: qwebirc.irc.PMODE_SET_ONLY, k: qwebirc.irc.PMODE_SET_UNSET, o: qwebirc.irc.PMODE_SET_UNSET, v: qwebirc.irc.PMODE_SET_UNSET};
     this.channels = {}
     this.nextctcp = 0;
 
-    connOptions.initialNickname = this.nickname;
-    connOptions.onRecv = this.dispatch.bind(this);
-    this.connection = new qwebirc.irc.IRCConnection(session, connOptions);
-
-    this.send = this.connection.send.bind(this.connection);
-    this.connect = this.connection.connect.bind(this.connection);
-    this.disconnect = this.connection.disconnect.bind(this.connection);
+    this.connections = [qwebirc.irc.IRCConnection];
 
     this.setupGenericErrors();
+  },
+  send: function(data) {
+    return this.connection.send(data);
+  },
+  connect: function() {
+    this.tryConnect();
+  },
+  disconnect: function() {
+    this.connection.disconnect();
+  },
+  tryConnect: function() {
+    var options = {};
+    var Connection = this.connections.pop();
+    if(Connection) {
+      options.initialNickname = this.nickname;
+      options.onRecv = this.dispatch.bind(this);
+      this.connection = new Connection(this.session, options);
+      this.connection.connect();
+    } else {
+      this.disconnected("Unable to connect")
+    }
   },
   dispatch: function(data) {
     var message = data[0];
     if(message == "connect") {
+      this.__connected = true;
       this.connected();
     } else if(message == "disconnect") {
       if(data.length == 0) {
@@ -53,7 +70,11 @@ qwebirc.irc.BaseIRCClient = new Class({
       } else {
         this.disconnected(data[1]);
       }
-      this.disconnect();
+      if(this.__connected) {
+        this.disconnect();
+      } else {
+        this.tryConnect();
+      }
     } else if(message == "c") {
       var line = data[1];
       var command = "";
