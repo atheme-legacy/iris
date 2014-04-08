@@ -55,10 +55,27 @@ qwebirc.irc.BaseIRCClient = new Class({
       }
       this.disconnect();
     } else if(message == "c") {
-      var command = data[1].toUpperCase();
+      var line = data[1];
+      var command = "";
+      var prefix = "";
+      var params = [];
+      var trailing = "";
 
-      var prefix = data[2];
-      var sl = data[3];
+      if (line[0] == ":") {
+          var index = line.indexOf(" ");
+          prefix = line.substring(1, index);
+          line = line.substring(index + 1);
+      }
+      if (line.indexOf(" :") != -1) {
+          var index = line.indexOf(" :");
+          trailing = line.substring(index + 2);
+          params = line.substring(0, index).split(" ");
+          params.push(trailing);
+      } else {
+          params = line.split(" ");
+      }
+      command = params.splice(0, 1)[0].toUpperCase();
+
       var n = qwebirc.irc.Numerics[command];
 
       var x = n;
@@ -68,11 +85,11 @@ qwebirc.irc.BaseIRCClient = new Class({
       var o = this["irc_" + n];
 
       if(o) {
-        var r = o.run([prefix, sl], this);
+        var r = o.run([prefix, params], this);
         if(!r)
-          this.rawNumeric(command, prefix, sl);
+          this.rawNumeric(command, prefix, params);
       } else {
-        this.rawNumeric(command, prefix, sl);
+        this.rawNumeric(command, prefix, params);
       }
     }
   },
