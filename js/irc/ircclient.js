@@ -16,7 +16,6 @@ qwebirc.irc.IRCClient = new Class({
     this.lastNicks = [];
 
     this.inviteChanList = [];
-    this.activeTimers = {};
 
     this.tracker = new qwebirc.irc.IRCTracker(this);
   },
@@ -401,7 +400,6 @@ qwebirc.irc.IRCClient = new Class({
   __joinInvited: function() {
     this.exec("/JOIN " + this.inviteChanList.join(","));
     this.inviteChanList = [];
-    delete this.activeTimers["serviceInvite"];
   },
   userInvite: function(user, channel) {
     var nick = user.hostToNick();
@@ -503,14 +501,6 @@ qwebirc.irc.IRCClient = new Class({
   quit: function(message) {
     this.send("QUIT :" + message, true);
     this.disconnect();
-  },
-  disconnect: function() {
-    for(var k in this.activeTimers) {
-      this.activeTimers[k].cancel();
-    };
-    this.activeTimers = {};
-
-    this.parent();
   },
   awayMessage: function(nick, message) {
     this.newQueryLine(nick, "AWAY", {"n": nick, "m": message}, true);
