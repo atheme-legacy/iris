@@ -144,7 +144,7 @@ class IRCSession:
 
 # DANGER! Breach of encapsulation!
 def connect_notice(line):
-  return "c", "NOTICE", "", ("AUTH", "*** (qwebirc) %s" % line)
+  return "c", "NOTICE AUTH :*** (qwebirc) %s" % line
 
 class Channel:
   def __init__(self, request):

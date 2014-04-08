@@ -36,7 +36,7 @@ class QWebIRCClient(basic.LineReceiver):
     
     try:
       prefix, command, params = irc.parsemsg(line)
-      self.handleCommand(command, prefix, params)
+      self.handleLine(line)
     except irc.IRCBadMessage:
       # emit and ignore
       traceback.print_exc()
@@ -55,12 +55,12 @@ class QWebIRCClient(basic.LineReceiver):
       if nick == self.__nickname:
         self.__nickname = params[0]
   
-  def handleCommand(self, command, prefix, params):
-    self("c", command, prefix, params)
-    
+  def handleLine(self, line):
+    self("c", line)
+  
   def __call__(self, *args):
     self.factory.publisher.event(args)
-    
+  
   def write(self, data):
     self.transport.write("%s\r\n" % irc.lowQuote(data.encode("utf-8")))
       
