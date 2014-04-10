@@ -7,6 +7,7 @@ sections = [
     "execution",
     "feedbackengine",
     "frontend",
+    "flash",
     "irc",
     "proxy",
     "tuneback",
@@ -50,12 +51,15 @@ integers = [
     ("tuneback", "maxbuflen"),
     ("tuneback", "maxlinelen"),
     ("tuneback", "maxsubscriptions"),
+    ("flash", "port"),
+    ("flash", "xmlport"),
 ]
 
 lists = [
     ("adminengine", "hosts"),
     ("execution", "syslog_addr"),
     ("proxy", "forwarded_for_ips"),
+    ("frontend", "connections"),
 ]
 
 strings = [
@@ -82,4 +86,5 @@ strings = [
     ("ui", "fg_color"),
     ("ui", "fg_sec_color"),
     ("ui", "bg_color"),
+    ("flash", "server"),
 ]
