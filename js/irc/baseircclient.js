@@ -39,6 +39,7 @@ qwebirc.irc.BaseIRCClient = new Class({
       switch(conf.frontend.connections[x]) {
       case "ajax":  this.connections.unshift(qwebirc.irc.IRCConnection); break;
       case "flash": this.connections.unshift(qwebirc.irc.FlashConnection); break;
+      case "websocket": this.connections.unshift(qwebirc.irc.WSConnection); break;
       }
     }
 

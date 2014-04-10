@@ -109,6 +109,15 @@ port: 6667
 # XMLPORT: Port of IRC servers flash policy daemon
 xmlport: 8430
 
+# FRONTEND IRC CONNECTION OPTIONS
+# These options provide the needed information for the frontend to connect to
+# the IRC server via websocket
+# They require a backend restart and a rerun of compile.py to update.
+[websocket]
+
+# URL: URL of IRC server to connect to.
+url: ws://irc.myserver.com/
+
 
 # ATHEME ENGINE OPTIONS
 # These options control communication with Atheme by the Atheme engine backend,
@@ -238,7 +247,7 @@ dynamic_base_url: /
 
 # CONNECTIONS: What order to attempt methods of connection in
 # space seperated list of methods
-# valid values: ajax flash
+# valid values: ajax flash websocket
 connections: ajax
 
 
