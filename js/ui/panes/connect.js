@@ -203,7 +203,10 @@ qwebirc.ui.Panes.Connect.pclass = new Class({
 
       var d1 = new Element("td");
       if(label)
-        d1.set("text", label);
+        if($type(label) == "element")
+          d1.appendChild(label)
+        else
+          d1.set("text", label);
       r.appendChild(d1);
 
       var d2 = new Element("td");
@@ -226,7 +229,18 @@ qwebirc.ui.Panes.Connect.pclass = new Class({
       var srvbutton = new Element("input");
       srvbutton.set("type", "checkbox");
       srvbutton.set("checked", false);
-      createRow("Login to Services:", srvbutton);
+      var loginLabel = new Element("div");
+      var loginText = new Element("span");
+      loginText.set("text", "Login to ");
+      loginLabel.appendChild(loginText);
+      var loginAbbr = new Element("abbr");
+      loginAbbr.set("text", "Services");
+      loginAbbr.set("title", "If you've previously registered for a services account, you may log in here.");
+      loginLabel.appendChild(loginAbbr);
+      var loginPrompt = new Element("span");
+      loginPrompt.set("text", ":");
+      loginLabel.appendChild(loginPrompt);
+      createRow(loginLabel, srvbutton);
 
       var user = new Element("input");
       var userRow = createRow("Username:", user, {})[0];
