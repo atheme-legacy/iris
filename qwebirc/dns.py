@@ -1,56 +1,69 @@
 from twisted.names import client
-from twisted.internet import reactor, defer
+from twisted.internet import defer
+
+from socket import inet_ntop, AF_INET, AF_INET6
+from ipaddress import ip_address
 
 class LookupException(Exception): pass
 class VerificationException(Exception): pass
-TimeoutException = defer.TimeoutError
 
-def lookupPTR(ip, *args, **kwargs):
-  def callback(result):
-    answer, auth, add = result
-
-    if len(answer) == 0:
-      raise LookupException, "No ANSWERS in PTR response for %s." % repr(ip)
-    return str(answer[0].payload.name)
-
-  ptr = ".".join(ip.split(".")[::-1]) + ".in-addr.arpa."
-  return client.lookupPointer(ptr, **kwargs).addCallback(callback)
-
-def lookupAs(hostname, *args, **kwargs):
-  def callback(result):
-    answer, auth, add = result
-    if len(answer) == 0:
-      raise LookupException, "No ANSWERS in A response for %s." % repr(hostname)
-    return [x.payload.dottedQuad() for x in answer]
-
-  return client.lookupAddress(hostname, *args, **kwargs).addCallback(callback)
 
 def lookupAndVerifyPTR(ip, *args, **kwargs):
+
   d = defer.Deferred()
 
-  def gotPTRResult(ptr):
-    def gotAResult(a_records):
-      if ip in a_records:
-        d.callback(ptr)
-      else:
-        raise VerificationException("IP mismatch: %s != %s%s" % (repr(ip), repr(ptr), repr(a_records)))
-    lookupAs(ptr, *args, **kwargs).addCallback(gotAResult).addErrback(d.errback)
+  ipobj = ip_address(unicode(ip))
 
-  lookupPTR(ip, *args, **kwargs).addCallback(gotPTRResult).addErrback(d.errback)
+  if ipobj.version == 4:
+    ipver = AF_INET
+  else:
+    ipver = AF_INET6
+
+  def recvd_ptr(result):
+
+    answer, auth, additional = result
+
+    if len(answer) != 1:
+      raise LookupException("Not exactly one answer in PTR response for %s" % ip)
+
+    hostname = str(answer[0].payload.name)
+
+    def recvd_addr(result):
+
+      answers, auth, additional = result
+
+      if not answers:
+        raise LookupException("No answers in A/AAAA response for %s" % hostname)
+
+      addresses = [ inet_ntop(ipver, answer.payload.address) for answer in answers ]
+
+      if ip not in addresses:
+        raise VerificationException("IP mismatch: %s is not in %s (%s)" % (ip, repr(addresses), hostname))
+
+      d.callback(hostname)
+
+    if ipobj.version == 4:
+      client.lookupAddress(hostname, *args, **kwargs).addCallbacks(recvd_addr)
+    else:
+      client.lookupIPV6Address(hostname, *args, **kwargs).addCallbacks(recvd_addr)
+
+  client.lookupPointer(ipobj.reverse_pointer, *args, **kwargs).addCallbacks(recvd_ptr)
+
   return d
 
 if __name__ == "__main__":
+  from twisted.internet import reactor
   import sys
 
   def callback(x):
-    print x
+    print("Lookup result: '%s' (confirmed)" % x)
     reactor.stop()
 
   def errback(x):
     x.printTraceback()
     reactor.stop()
 
-  d = lookupAndVerifyPTR(sys.argv[1], timeout=[.001])
+  d = lookupAndVerifyPTR(sys.argv[1], timeout=[5.0])
   d.addCallbacks(callback, errback)
 
   reactor.run()
