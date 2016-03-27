@@ -43,11 +43,11 @@ def lookupAndVerifyPTR(ip, *args, **kwargs):
       d.callback(hostname)
 
     if ipobj.version == 4:
-      client.lookupAddress(hostname, *args, **kwargs).addCallbacks(recvd_addr)
+      client.lookupAddress(hostname, *args, **kwargs).addCallback(recvd_addr).addErrback(d.errback)
     else:
-      client.lookupIPV6Address(hostname, *args, **kwargs).addCallbacks(recvd_addr)
+      client.lookupIPV6Address(hostname, *args, **kwargs).addCallback(recvd_addr).addErrback(d.errback)
 
-  client.lookupPointer(ipobj.reverse_pointer, *args, **kwargs).addCallbacks(recvd_ptr)
+  client.lookupPointer(ipobj.reverse_pointer, *args, **kwargs).addCallback(recvd_ptr).addErrback(d.errback)
 
   return d
 
