@@ -7,3 +7,5 @@ python ./compile.py
 3. if there were no errors, read the help of run.py:
 python ./run.py --help
 4. you can now run run.py with any arguments you need; maybe you should create a cronjob or a script to run Iris. If run.py does not correctly daemonize, check if "args: -n" exists in your config and delete the "-n" ;-)
+
+NOTE: You will need to install the ipaddress module from pypi (<https://pypi.python.org/pypi/ipaddress>), NOT py2-ipaddress. Use virtualenv if you need both of these modules installed because they will conflict with each other.
