@@ -6,3 +6,6 @@ General:
 
 UI:
 - replace qwebirc UI elements (logo, pages, etc)
+
+README:
+- Document dependencies (swftools added by flashsocket)

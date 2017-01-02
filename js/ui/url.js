@@ -24,8 +24,17 @@ qwebirc.ui.urlificate = function(session, element, text) {
   };
 
   var appendText = function(text) {
-    addedText.push(text);
-    qwebirc.util.NBSPCreate(text, element);
+    var e = text.split(/(  )/);
+    for(var i=0;i<e.length;i++) {
+      if(e[i] == "  ") {
+        var e2 = new Element("span");
+        e2.set("html", "&nbsp;&nbsp;");
+        element.appendChild(e2);
+      } else {
+        var tn = document.createTextNode(e[i]);
+        element.appendChild(tn);
+      }
+    }
   };
 
   var appendChan = function(text) {

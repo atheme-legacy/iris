@@ -135,6 +135,8 @@ def js_config():
         'atheme': atheme,
         'frontend': f,
         'ui': ui,
+        'flash': flash,
+        'websocket': websocket,
     }
     return json.dumps(options)
 

@@ -61,7 +61,18 @@ def producehtml(name, debug):
   div = ui.get("div", "")
   customcss = "\n".join("  <link rel=\"stylesheet\" href=\"%s%s\" type=\"text/css\"/>" % (config.frontend["static_base_url"], x) for x in ui.get("customcss", []))
   customjs = "\n".join("  <script type=\"text/javascript\" src=\"%s%s\"></script>" % (config.frontend["static_base_url"], x) for x in ui.get("customjs", []))
-
+  flash = """
+  <div style="width:0px;height:0px;overflow:hidden;">
+      <div id="FlashSocket"></div>
+      <script type="text/javascript">
+        FlashSocket = swfobject.createSWF({
+            data: "%sswf/flashsocket.swf",
+            width: "10",
+            height: "10",
+            allowscriptaccess: "always"
+        }, {}, "FlashSocket");
+      </script>
+  </div>""" % (config.frontend["static_base_url"])
   return """%s
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
@@ -84,9 +95,10 @@ def producehtml(name, debug):
       <div id="noscript">Javascript is required to use IRC.</div>
     </noscript>%s
   </div>
+%s
 </body>
 </html>
-""" % (ui["doctype"], config.frontend["app_title"], config.frontend["static_base_url"], config.frontend["extra_html"], csshtml, customcss, jshtml, customjs, config.js_config(), ui["class"], div)
+""" % (ui["doctype"], config.frontend["app_title"], config.frontend["static_base_url"], config.frontend["extra_html"], csshtml, customcss, jshtml, customjs, config.js_config(), ui["class"], div, flash)
 
 def main(outputdir=".", produce_debug=True):
   p = os.path.join(outputdir, "static")
