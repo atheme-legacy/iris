@@ -376,3 +376,10 @@ http_ajax_request_timeout: 30
 # engine will be closed after this many seconds, including connections
 # that haven't started/completed an HTTP request.
 http_request_timeout: 5
+
+
+# HTTP Cache Period: period in **days** to request the client to store
+# static resources. Sets the Expires and Cache-Control headers
+# Note: recompiling static resources (js/css) will override the previous versions
+# in clients cache
+http_cache_period: 30
