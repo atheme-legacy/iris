@@ -22,27 +22,47 @@ qwebirc.irc.BaseIRCClient = new Class({
     this.toIRCLower = qwebirc.irc.RFC1459toIRCLower;
 
     this.nickname = connOptions.nickname;
+    this.authUser = connOptions.authUser;
+    this.authSecret = connOptions.authSecret;
     this.lowerNickname = this.toIRCLower(this.nickname);
 
     this.__signedOn = false;
+    this.__connected = false;
     this.caps = {};
+    this.sasl_timeout = false;
     this.pmodes = {b: qwebirc.irc.PMODE_LIST, l: qwebirc.irc.PMODE_SET_ONLY, k: qwebirc.irc.PMODE_SET_UNSET, o: qwebirc.irc.PMODE_SET_UNSET, v: qwebirc.irc.PMODE_SET_UNSET};
     this.channels = {}
     this.nextctcp = 0;
 
-    connOptions.initialNickname = this.nickname;
-    connOptions.onRecv = this.dispatch.bind(this);
-    this.connection = new qwebirc.irc.IRCConnection(session, connOptions);
-
-    this.send = this.connection.send.bind(this.connection);
-    this.connect = this.connection.connect.bind(this.connection);
-    this.disconnect = this.connection.disconnect.bind(this.connection);
+    this.connections = [qwebirc.irc.IRCConnection];
 
     this.setupGenericErrors();
+  },
+  send: function(data) {
+    return this.connection.send(data);
+  },
+  connect: function() {
+    this.tryConnect();
+  },
+  disconnect: function() {
+    this.connection.disconnect();
+  },
+  tryConnect: function() {
+    var options = {};
+    var Connection = this.connections.pop();
+    if(Connection) {
+      options.initialNickname = this.nickname;
+      options.onRecv = this.dispatch.bind(this);
+      this.connection = new Connection(this.session, options);
+      this.connection.connect();
+    } else {
+      this.disconnected("Unable to connect")
+    }
   },
   dispatch: function(data) {
     var message = data[0];
     if(message == "connect") {
+      this.__connected = true;
       this.connected();
     } else if(message == "disconnect") {
       if(data.length == 0) {
@@ -50,12 +70,33 @@ qwebirc.irc.BaseIRCClient = new Class({
       } else {
         this.disconnected(data[1]);
       }
-      this.disconnect();
+      if(this.__connected) {
+        this.disconnect();
+      } else {
+        this.tryConnect();
+      }
     } else if(message == "c") {
-      var command = data[1].toUpperCase();
+      var line = data[1];
+      var command = "";
+      var prefix = "";
+      var params = [];
+      var trailing = "";
 
-      var prefix = data[2];
-      var sl = data[3];
+      if (line[0] == ":") {
+          var index = line.indexOf(" ");
+          prefix = line.substring(1, index);
+          line = line.substring(index + 1);
+      }
+      if (line.indexOf(" :") != -1) {
+          var index = line.indexOf(" :");
+          trailing = line.substring(index + 2);
+          params = line.substring(0, index).split(" ");
+          params.push(trailing);
+      } else {
+          params = line.split(" ");
+      }
+      command = params.splice(0, 1)[0].toUpperCase();
+
       var n = qwebirc.irc.Numerics[command];
 
       var x = n;
@@ -65,11 +106,11 @@ qwebirc.irc.BaseIRCClient = new Class({
       var o = this["irc_" + n];
 
       if(o) {
-        var r = o.run([prefix, sl], this);
+        var r = o.run([prefix, params], this);
         if(!r)
-          this.rawNumeric(command, prefix, sl);
+          this.rawNumeric(command, prefix, params);
       } else {
-        this.rawNumeric(command, prefix, sl);
+        this.rawNumeric(command, prefix, params);
       }
     }
   },
@@ -102,22 +143,63 @@ qwebirc.irc.BaseIRCClient = new Class({
     }
   },
   irc_AUTHENTICATE: function(prefix, params) {
-    /* Silently hide. */
+    this.send("AUTHENTICATE "+btoa([this.authUser, this.authUser, this.authSecret].join('\0')));
     return true;
   },
+  irc_saslFinished: function(prefix, params) {
+    this.send("CAP END");
+    $clear(this.sasl_timeout);
+    return false;
+  },
+  __saslTimeout: function() {
+    this.send("CAP END");
+  },
   irc_CAP: function(prefix, params) {
-    if(params[1] == "ACK") {
-      var capslist = [];
-      if (params[2] == "*")
-        capslist = params[3].split(" ");
-      else
-        capslist = params[2].split(" ");
+    var caplist;
+    switch(params[1]) {
+    case "ACK":
+      if (params[2] == "*") {
+        caplist = params[3].split(" ");
+      } else {
+        caplist = params[2].split(" ");
+      }
 
-      var i;
-      for (i = 0; i < capslist.length; i++) {
-        this.caps[capslist[i]] = true;
-        if (capslist[i] == "sasl")
-          this.rawNumeric("AUTHENTICATE", prefix, ["*", "Attempting SASL authentication..."]);
+      for (i = 0; i < caplist.length; i++)
+        this.caps[caplist[i]] = true
+
+      if (params[2] != "*") {
+        if(this.caps.sasl && this.authUser) {
+          this.send("AUTHENTICATE "+conf.atheme.sasl_type);
+          this.sasl_timeout = this.__saslTimeout.delay(15000, this);
+        } else {
+          this.send("CAP END");
+        }
+      }
+      break;
+    case "NAK":
+      this.send("CAP END");
+      break;
+    case "LS":
+      if (params[2] == "*") {
+        caplist = params[3].split(" ");
+      } else {
+        caplist = params[2].split(" ");
+      }
+
+      for (i = 0; i < caplist.length; i++) {
+        if (caplist[i] == "sasl")
+          this.caps[caplist[i]] = false;
+        if (caplist[i] == "multi-prefix")
+          this.caps[caplist[i]] = false;
+      }
+
+      if (params[2] != "*") {
+        caplist = Object.keys(this.caps);
+        if(caplist.length) {
+          this.send("CAP REQ :"+caplist.join(" "));
+        } else {
+          this.send("CAP END");
+        }
       }
     }
 
@@ -514,6 +596,9 @@ qwebirc.irc.BaseIRCClient = new Class({
     this.irc_ERR_CHANOPPRIVSNEEDED = this.irc_ERR_CANNOTSENDTOCHAN = this.irc_genericError;
     this.irc_ERR_NOSUCHNICK = this.irc_genericQueryError;
     this.irc_ERR_NICKNAMEINUSE = this.irc_ERR_UNAVAILRESOURCE = this.irc_genericNickInUse;
+    this.irc_RPL_LOGGEDIN = this.irc_ERR_NICKLOCKED = this.irc_saslFinished;
+    this.irc_ERR_SASLFAIL = this.irc_ERR_SASLTOOLONG = this.irc_saslFinished;
+    this.irc_ERR_SASLABORTED = this.irc_ERR_SASLALREADY = this.irc_saslFinished;
     return true;
   },
   irc_RPL_AWAY: function(prefix, params) {
